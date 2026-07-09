@@ -1,0 +1,234 @@
+.footer {
+    background-color: #F4F7FF;
+    margin-top: 2.8125rem;
+    padding-top: 2.8125rem;
+}
+
+.footer__inner {
+    display: flex;
+}
+
+.footer__inner__item__card {
+    background-color: #fff;
+
+    border-radius: 1.25rem;
+
+    display: flex;
+
+    height: 7.5rem;
+}
+
+.footer__inner__item__block {
+    width: 65%;
+
+    display: flex;
+}
+
+.footer__inner__item__link__block {
+    margin-top: 1.25rem;
+    margin-bottom: 4.375rem;
+
+    display: flex;
+}
+
+.footer__inner__item__link {
+    margin-left: 2.5rem;
+
+    font-family: var(--font-montserrat);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: .75rem;
+    text-decoration: underline;
+}
+
+.footer__inner__item__description__header {
+    font-family: var(--font-montserrat);
+    font-weight: 700;
+    font-style: Bold;
+    font-size: .9375rem;
+    
+
+    margin-top: 1.25rem;
+}
+
+.footer__inner__item__link:first-child {
+    margin-left: 5rem;
+}
+
+.footer__inner__item__link__text {
+  font-size: .75rem !important;
+}
+
+.footer__inner__item__img {
+    width: 25px;
+    height: 22px;
+
+    margin-top: 2.1875rem;
+    margin-left: 2.1875rem;
+}
+
+.footer__inner__item__1 {
+    width: 55%;
+}
+
+.footer__inner__item__2 {
+    width: 45%;
+
+    margin-left: 3.125rem;
+}
+
+.footer__inner__item__2 .footer__inner__item__description {
+    font-family: var(--font-montserrat);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: .9375rem;
+    leading-trim: NONE;
+    line-height: 123%;
+    letter-spacing: 0.34px;
+
+    padding: .3125rem 2.1875rem 1.25rem 2.1875rem;
+}
+
+.footer__inner__item__1 .footer__inner__item__description {
+    font-family: var(--font-montserrat);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: .9375rem;
+    leading-trim: NONE;
+    line-height: 123%;
+    letter-spacing: 0.34px;
+
+    padding: 1.875rem 2.1875rem 2.1875rem 1.25rem;
+}
+
+.footer__socials {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer__socials__container {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+
+    margin-top: .9375rem;
+}
+
+.footer__socials__header {
+    font-family: var(--font-montserrat);
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 15px;
+    leading-trim: NONE;
+    line-height: 115.99999999999999%;
+    letter-spacing: 0.37px;
+}
+
+.footer__socials__copyright {
+    font-family: var(--font-montserrat);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: .75rem;
+    leading-trim: NONE;
+    line-height: 126%;
+    letter-spacing: 0.34px;
+
+    margin-top: 1.875rem;
+}
+
+@media (max-width: 1200px) {
+  .footer__inner__item__2 {
+    margin-left: 1rem
+  }
+
+
+  .footer__inner__item__block {
+    flex-direction: column;
+    align-items: center;
+
+    gap: 10px;
+
+    width: 100%;
+  }
+
+  .footer__inner {
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .footer__socials {
+    width: 100%;
+  }
+
+  .footer__inner__item__1,
+  .footer__inner__item__2 {
+  width: 80% !important;
+  margin-left: 0 !important;
+  }
+  /* .footer__inner {
+    flex-direction: column;
+  } */
+}
+
+@media (max-width: 992px) {
+  .footer__inner__item__block .footer__inner__item__link__block {
+    display: none;
+  }
+
+  .footer__inner__item__1 .footer__inner__item__description {
+    padding: 1.5rem 1.5rem 1.5rem .75rem;
+  }
+
+  .footer__inner__item__2 .footer__inner__item__description {
+    padding: .5rem 0rem 1.5rem .75rem;
+  }
+
+  .footer__inner__item__link:first-child {
+    margin-left: 0rem;
+    margin-bottom: 10px;
+  }
+
+  .footer__inner__item__link {
+    margin: 0
+  }
+
+  .footer__socials__inner {
+    display: flex;
+    flex-direction: column;
+
+    width: 50%;
+  }
+
+  .footer__inner__item__link__block {
+    margin-top: 2.5rem;
+
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+
+    /* position: absolute;
+    top: calc(12rem * 2);
+    left: 0; */
+
+    /* display: block; */
+  }
+
+   .footer__inner__item__block {
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  .footer__inner__item__block {
+    /* position: relative; */
+
+  }
+
+  .footer__socials__copyright {
+    margin-bottom: 3rem;
+    margin-top: 0;
+  }
+
+}

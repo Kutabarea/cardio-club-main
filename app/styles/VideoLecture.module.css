@@ -1,0 +1,62 @@
+.videolecture {
+  margin-top: 5.625rem;
+}
+
+.videolecture__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.videolecture__button__wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.videolecture__items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+
+  margin-top: 2.5rem;
+}
+
+.videolecture__item {
+  background-color: #F4F7FF;
+  border-radius: 15px;
+
+  padding: 1.25rem;
+}
+
+.videolecture__item__img {
+  width: 4rem;
+  height: 4rem;
+
+  margin-bottom: .5rem;
+}
+
+.videolecture__item__header {
+  margin-bottom: .625rem;
+}
+
+.videolecture__item__description {
+  margin-bottom: 1.25rem;
+}
+
+.videolecture__course {
+  display: flex;
+  gap: .625rem;
+}
+
+.videolecture__course__img {
+  width: 1rem;
+  height: 1rem;
+}
+
+.videolecture__course__description {
+  font-size: .75rem !important;
+  opacity: 0.5;
+}
+
+.search {
+  margin-top: 3.125rem !important;
+}

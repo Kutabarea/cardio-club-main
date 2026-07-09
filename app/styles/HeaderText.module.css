@@ -1,0 +1,17 @@
+.text {
+    font-family: var(--font-unbounded);
+    font-weight: 700;
+    font-style: Regular;
+    font-size: 2.1875rem;
+    leading-trim: NONE;
+    line-height: 123%;
+    letter-spacing: 0.34px;
+
+    color: var(--h2-color, #4480EA) !important;
+}
+
+@media (max-width: 1200px) {
+  .text {
+    color: #123455;
+  }
+}

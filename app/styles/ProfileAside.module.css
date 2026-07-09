@@ -1,0 +1,158 @@
+.profile__aside {
+  width: 35%;
+
+  margin-top: 2rem;
+
+  margin-right: 10rem;
+}
+
+.profile__aside__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  background-color: #F4F7FF;
+
+  border-radius: 15px;
+
+  padding-bottom: 1.5rem;
+}
+
+.profile__aside__header {
+  font-family: var(--font-unbounded);
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 35px;
+  leading-trim: NONE;
+  line-height: 117%;
+  letter-spacing: -2%;
+  vertical-align: bottom;
+
+  padding-top: 1.5rem;
+}
+
+.profile__aside__avatar {
+  width: 135px;
+  height: 135px;
+  border-radius: 50%;
+
+  border: .1875rem solid #4480EA;
+
+  margin-top: .625rem;
+}
+
+.profile__aside__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.profile__aside__profile__block {
+  display: flex;
+  flex-direction: column;
+
+  /* align-items: center; */
+}
+
+.profile__aside__btns {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 1.875rem;
+}
+
+.profile__aside__link {
+  text-decoration: none;
+  outline: none;
+  border: none;
+
+  margin-bottom: 0.5rem;
+}
+
+.profile__aside__btn {
+  border: 2px solid #4480EA !important;
+
+  text-transform: lowercase;
+
+  display: flex;
+  align-items: center;
+
+  font-weight: 400 !important;
+
+  gap: .625rem;
+
+  width: 11.875rem;
+}
+
+.profile__aside__link:last-child {
+  margin-bottom: 0;
+}
+
+.profile__aside__inner .profile__aside__exit {
+  border: 0 !important;
+}
+
+@media (max-width: 1400px) {
+  .profile__aside {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile__aside {
+    order: -1;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .profile__aside__avatar {
+    height: 90px;
+    width: 90px;
+  }
+
+  .profile__aside__profile__block {
+    display: flex;
+    margin: 2rem 2rem 2rem 1.5rem;
+  }
+
+  .profile__aside__inner {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .profile__aside__btn {
+    padding: .5rem .5rem !important;
+  }
+
+  .profile__aside__btns {
+    padding-right: 1rem;
+  }
+}
+.profile__aside__logout {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.profile__aside__logoutBtn {
+  width: 11.875rem;
+  border: 0 !important;
+  text-transform: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700 !important;
+}
+
+.profile__aside__logoutBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -1,0 +1,17 @@
+.button {
+  padding: var(--button-padding, .9375rem 1.5625rem);
+  background-color: var(--button-background-color) !important;
+  font-family: var(--font-unbounded, sans-serif);
+  font-weight: 700;
+  font-size: var(--button-font-size, 1.25rem) !important;
+  color: var(--button-color, #fff) !important;
+  border: none;
+  border-radius: var(--button-border-radius, .625rem) !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background-color: var(--button-hover-background-color,  #3568C3);
+  transform: scale(1.05);
+}

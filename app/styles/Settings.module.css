@@ -1,0 +1,58 @@
+.settings {
+  width: 100%;
+  margin-top: 40px;
+}
+
+.settings__header {
+  margin-bottom: 1.875rem;
+}
+
+.settings__input__wrapper {
+  width: 65%;
+  display: flex;
+
+  flex-direction: column;
+
+  margin-bottom: 1.25rem;
+}
+
+.settings__label {
+  font-weight: 700 !important;
+
+  margin-bottom: .3125rem;
+}
+
+.password {
+  margin-top: 7.8125rem;
+
+  margin-bottom: 1.875rem;
+}
+
+.password__input__wrapper {
+  width: 65%;
+  display: flex;
+
+  flex-direction: column;
+
+  margin-bottom: 1.25rem;
+}
+
+.settings__input__wrapper {
+  width: 65%;
+  display: flex;
+
+  flex-direction: column;
+
+  margin-bottom: 1.25rem;
+}
+
+
+@media (max-width: 768px) {
+  .settings__input__wrapper {
+    width: 100%;
+  }
+
+  .password {
+    margin-top: 3.5rem;
+  }
+}

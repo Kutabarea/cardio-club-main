@@ -1,0 +1,149 @@
+.community {
+    margin-top: 6.25rem;
+}
+
+.community__inner {
+    margin-top: 3.125rem;
+    display: flex;
+}
+
+.header {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.header__text {
+  display: none;
+}
+
+.register__form__wrapper {
+    width: 40%;
+}
+
+.subscription {
+    margin-left: 6.875rem;
+}
+
+.subscription__description {
+    width: 80%;
+}
+
+.subscription__header {
+    font-family: var(--font-unbounded);
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 1.25rem;
+    leading-trim: NONE;
+    line-height: 89%;
+    letter-spacing: -0.47px;
+    vertical-align: bottom;
+
+    margin-top: 2.5rem;
+}
+
+.subscription__subheader {
+    font-family: var(--font-montserrat);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 0..9375rem;
+    leading-trim: NONE;
+    line-height: 123%;
+    letter-spacing: 0.34px;
+
+    margin-top: 0.625rem;
+}
+
+.star__img {
+    width: 1rem;
+    height: 0.75rem;
+
+    margin-right: 0.3125rem;
+}
+
+.subscription__items {
+    margin-top: 1.5625rem;
+}
+
+.subscription__item {
+    display: flex;
+
+    background-color: #F4F7FF;
+
+    border-radius: 0.9275rem;
+
+    padding-top: 1.375rem;
+    padding-bottom: 1.375rem;
+
+    margin-bottom: 0..9375rem;
+}
+
+.subscription__item:last-child {
+    margin-bottom: 0;
+}
+
+.subscription__item__text {
+
+    margin-left: 1rem;
+}
+
+.subscription__item__img {
+    transform: translate(-0.625rem, 0) scale(1.2);
+
+    width: 5.5rem;
+    height: 5.5rem;
+}
+
+.subscription__item__header {
+    font-family: var(--font-unbounded);
+    font-weight: 500;
+    font-style: Medium;
+    font-size: .9375rem;
+    leading-trim: NONE;
+    line-height: 89%;
+    letter-spacing: -0.47px;
+    vertical-align: bottom;
+
+    display: flex;
+
+    color: #4480EA;
+
+    margin-bottom: 0.625rem;
+}
+
+
+@media (max-width: 1200px) {
+  .subscription {
+    display: none;
+  }
+
+  /* .community__inner {
+    flex: 0 0 100%;
+  } */
+
+  .register__form__wrapper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 860px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header {
+    margin-top: 3rem;
+
+    width: 80%;
+  }
+
+  .header__text {
+    display: block;
+    margin-top: 1rem;
+  }
+
+  .community {
+    margin-top: 1rem;
+  }
+}

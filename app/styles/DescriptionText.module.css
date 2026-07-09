@@ -1,0 +1,11 @@
+.text {
+    font-family: var(--font-montserrat);
+    font-weight: var(--p-fontWeight, 400);
+    font-style: Regular;
+    font-size: 0.9375rem;
+    leading-trim: NONE;
+    line-height: 123%;
+    letter-spacing: 0.34px;
+
+    color: var(--p-color, #000) !important
+}

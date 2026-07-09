@@ -1,0 +1,11 @@
+.text {
+    font-family: var(--font-unbounded);
+    font-weight: 700;
+    font-style: Regular;
+    font-size: var(--p-fontSize,1.25rem); 
+    leading-trim: NONE;
+    line-height: 123%;
+    letter-spacing: 0.34px;
+
+    color: var(--p-color, #000) !important
+}
