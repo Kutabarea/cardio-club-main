@@ -1,0 +1,254 @@
+.admin {
+  padding-top: 4.375rem;
+  padding-bottom: 5rem;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 1rem;
+  border-radius: 1rem;
+  background-color: #f4f7ff;
+  padding: 1.25rem;
+}
+
+.sidebarTitle {
+  margin: 0 0 1rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.navLink {
+  border-radius: 0.625rem;
+  padding: 0.75rem 1rem;
+  background-color: #fff;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  background-color: #4480ea;
+  color: #fff;
+}
+
+.content {
+  min-width: 0;
+}
+
+.pageHeader {
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  margin: 0 0 0.5rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.pageDescription {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+  border-radius: 1rem;
+  background-color: #f4f7ff;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid rgba(68, 128, 234, 0.35);
+  border-radius: 0.625rem;
+  padding: 0.75rem 0.875rem;
+  background-color: #fff;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  outline: none;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #4480ea;
+}
+
+.checks {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.submitButton,
+.deleteButton {
+  border: 0;
+  border-radius: 0.625rem;
+  padding: 0.875rem 1.25rem;
+  color: #fff;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submitButton {
+  width: fit-content;
+  background-color: #4480ea;
+}
+
+.submitButton:hover {
+  background-color: #316fd4;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border-radius: 1rem;
+  background-color: #f4f7ff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid rgba(68, 128, 234, 0.15);
+  padding: 0.875rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table th {
+  color: #4480ea;
+  font-weight: 800;
+}
+
+.materialTitle {
+  font-weight: 800;
+}
+
+.materialSlug {
+  margin-top: 0.25rem;
+  color: #777;
+  font-size: 0.75rem;
+}
+
+.deleteButton {
+  background-color: #8a1a1a;
+  padding: 0.625rem 0.875rem;
+}
+
+.deleteButton:hover {
+  background-color: #711414;
+}
+
+@media (max-width: 992px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.tableActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editLink {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  background-color: #4480ea;
+  color: #fff;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.editLink:hover {
+  background-color: #316fd4;
+}
+
+.backLink {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}

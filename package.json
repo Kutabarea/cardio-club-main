@@ -9,7 +9,8 @@
     "lint": "eslint",
     "db:seed": "tsx scripts/seed.ts",
     "db:seed:ecg": "tsx scripts/seed-ecg-base.ts",
-    "db:seed:video": "tsx scripts/seed-videolectures.ts"
+    "db:seed:video": "tsx scripts/seed-videolectures.ts",
+    "admin:make": "tsx scripts/make-admin.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",

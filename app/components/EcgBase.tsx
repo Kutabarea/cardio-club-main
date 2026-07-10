@@ -99,6 +99,26 @@ function createSlug(title: string) {
 export default async function EcgBase({ searchQuery }: EcgBaseProps) {
   const normalizedSearchQuery = searchQuery?.trim() ?? "";
 
+  const staticTopicSlugs = sections
+    .flatMap((section) => section.columns)
+    .flatMap((column) => column)
+    .map((topic) => createSlug(topic));
+
+  const extraMaterials = await prisma.material.findMany({
+    where: {
+      isPublished: true,
+      category: {
+        slug: "ecg-base",
+      },
+      slug: {
+        notIn: staticTopicSlugs,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   const searchResults = normalizedSearchQuery
     ? await prisma.material.findMany({
         where: {
@@ -168,6 +188,37 @@ export default async function EcgBase({ searchQuery }: EcgBaseProps) {
               </section>
             ))}
           </div>
+                    {extraMaterials.length > 0 && (
+            <section className={styles.extraSection}>
+              <h2 className={styles.sectionTitle}>Дополнительные материалы</h2>
+
+              <div className={styles.extraMaterials}>
+                {extraMaterials.map((material) => (
+                  <Link
+                    key={material.id}
+                    href={`/library/base/${material.slug}`}
+                    className={styles.extraMaterialCard}
+                  >
+                    <span className={styles.extraMaterialTitle}>
+                      {material.title}
+                    </span>
+
+                    {material.description && (
+                      <span className={styles.extraMaterialDescription}>
+                        {material.description}
+                      </span>
+                    )}
+
+                    {material.isPremium && (
+                      <span className={styles.extraMaterialPremium}>
+                        Premium
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           <section className={styles.searchBlock}>
             <h2 className={styles.searchTitle}>

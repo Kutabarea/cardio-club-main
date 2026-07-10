@@ -1,5 +1,5 @@
 ﻿"use client";
-
+import AdminPanelLink from "./AdminPanelLink";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -74,6 +74,7 @@ export default function ProfileAside() {
               </Link>
             );
           })}
+          <AdminPanelLink />
 
           <div className={styles.profile__aside__logout}>
             <LogoutButton />
