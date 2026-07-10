@@ -1,7 +1,13 @@
-﻿import Link from "next/link";
+import Link from "next/link";
+
+import { prisma } from "@/lib/prisma";
 
 import styles from "../styles/EcgBase.module.css";
 import HeaderText from "./HeaderText";
+
+type EcgBaseProps = {
+  searchQuery?: string;
+};
 
 const sections = [
   {
@@ -90,7 +96,40 @@ function createSlug(title: string) {
     .replaceAll(/[^a-z0-9-]/g, "");
 }
 
-export default function EcgBase() {
+export default async function EcgBase({ searchQuery }: EcgBaseProps) {
+  const normalizedSearchQuery = searchQuery?.trim() ?? "";
+
+  const searchResults = normalizedSearchQuery
+    ? await prisma.material.findMany({
+        where: {
+          isPublished: true,
+          category: {
+            slug: "ecg-base",
+          },
+          OR: [
+            {
+              title: {
+                contains: normalizedSearchQuery,
+              },
+            },
+            {
+              description: {
+                contains: normalizedSearchQuery,
+              },
+            },
+            {
+              content: {
+                contains: normalizedSearchQuery,
+              },
+            },
+          ],
+        },
+        orderBy: {
+          title: "asc",
+        },
+      })
+    : [];
+
   return (
     <main className={styles.ecgBase}>
       <div className="container">
@@ -135,15 +174,63 @@ export default function EcgBase() {
               Введите тему, которая вас интересует и найдите полезные статьи на сайте
             </h2>
 
-            <input
-              className={styles.searchInput}
-              type="search"
-              placeholder="введите ваш запрос"
-            />
+            <form action="/library/base" method="get" className={styles.searchForm}>
+              <input
+                className={styles.searchInput}
+                type="search"
+                name="search"
+                defaultValue={normalizedSearchQuery}
+                placeholder="введите ваш запрос"
+              />
+
+              <button className={styles.searchButton} type="submit">
+                Найти
+              </button>
+
+              {normalizedSearchQuery && (
+                <Link href="/library/base" className={styles.searchReset}>
+                  Сбросить
+                </Link>
+              )}
+            </form>
 
             <p className={styles.searchExample}>
               Например: «Инфаркт миокарда на ЭКГ», «Как высчитать ЧСС?», ЭОС ...
             </p>
+
+            {normalizedSearchQuery && (
+              <div className={styles.searchResults}>
+                <h3 className={styles.searchResultsTitle}>
+                  Результаты поиска: {searchResults.length}
+                </h3>
+
+                {searchResults.length > 0 ? (
+                  <div className={styles.searchResultsList}>
+                    {searchResults.map((material) => (
+                      <Link
+                        key={material.id}
+                        href={`/library/base/${material.slug}`}
+                        className={styles.searchResultCard}
+                      >
+                        <span className={styles.searchResultTitle}>
+                          {material.title}
+                        </span>
+
+                        {material.description && (
+                          <span className={styles.searchResultDescription}>
+                            {material.description}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.searchEmpty}>
+                    По запросу «{normalizedSearchQuery}» ничего не найдено.
+                  </p>
+                )}
+              </div>
+            )}
           </section>
         </div>
       </div>
