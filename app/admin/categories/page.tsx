@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { prisma } from "@/lib/prisma";
 
 import { createCategoryAction, deleteCategoryAction } from "./actions";
@@ -42,6 +44,13 @@ function getMessage(error?: string, success?: string) {
     };
   }
 
+  if (success === "updated") {
+    return {
+      type: "success",
+      text: "Категория обновлена.",
+    };
+  }
+
   if (success === "deleted") {
     return {
       type: "success",
@@ -76,7 +85,7 @@ export default async function AdminCategoriesPage({
       <div className={styles.pageHeader}>
         <h2 className={styles.pageTitle}>Категории</h2>
         <p className={styles.pageDescription}>
-          Здесь можно создавать разделы для материалов, статей, лекций и курсов.
+          Здесь можно создавать и редактировать разделы для материалов, статей, лекций и курсов.
         </p>
       </div>
 
@@ -143,12 +152,21 @@ export default async function AdminCategoriesPage({
                 <td>{category._count.materials}</td>
                 <td>{category.description ?? "—"}</td>
                 <td>
-                  <form action={deleteCategoryAction}>
-                    <input type="hidden" name="id" value={category.id} />
-                    <button className={styles.deleteButton} type="submit">
-                      Удалить
-                    </button>
-                  </form>
+                  <div className={styles.tableActions}>
+                    <Link
+                      href={`/admin/categories/${category.id}/edit`}
+                      className={styles.editLink}
+                    >
+                      Редактировать
+                    </Link>
+
+                    <form action={deleteCategoryAction}>
+                      <input type="hidden" name="id" value={category.id} />
+                      <button className={styles.deleteButton} type="submit">
+                        Удалить
+                      </button>
+                    </form>
+                  </div>
                 </td>
               </tr>
             ))}

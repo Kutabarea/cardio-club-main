@@ -38,6 +38,10 @@ export default async function AdminLayout({
                 Категории
               </Link>
 
+              <Link href="/admin/users" className={styles.navLink}>
+                Пользователи
+              </Link>
+
               <Link href="/" className={styles.navLink}>
                 На сайт
               </Link>

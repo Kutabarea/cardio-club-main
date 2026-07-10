@@ -290,3 +290,42 @@
   background-color: #ecfff2;
   color: #176b34;
 }
+.inlineForm {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 12rem;
+}
+
+.inlineForm select,
+.inlineForm input {
+  width: 100%;
+  border: 1px solid rgba(68, 128, 234, 0.35);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  background-color: #fff;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 0.8125rem;
+  outline: none;
+}
+
+.inlineForm select:focus,
+.inlineForm input:focus {
+  border-color: #4480ea;
+}
+
+.smallButton {
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  background-color: #4480ea;
+  color: #fff;
+  font-family: var(--font-montserrat);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.smallButton:hover {
+  background-color: #316fd4;
+}
