@@ -1,18 +1,17 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { prisma } from "@/lib/prisma";
 
-import styles from "../styles/Library.module.css";
 import DescriptionText from "./DescriptionText";
 import HeaderText from "./HeaderText";
-import Search from "./Search";
-import SubHeaderText from "./SubHeaderText";
+import styles from "../styles/LibraryHome.module.css";
 
 const categoryOrder = [
   "ecg-base",
   "ecg-trainer",
   "pathology-a-z",
   "useful-resources",
+  "video-lectures",
 ];
 
 const categoryLinks: Record<string, string> = {
@@ -20,61 +19,87 @@ const categoryLinks: Record<string, string> = {
   "ecg-trainer": "/library/trainer",
   "pathology-a-z": "/library/pathology",
   "useful-resources": "/library/resources",
+  "video-lectures": "/videolecture",
 };
+
+function getCategoryHref(slug: string) {
+  return categoryLinks[slug] ?? `/library/${slug}`;
+}
 
 export default async function Library() {
   const categories = await prisma.category.findMany({
-    where: {
-      slug: {
-        in: categoryOrder,
-      },
-    },
     include: {
-      _count: {
+      materials: {
+        where: {
+          isPublished: true,
+        },
         select: {
-          materials: true,
+          id: true,
         },
       },
     },
   });
 
-  const sortedCategories = categoryOrder
-    .map((slug) => categories.find((category) => category.slug === slug))
-    .filter((category): category is (typeof categories)[number] => Boolean(category));
+  const sortedCategories = categories.sort((a, b) => {
+    const aIndex = categoryOrder.indexOf(a.slug);
+    const bIndex = categoryOrder.indexOf(b.slug);
+
+    if (aIndex === -1 && bIndex === -1) {
+      return a.title.localeCompare(b.title);
+    }
+
+    if (aIndex === -1) {
+      return 1;
+    }
+
+    if (bIndex === -1) {
+      return -1;
+    }
+
+    return aIndex - bIndex;
+  });
 
   return (
-    <div className={styles.library}>
+    <main className={styles.library}>
       <div className="container">
-        <div className={styles.library__inner}>
-          <HeaderText color="#000">Библиотека ЭКГ</HeaderText>
+        <div className={styles.inner}>
+          <HeaderText color="#000" className={styles.title}>
+            Библиотека
+          </HeaderText>
 
-          <div className={styles.library__items}>
-            {sortedCategories.map((category) => (
-              <Link
-                key={category.id}
-                href={categoryLinks[category.slug]}
-                className={styles.library__item__link}
-              >
-                <article className={styles.library__item}>
-                  <SubHeaderText className={styles.library__item__header}>
-                    {category.title}
-                  </SubHeaderText>
+          <DescriptionText className={styles.description}>
+            Разделы с материалами, статьями, видеолекциями и учебными блоками.
+          </DescriptionText>
 
-                  <DescriptionText className={styles.library__item__description}>
-                    {category.description}
-                  </DescriptionText>
+          {sortedCategories.length > 0 ? (
+            <div className={styles.grid}>
+              {sortedCategories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={getCategoryHref(category.slug)}
+                  className={styles.card}
+                >
+                  <span className={styles.cardLabel}>Раздел</span>
 
-                  <span className={styles.library__item__count}>
-                    Материалов: {category._count.materials}
+                  <h2 className={styles.cardTitle}>{category.title}</h2>
+
+                  <p className={styles.cardDescription}>
+                    {category.description ?? "Материалы этого раздела."}
+                  </p>
+
+                  <span className={styles.cardCount}>
+                    {category.materials.length} опубликованных материалов
                   </span>
-                </article>
-              </Link>
-            ))}
-          </div>
-
-          <Search title="" className={styles.search} />
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <DescriptionText className={styles.empty}>
+              Категорий пока нет.
+            </DescriptionText>
+          )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

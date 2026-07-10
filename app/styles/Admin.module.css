@@ -252,3 +252,41 @@
 .backLink:hover {
   text-decoration: underline;
 }
+.adminMessageError,
+.adminMessageSuccess {
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.adminMessageError {
+  background-color: #ffecec;
+  color: #8a1a1a;
+}
+
+.adminMessageSuccess {
+  background-color: #ecfff2;
+  color: #176b34;
+}
+.adminMessageError,
+.adminMessageSuccess {
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.adminMessageError {
+  background-color: #ffecec;
+  color: #8a1a1a;
+}
+
+.adminMessageSuccess {
+  background-color: #ecfff2;
+  color: #176b34;
+}

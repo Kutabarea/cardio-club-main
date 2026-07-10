@@ -34,6 +34,10 @@ export default async function AdminLayout({
                 Материалы
               </Link>
 
+              <Link href="/admin/categories" className={styles.navLink}>
+                Категории
+              </Link>
+
               <Link href="/" className={styles.navLink}>
                 На сайт
               </Link>

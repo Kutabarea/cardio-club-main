@@ -1,0 +1,171 @@
+.page {
+  padding-top: 4.375rem;
+  padding-bottom: 5rem;
+}
+
+.inner {
+  width: 100%;
+}
+
+.articleInner {
+  max-width: 56.25rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-bottom: 2rem;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.breadcrumbs a {
+  color: #4480ea;
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.title {
+  margin-bottom: 1rem;
+}
+
+.description {
+  max-width: 52rem;
+  margin-bottom: 2.5rem;
+  color: #4d4d4d;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background-color: #f4f7ff;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(68, 128, 234, 0.12);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.type,
+.premium {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.type {
+  background-color: #fff;
+  color: #4480ea;
+}
+
+.premium {
+  background-color: #4480ea;
+  color: #fff;
+}
+
+.cardTitle {
+  margin: 0 0 0.625rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.cardDescription,
+.empty {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.articleHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.content {
+  border-radius: 1rem;
+  background-color: #f4f7ff;
+  padding: 2rem;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.content p {
+  margin: 0 0 1rem;
+}
+
+.content p:last-child {
+  margin-bottom: 0;
+}
+
+.backLink {
+  display: inline-flex;
+  margin-top: 1.5rem;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: 2.5rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .articleHeader {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 1.25rem;
+    font-size: 0.9375rem;
+  }
+}
