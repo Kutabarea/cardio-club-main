@@ -1,7 +1,5 @@
-import Base from "../../components/Base";
+﻿import EcgBase from "@/app/components/EcgBase";
 
-export default function BasePage() {
-  return (
-    <Base></Base>
-  );
+export default function LibraryBasePage() {
+  return <EcgBase />;
 }

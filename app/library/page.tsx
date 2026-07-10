@@ -1,8 +1,7 @@
-import Library from "../components/Library";
+﻿import Library from "../components/Library";
 
-export default function CooperationPage() {
-  return (
-    <Library></Library>
-  
-  );
+export const dynamic = "force-dynamic";
+
+export default function LibraryPage() {
+  return <Library />;
 }
