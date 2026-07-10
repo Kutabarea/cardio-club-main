@@ -1,10 +1,7 @@
-import React from 'react';
-import VideoLecture from '../components/VideoLecture';
+import VideoLecture from "../components/VideoLecture";
 
-function VideoLecturePage() {
-  return (
-    <VideoLecture></VideoLecture>
-  )
+export const dynamic = "force-dynamic";
+
+export default function VideoLecturePage() {
+  return <VideoLecture />;
 }
-
-export default VideoLecturePage;
