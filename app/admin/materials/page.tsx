@@ -99,8 +99,13 @@ export default async function AdminMaterialsPage() {
 
         <div className={styles.formGrid}>
           <label className={styles.field}>
-            <span>Картинка</span>
+            <span>Картинка по ссылке</span>
             <input name="imageUrl" placeholder="/images/materials__img__1.png" />
+          </label>
+
+          <label className={styles.field}>
+            <span>Загрузить картинку</span>
+            <input name="imageFile" type="file" accept="image/*" />
           </label>
 
           <label className={styles.field}>

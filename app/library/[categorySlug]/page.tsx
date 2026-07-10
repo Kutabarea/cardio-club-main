@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -80,21 +81,33 @@ export default async function LibraryCategoryPage({
                   href={getMaterialHref(category.slug, material.slug, material.type)}
                   className={styles.card}
                 >
-                  <div className={styles.cardTop}>
-                    <span className={styles.type}>{material.type}</span>
+                  {material.imageUrl && (
+                    <Image
+                      src={material.imageUrl}
+                      alt=""
+                      width={520}
+                      height={260}
+                      className={styles.cardImage}
+                    />
+                  )}
 
-                    {material.isPremium && (
-                      <span className={styles.premium}>Premium</span>
+                  <div className={styles.cardBody}>
+                    <div className={styles.cardTop}>
+                      <span className={styles.type}>{material.type}</span>
+
+                      {material.isPremium && (
+                        <span className={styles.premium}>Premium</span>
+                      )}
+                    </div>
+
+                    <h2 className={styles.cardTitle}>{material.title}</h2>
+
+                    {material.description && (
+                      <p className={styles.cardDescription}>
+                        {material.description}
+                      </p>
                     )}
                   </div>
-
-                  <h2 className={styles.cardTitle}>{material.title}</h2>
-
-                  {material.description && (
-                    <p className={styles.cardDescription}>
-                      {material.description}
-                    </p>
-                  )}
                 </Link>
               ))}
             </div>

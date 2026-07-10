@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-
+import MarkdownContent from "@/app/components/MarkdownContent";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -87,14 +87,7 @@ export default async function EcgArticlePage({ params }: EcgArticlePageProps) {
           </div>
 
           <article className={styles.content}>
-            {material.content ? (
-              material.content
-                .split("\n")
-                .filter(Boolean)
-                .map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-            ) : (
-              <p>Материал пока заполняется.</p>
-            )}
+            <MarkdownContent content={material.content} />
           </article>
 
           <Link href="/library/base" className={styles.backLink}>

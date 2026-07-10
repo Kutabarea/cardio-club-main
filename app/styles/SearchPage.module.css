@@ -1,0 +1,174 @@
+.search {
+  padding-top: 5.625rem;
+  padding-bottom: 5rem;
+}
+
+.inner {
+  max-width: 60rem;
+}
+
+.title {
+  margin-bottom: 1rem;
+}
+
+.description {
+  max-width: 52rem;
+  margin-bottom: 2rem;
+  color: #4d4d4d;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.input {
+  width: 100%;
+  height: 2.75rem;
+  border: 1px solid rgba(68, 128, 234, 0.35);
+  border-radius: 0.625rem;
+  padding: 0 1rem;
+  background-color: #fff;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #4480ea;
+}
+
+.button {
+  flex-shrink: 0;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 0.625rem;
+  padding: 0 1.25rem;
+  background-color: #4480ea;
+  color: #fff;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #316fd4;
+}
+
+.reset {
+  flex-shrink: 0;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.reset:hover {
+  text-decoration: underline;
+}
+
+.resultsTitle {
+  margin: 0 0 1rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.list {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background-color: #f4f7ff;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(68, 128, 234, 0.12);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.875rem;
+}
+
+.type,
+.category,
+.premium {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.type {
+  background-color: #fff;
+  color: #4480ea;
+}
+
+.category {
+  background-color: #fff;
+  color: #000;
+}
+
+.premium {
+  background-color: #4480ea;
+  color: #fff;
+}
+
+.cardTitle {
+  margin: 0 0 0.625rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.cardDescription,
+.empty {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .search {
+    padding-top: 2.5rem;
+  }
+
+  .form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .reset {
+    text-align: center;
+  }
+}

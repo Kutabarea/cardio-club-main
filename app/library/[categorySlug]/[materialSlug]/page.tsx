@@ -1,6 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-
+import MarkdownContent from "@/app/components/MarkdownContent";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -104,17 +105,19 @@ export default async function LibraryMaterialPage({
             )}
           </div>
 
-          <article className={styles.content}>
-            {material.content ? (
-              material.content
-                .split("\n")
-                .filter(Boolean)
-                .map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-            ) : (
-              <p>Материал пока заполняется.</p>
-            )}
-          </article>
+          {material.imageUrl && (
+            <Image
+              src={material.imageUrl}
+              alt=""
+              width={900}
+              height={420}
+              className={styles.articleImage}
+            />
+          )}
 
+          <article className={styles.content}>
+            <MarkdownContent content={material.content} />
+          </article>
           <Link href={`/library/${material.category.slug}`} className={styles.backLink}>
             ← Назад к категории
           </Link>

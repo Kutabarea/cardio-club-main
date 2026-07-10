@@ -1,5 +1,9 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -29,13 +33,42 @@ async function requireAdmin() {
   return user;
 }
 
-function getMaterialPayload(formData: FormData) {
+async function saveImageFile(file: FormDataEntryValue | null) {
+  if (!(file instanceof File) || file.size === 0) {
+    return null;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Можно загружать только изображения");
+  }
+
+  const extensionFromName = file.name.split(".").pop()?.toLowerCase();
+  const extension =
+    extensionFromName && /^[a-z0-9]+$/.test(extensionFromName)
+      ? extensionFromName
+      : "png";
+
+  const fileName = `${randomUUID()}.${extension}`;
+  const uploadDir = path.join(process.cwd(), "public", "uploads", "materials");
+  const filePath = path.join(uploadDir, fileName);
+
+  await mkdir(uploadDir, {
+    recursive: true,
+  });
+
+  const bytes = await file.arrayBuffer();
+  await writeFile(filePath, Buffer.from(bytes));
+
+  return `/uploads/materials/${fileName}`;
+}
+
+async function getMaterialPayload(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const slugInput = String(formData.get("slug") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const content = String(formData.get("content") ?? "").trim();
   const type = String(formData.get("type") ?? "").trim();
-  const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const imageUrlInput = String(formData.get("imageUrl") ?? "").trim();
   const videoUrl = String(formData.get("videoUrl") ?? "").trim();
   const categoryId = String(formData.get("categoryId") ?? "").trim();
   const isPremium = formData.get("isPremium") === "on";
@@ -45,6 +78,8 @@ function getMaterialPayload(formData: FormData) {
     throw new Error("Название, тип и категория обязательны");
   }
 
+  const uploadedImageUrl = await saveImageFile(formData.get("imageFile"));
+  const imageUrl = uploadedImageUrl || imageUrlInput || null;
   const slug = slugInput || createSlug(title);
 
   return {
@@ -53,7 +88,7 @@ function getMaterialPayload(formData: FormData) {
     description: description || null,
     content: content || null,
     type,
-    imageUrl: imageUrl || null,
+    imageUrl,
     videoUrl: videoUrl || null,
     categoryId,
     isPremium,
@@ -66,12 +101,13 @@ function revalidateMaterialPages() {
   revalidatePath("/library");
   revalidatePath("/library/base");
   revalidatePath("/videolecture");
+  revalidatePath("/search");
 }
 
 export async function createMaterialAction(formData: FormData) {
   await requireAdmin();
 
-  const payload = getMaterialPayload(formData);
+  const payload = await getMaterialPayload(formData);
 
   await prisma.material.create({
     data: payload,
@@ -89,7 +125,7 @@ export async function updateMaterialAction(formData: FormData) {
     throw new Error("ID материала обязателен");
   }
 
-  const payload = getMaterialPayload(formData);
+  const payload = await getMaterialPayload(formData);
 
   await prisma.material.update({
     where: {

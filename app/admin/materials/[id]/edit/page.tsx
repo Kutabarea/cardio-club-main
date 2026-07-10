@@ -126,12 +126,17 @@ export default async function EditMaterialPage({
 
         <div className={styles.formGrid}>
           <label className={styles.field}>
-            <span>Картинка</span>
+            <span>Картинка по ссылке</span>
             <input
               name="imageUrl"
               defaultValue={material.imageUrl ?? ""}
               placeholder="/images/materials__img__1.png"
             />
+          </label>
+
+          <label className={styles.field}>
+            <span>Загрузить новую картинку</span>
+            <input name="imageFile" type="file" accept="image/*" />
           </label>
 
           <label className={styles.field}>

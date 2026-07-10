@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-
+import MarkdownContent from "@/app/components/MarkdownContent";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -113,16 +113,11 @@ export default async function VideoLectureArticlePage({
           </section>
 
           <article className={styles.content}>
-            {lecture.content ? (
-              lecture.content
-                .split("\n")
-                .filter(Boolean)
-                .map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-            ) : (
-              <p>Описание лекции пока заполняется.</p>
-            )}
+            <MarkdownContent
+              content={lecture.content}
+              emptyText="Описание лекции пока заполняется."
+            />
           </article>
-
           <Link href="/videolecture" className={styles.backLink}>
             ← Назад к видеолекциям
           </Link>
