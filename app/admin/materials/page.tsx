@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Prisma } from "@prisma/client";
 
+import { getMaterialPublicHref } from "@/lib/materialPublicHref";
 import { prisma } from "@/lib/prisma";
 
 import { createMaterialAction, deleteMaterialAction } from "./actions";
@@ -207,7 +208,7 @@ export default async function AdminMaterialsPage({
       <div className={styles.pageHeader}>
         <h2 className={styles.pageTitle}>Материалы</h2>
         <p className={styles.pageDescription}>
-          Здесь можно добавлять, искать, фильтровать, редактировать и удалять материалы.
+          Здесь можно добавлять, искать, фильтровать, редактировать, смотреть предпросмотр и удалять материалы.
         </p>
       </div>
 
@@ -406,35 +407,56 @@ export default async function AdminMaterialsPage({
 
           <tbody>
             {materials.length > 0 ? (
-              materials.map((material) => (
-                <tr key={material.id}>
-                  <td>
-                    <div className={styles.materialTitle}>{material.title}</div>
-                    <div className={styles.materialSlug}>{material.slug}</div>
-                  </td>
-                  <td>{material.type}</td>
-                  <td>{material.category?.title ?? "Без категории"}</td>
-                  <td>{material.isPublished ? "Опубликовано" : "Черновик"}</td>
-                  <td>{material.isPremium ? "Premium" : "Free"}</td>
-                  <td>
-                    <div className={styles.tableActions}>
-                      <Link
-                        href={`/admin/materials/${material.id}/edit`}
-                        className={styles.editLink}
-                      >
-                        Редактировать
-                      </Link>
+              materials.map((material) => {
+                const publicHref = getMaterialPublicHref(material);
 
-                      <form action={deleteMaterialAction}>
-                        <input type="hidden" name="id" value={material.id} />
-                        <button className={styles.deleteButton} type="submit">
-                          Удалить
-                        </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                return (
+                  <tr key={material.id}>
+                    <td>
+                      <div className={styles.materialTitle}>{material.title}</div>
+                      <div className={styles.materialSlug}>{material.slug}</div>
+                    </td>
+                    <td>{material.type}</td>
+                    <td>{material.category?.title ?? "Без категории"}</td>
+                    <td>{material.isPublished ? "Опубликовано" : "Черновик"}</td>
+                    <td>{material.isPremium ? "Premium" : "Free"}</td>
+                    <td>
+                      <div className={styles.tableActions}>
+                        <Link
+                          href={`/admin/materials/${material.id}/preview`}
+                          className={styles.previewLink}
+                        >
+                          Предпросмотр
+                        </Link>
+
+                        {publicHref && material.isPublished && (
+                          <Link
+                            href={publicHref}
+                            className={styles.openLink}
+                            target="_blank"
+                          >
+                            На сайте
+                          </Link>
+                        )}
+
+                        <Link
+                          href={`/admin/materials/${material.id}/edit`}
+                          className={styles.editLink}
+                        >
+                          Редактировать
+                        </Link>
+
+                        <form action={deleteMaterialAction}>
+                          <input type="hidden" name="id" value={material.id} />
+                          <button className={styles.deleteButton} type="submit">
+                            Удалить
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan={6}>Материалы не найдены.</td>

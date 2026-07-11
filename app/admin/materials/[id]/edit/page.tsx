@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { getMaterialPublicHref } from "@/lib/materialPublicHref";
 import { prisma } from "@/lib/prisma";
 
 import { updateMaterialAction } from "../../actions";
@@ -77,6 +78,9 @@ export default async function EditMaterialPage({
       where: {
         id,
       },
+      include: {
+        category: true,
+      },
     }),
     prisma.category.findMany({
       orderBy: {
@@ -89,6 +93,8 @@ export default async function EditMaterialPage({
     notFound();
   }
 
+  const publicHref = getMaterialPublicHref(material);
+
   return (
     <div>
       <div className={styles.pageHeader}>
@@ -98,6 +104,21 @@ export default async function EditMaterialPage({
 
         <h2 className={styles.pageTitle}>Редактировать материал</h2>
         <p className={styles.pageDescription}>{material.title}</p>
+
+        <div className={styles.pageActions}>
+          <Link
+            href={`/admin/materials/${material.id}/preview`}
+            className={styles.previewLink}
+          >
+            Предпросмотр
+          </Link>
+
+          {publicHref && material.isPublished && (
+            <Link href={publicHref} className={styles.openLink} target="_blank">
+              Открыть на сайте
+            </Link>
+          )}
+        </div>
       </div>
 
       {message && <div className={styles.adminMessageError}>{message.text}</div>}

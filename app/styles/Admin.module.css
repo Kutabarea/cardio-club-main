@@ -569,3 +569,152 @@
     grid-template-columns: 1fr;
   }
 }
+.pageActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.previewLink,
+.openLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.previewLink {
+  background-color: #e9eefc;
+  color: #4480ea;
+}
+
+.previewLink:hover {
+  background-color: #dce6ff;
+}
+
+.openLink {
+  background-color: #eaf8ef;
+  color: #198754;
+}
+
+.openLink:hover {
+  background-color: #dcf2e4;
+}
+
+.previewShell {
+  border-radius: 1.25rem;
+  background-color: #f4f7ff;
+  padding: 1.5rem;
+}
+
+.previewBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.previewBadges span {
+  border-radius: 999px;
+  background-color: #fff;
+  padding: 0.4rem 0.75rem;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.previewTitle {
+  margin: 0 0 1rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.previewDescription {
+  max-width: 52rem;
+  margin: 0 0 1.5rem;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.previewImageWrap {
+  overflow: hidden;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #fff;
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 32rem;
+  object-fit: cover;
+}
+
+.previewExternalImage,
+.previewVideoBox,
+.previewNotice {
+  border-radius: 0.875rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.previewExternalImage,
+.previewVideoBox {
+  background-color: #fff;
+  color: #4d4d4d;
+}
+
+.previewExternalImage a,
+.previewVideoBox a {
+  color: #4480ea;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.previewExternalImage a:hover,
+.previewVideoBox a:hover {
+  text-decoration: underline;
+}
+
+.previewNotice {
+  background-color: #fff5d8;
+  color: #7a5a00;
+  font-weight: 700;
+}
+
+.previewContent {
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .previewShell {
+    padding: 1rem;
+  }
+
+  .previewContent {
+    padding: 1rem;
+  }
+
+  .previewLink,
+  .openLink {
+    width: 100%;
+  }
+}
