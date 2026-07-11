@@ -543,3 +543,29 @@
     width: 100%;
   }
 }
+.usersFiltersForm {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.4fr) repeat(3, minmax(10rem, 1fr)) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+@media (max-width: 1200px) {
+  .usersFiltersForm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .usersFiltersForm .filterActions {
+    align-items: stretch;
+  }
+
+  .usersFiltersForm .submitButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .usersFiltersForm {
+    grid-template-columns: 1fr;
+  }
+}
