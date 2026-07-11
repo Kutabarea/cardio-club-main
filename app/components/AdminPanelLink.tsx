@@ -1,14 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
-import Button from "./Button";
-import styles from "../styles/ProfileAside.module.css";
+import styles from "../styles/AdminPanelLink.module.css";
 
 type CurrentUserResponse = {
-  user: {
-    role: string;
+  user?: {
+    role?: string;
   } | null;
 };
 
@@ -16,7 +15,9 @@ export default function AdminPanelLink() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    async function loadUser() {
+    let isMounted = true;
+
+    async function loadCurrentUser() {
       try {
         const response = await fetch("/api/auth/me", {
           cache: "no-store",
@@ -28,13 +29,21 @@ export default function AdminPanelLink() {
 
         const data = (await response.json()) as CurrentUserResponse;
 
-        setIsAdmin(data.user?.role === "ADMIN");
+        if (isMounted && data.user?.role === "ADMIN") {
+          setIsAdmin(true);
+        }
       } catch {
-        setIsAdmin(false);
+        if (isMounted) {
+          setIsAdmin(false);
+        }
       }
     }
 
-    loadUser();
+    loadCurrentUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (!isAdmin) {
@@ -42,17 +51,8 @@ export default function AdminPanelLink() {
   }
 
   return (
-    <Link href="/admin/materials" className={styles.profile__aside__link}>
-      <Button
-        backgroundColor="#111827"
-        hoverBackgroundColor="#000000"
-        color="#FFFFFF"
-        fontSize=".9375rem"
-        padding=".9375rem 1rem"
-        className={styles.profile__aside__btn}
-      >
-        Админка
-      </Button>
+    <Link href="/admin" className={styles.adminLink}>
+      Админка
     </Link>
   );
 }
