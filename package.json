@@ -11,7 +11,10 @@
     "db:seed:ecg": "tsx scripts/seed-ecg-base.ts",
     "db:seed:video": "tsx scripts/seed-videolectures.ts",
     "admin:make": "tsx scripts/make-admin.ts",
-    "db:seed:demo": "tsx scripts/seed-demo-content.ts"
+    "db:seed:demo": "tsx scripts/seed-demo-content.ts",
+    "demo:check": "tsx scripts/demo-check.ts",
+    "prod:build": "npm run lint && npm run demo:check && npm run build",
+    "prod:start": "next start"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",
