@@ -3,7 +3,8 @@ import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
-import { createCategoryAction, deleteCategoryAction } from "./actions";
+import DeleteCategoryButton from "./DeleteCategoryButton";
+import { createCategoryAction } from "./actions";
 
 import styles from "@/app/styles/Admin.module.css";
 
@@ -15,10 +16,11 @@ type AdminCategoriesPageProps = {
     materials?: string;
     error?: string;
     success?: string;
+    deletedMaterials?: string;
   }>;
 };
 
-function getMessage(error?: string, success?: string) {
+function getMessage(error?: string, success?: string, deletedMaterials?: string) {
   if (error === "slug-exists") {
     return {
       type: "error",
@@ -47,10 +49,10 @@ function getMessage(error?: string, success?: string) {
     };
   }
 
-  if (error === "category-has-materials") {
+  if (error === "delete-not-confirmed") {
     return {
       type: "error",
-      text: "Нельзя удалить категорию, в которой есть материалы. Сначала перенеси или удали материалы.",
+      text: "Удаление категории не подтверждено.",
     };
   }
 
@@ -69,9 +71,14 @@ function getMessage(error?: string, success?: string) {
   }
 
   if (success === "deleted") {
+    const count = Number(deletedMaterials ?? 0);
+
     return {
       type: "success",
-      text: "Категория удалена.",
+      text:
+        count > 0
+          ? `Категория удалена. Вместе с ней удалено материалов: ${count}.`
+          : "Категория удалена.",
     };
   }
 
@@ -113,7 +120,11 @@ export default async function AdminCategoriesPage({
 
   const q = params?.q?.trim() ?? "";
   const materialsFilter = params?.materials ?? "all";
-  const message = getMessage(params?.error, params?.success);
+  const message = getMessage(
+    params?.error,
+    params?.success,
+    params?.deletedMaterials,
+  );
 
   const categoriesRaw = await prisma.category.findMany({
     where: getCategoryWhere({
@@ -152,7 +163,7 @@ export default async function AdminCategoriesPage({
       <div className={styles.pageHeader}>
         <h2 className={styles.pageTitle}>Категории</h2>
         <p className={styles.pageDescription}>
-          Здесь можно создавать, искать, фильтровать, редактировать и безопасно удалять категории.
+          Здесь можно создавать, искать, фильтровать, редактировать и удалять категории вместе с материалами.
         </p>
       </div>
 
@@ -271,21 +282,11 @@ export default async function AdminCategoriesPage({
                         Редактировать
                       </Link>
 
-                      <form action={deleteCategoryAction}>
-                        <input type="hidden" name="id" value={category.id} />
-                        <button
-                          className={styles.deleteButton}
-                          type="submit"
-                          disabled={category._count.materials > 0}
-                          title={
-                            category._count.materials > 0
-                              ? "Сначала перенеси или удали материалы"
-                              : "Удалить категорию"
-                          }
-                        >
-                          Удалить
-                        </button>
-                      </form>
+                      <DeleteCategoryButton
+                        categoryId={category.id}
+                        categoryTitle={category.title}
+                        materialsCount={category._count.materials}
+                      />
                     </div>
                   </td>
                 </tr>

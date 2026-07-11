@@ -1,5 +1,8 @@
 "use server";
 
+import { unlink } from "node:fs/promises";
+import path from "node:path";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -36,6 +39,28 @@ function revalidateCategoryPages() {
   revalidatePath("/library/base");
   revalidatePath("/videolecture");
   revalidatePath("/search");
+}
+
+async function deleteUploadedMaterialImages(imageUrls: Array<string | null>) {
+  const uploadedImages = imageUrls.filter(
+    (imageUrl): imageUrl is string =>
+      Boolean(imageUrl) && imageUrl!.startsWith("/uploads/materials/"),
+  );
+
+  await Promise.allSettled(
+    uploadedImages.map((imageUrl) => {
+      const fileName = path.basename(imageUrl);
+      const filePath = path.join(
+        process.cwd(),
+        "public",
+        "uploads",
+        "materials",
+        fileName,
+      );
+
+      return unlink(filePath);
+    }),
+  );
 }
 
 export async function createCategoryAction(formData: FormData) {
@@ -128,9 +153,14 @@ export async function deleteCategoryAction(formData: FormData) {
   await requireAdmin();
 
   const id = String(formData.get("id") ?? "").trim();
+  const confirmDelete = String(formData.get("confirmDelete") ?? "").trim();
 
   if (!id) {
     redirect("/admin/categories?error=id-required");
+  }
+
+  if (confirmDelete !== "DELETE_CATEGORY_WITH_MATERIALS") {
+    redirect("/admin/categories?error=delete-not-confirmed");
   }
 
   const category = await prisma.category.findUnique({
@@ -138,6 +168,11 @@ export async function deleteCategoryAction(formData: FormData) {
       id,
     },
     include: {
+      materials: {
+        select: {
+          imageUrl: true,
+        },
+      },
       _count: {
         select: {
           materials: true,
@@ -150,17 +185,26 @@ export async function deleteCategoryAction(formData: FormData) {
     redirect("/admin/categories?error=not-found");
   }
 
-  if (category._count.materials > 0) {
-    redirect("/admin/categories?error=category-has-materials");
-  }
+  const imageUrls = category.materials.map((material) => material.imageUrl);
 
-  await prisma.category.delete({
-    where: {
-      id,
-    },
-  });
+  await prisma.$transaction([
+    prisma.material.deleteMany({
+      where: {
+        categoryId: id,
+      },
+    }),
+    prisma.category.delete({
+      where: {
+        id,
+      },
+    }),
+  ]);
+
+  await deleteUploadedMaterialImages(imageUrls);
 
   revalidateCategoryPages();
 
-  redirect("/admin/categories?success=deleted");
+  redirect(
+    `/admin/categories?success=deleted&deletedMaterials=${category._count.materials}`,
+  );
 }
