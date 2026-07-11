@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { getMaterialPublicHref } from "@/lib/materialPublicHref";
 import { prisma } from "@/lib/prisma";
 
-import { createMaterialAction, deleteMaterialAction } from "./actions";
+import { deleteMaterialAction } from "./actions";
 
 import styles from "@/app/styles/Admin.module.css";
 
@@ -157,6 +157,40 @@ function getMaterialWhere(params: {
   return where;
 }
 
+function getCurrentFiltersPath(params: {
+  q: string;
+  type: string;
+  categoryId: string;
+  status: string;
+  access: string;
+}) {
+  const search = new URLSearchParams();
+
+  if (params.q) {
+    search.set("q", params.q);
+  }
+
+  if (params.type !== "all") {
+    search.set("type", params.type);
+  }
+
+  if (params.categoryId !== "all") {
+    search.set("categoryId", params.categoryId);
+  }
+
+  if (params.status !== "all") {
+    search.set("status", params.status);
+  }
+
+  if (params.access !== "all") {
+    search.set("access", params.access);
+  }
+
+  const query = search.toString();
+
+  return query ? `/admin/materials?${query}` : "/admin/materials";
+}
+
 export default async function AdminMaterialsPage({
   searchParams,
 }: AdminMaterialsPageProps) {
@@ -178,7 +212,14 @@ export default async function AdminMaterialsPage({
     access,
   });
 
-  const [categories, materials, totalMaterials] = await Promise.all([
+  const [
+    categories,
+    materials,
+    totalMaterials,
+    publishedMaterials,
+    draftMaterials,
+    premiumMaterials,
+  ] = await Promise.all([
     prisma.category.findMany({
       orderBy: {
         title: "asc",
@@ -194,6 +235,21 @@ export default async function AdminMaterialsPage({
       },
     }),
     prisma.material.count(),
+    prisma.material.count({
+      where: {
+        isPublished: true,
+      },
+    }),
+    prisma.material.count({
+      where: {
+        isPublished: false,
+      },
+    }),
+    prisma.material.count({
+      where: {
+        isPremium: true,
+      },
+    }),
   ]);
 
   const hasActiveFilters =
@@ -203,13 +259,27 @@ export default async function AdminMaterialsPage({
     status !== "all" ||
     access !== "all";
 
+  const currentPath = getCurrentFiltersPath({
+    q,
+    type,
+    categoryId,
+    status,
+    access,
+  });
+
   return (
     <div>
-      <div className={styles.pageHeader}>
-        <h2 className={styles.pageTitle}>Материалы</h2>
-        <p className={styles.pageDescription}>
-          Здесь можно добавлять, искать, фильтровать, редактировать, смотреть предпросмотр и удалять материалы.
-        </p>
+      <div className={styles.adminTopbar}>
+        <div>
+          <h2 className={styles.pageTitle}>Материалы</h2>
+          <p className={styles.pageDescription}>
+            Управление статьями, видеолекциями, курсами и справочными материалами.
+          </p>
+        </div>
+
+        <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
+          + Создать материал
+        </Link>
       </div>
 
       {message && (
@@ -224,12 +294,42 @@ export default async function AdminMaterialsPage({
         </div>
       )}
 
+      <section className={styles.adminStatsCompact}>
+        <div>
+          <span>Всего</span>
+          <strong>{totalMaterials}</strong>
+        </div>
+
+        <div>
+          <span>Опубликовано</span>
+          <strong>{publishedMaterials}</strong>
+        </div>
+
+        <div>
+          <span>Черновики</span>
+          <strong>{draftMaterials}</strong>
+        </div>
+
+        <div>
+          <span>Premium</span>
+          <strong>{premiumMaterials}</strong>
+        </div>
+      </section>
+
+      <section className={styles.adminHelpCard}>
+        <strong>Как работать с материалами</strong>
+        <p>
+          Нажми «Создать материал», заполни название, категорию, текст и картинку.
+          Сначала можно сохранить как черновик, открыть предпросмотр, а затем опубликовать.
+        </p>
+      </section>
+
       <section className={styles.filterCard}>
         <div className={styles.filterHeader}>
           <div>
-            <h3 className={styles.filterTitle}>Фильтры</h3>
+            <h3 className={styles.filterTitle}>Поиск и фильтры</h3>
             <p className={styles.filterDescription}>
-              Показано: {materials.length} из {totalMaterials}
+              Сейчас показано: {materials.length} из {totalMaterials}
             </p>
           </div>
 
@@ -300,171 +400,115 @@ export default async function AdminMaterialsPage({
         </form>
       </section>
 
-      <form action={createMaterialAction} className={styles.form}>
-        <input type="hidden" name="redirectPath" value="/admin/materials" />
-
-        <div className={styles.formGrid}>
-          <label className={styles.field}>
-            <span>Название</span>
-            <input name="title" required placeholder="Например: Комплекс QRS" />
-          </label>
-
-          <label className={styles.field}>
-            <span>Slug</span>
-            <input name="slug" placeholder="complex-qrs" />
-          </label>
-
-          <label className={styles.field}>
-            <span>Тип</span>
-            <select name="type" required defaultValue="ECG_ARTICLE">
-              {materialTypes.map((materialType) => (
-                <option key={materialType.value} value={materialType.value}>
-                  {materialType.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className={styles.field}>
-            <span>Категория</span>
-            <select name="categoryId" required defaultValue="">
-              <option value="" disabled>
-                Выбери категорию
-              </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.title}
-                </option>
-              ))}
-            </select>
-          </label>
+      <section className={styles.adminContentCard}>
+        <div className={styles.adminSectionHeader}>
+          <div>
+            <h3>Список материалов</h3>
+            <p>Открой предпросмотр, отредактируй или удали материал.</p>
+          </div>
         </div>
 
-        <label className={styles.field}>
-          <span>Краткое описание</span>
-          <textarea
-            name="description"
-            rows={3}
-            placeholder="Описание для карточки материала"
-          />
-        </label>
-
-        <label className={styles.field}>
-          <span>Контент</span>
-          <textarea
-            name="content"
-            rows={7}
-            placeholder="Основной текст материала. Можно использовать Markdown."
-          />
-        </label>
-
-        <div className={styles.formGrid}>
-          <label className={styles.field}>
-            <span>Картинка по ссылке</span>
-            <input name="imageUrl" placeholder="/images/materials__img__1.png" />
-          </label>
-
-          <label className={styles.field}>
-            <span>Загрузить картинку</span>
-            <input name="imageFile" type="file" accept="image/*" />
-          </label>
-
-          <label className={styles.field}>
-            <span>Видео</span>
-            <input name="videoUrl" placeholder="https://..." />
-          </label>
-        </div>
-
-        <div className={styles.checks}>
-          <label>
-            <input name="isPremium" type="checkbox" />
-            Premium
-          </label>
-
-          <label>
-            <input name="isPublished" type="checkbox" defaultChecked />
-            Опубликовано
-          </label>
-        </div>
-
-        <button className={styles.submitButton} type="submit">
-          Добавить материал
-        </button>
-      </form>
-
-      <div className={styles.tableWrap}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Название</th>
-              <th>Тип</th>
-              <th>Категория</th>
-              <th>Статус</th>
-              <th>Доступ</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {materials.length > 0 ? (
-              materials.map((material) => {
-                const publicHref = getMaterialPublicHref(material);
-
-                return (
-                  <tr key={material.id}>
-                    <td>
-                      <div className={styles.materialTitle}>{material.title}</div>
-                      <div className={styles.materialSlug}>{material.slug}</div>
-                    </td>
-                    <td>{material.type}</td>
-                    <td>{material.category?.title ?? "Без категории"}</td>
-                    <td>{material.isPublished ? "Опубликовано" : "Черновик"}</td>
-                    <td>{material.isPremium ? "Premium" : "Free"}</td>
-                    <td>
-                      <div className={styles.tableActions}>
-                        <Link
-                          href={`/admin/materials/${material.id}/preview`}
-                          className={styles.previewLink}
-                        >
-                          Предпросмотр
-                        </Link>
-
-                        {publicHref && material.isPublished && (
-                          <Link
-                            href={publicHref}
-                            className={styles.openLink}
-                            target="_blank"
-                          >
-                            На сайте
-                          </Link>
-                        )}
-
-                        <Link
-                          href={`/admin/materials/${material.id}/edit`}
-                          className={styles.editLink}
-                        >
-                          Редактировать
-                        </Link>
-
-                        <form action={deleteMaterialAction}>
-                          <input type="hidden" name="id" value={material.id} />
-                          <button className={styles.deleteButton} type="submit">
-                            Удалить
-                          </button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
               <tr>
-                <td colSpan={6}>Материалы не найдены.</td>
+                <th>Материал</th>
+                <th>Тип</th>
+                <th>Категория</th>
+                <th>Статус</th>
+                <th>Доступ</th>
+                <th>Действия</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody>
+              {materials.length > 0 ? (
+                materials.map((material) => {
+                  const publicHref = getMaterialPublicHref(material);
+
+                  return (
+                    <tr key={material.id}>
+                      <td>
+                        <div className={styles.materialTitle}>{material.title}</div>
+                        <div className={styles.materialSlug}>{material.slug}</div>
+                      </td>
+
+                      <td>{material.type}</td>
+                      <td>{material.category?.title ?? "Без категории"}</td>
+
+                      <td>
+                        <span
+                          className={
+                            material.isPublished
+                              ? styles.statusBadgeSuccess
+                              : styles.statusBadgeWarning
+                          }
+                        >
+                          {material.isPublished ? "Опубликовано" : "Черновик"}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span
+                          className={
+                            material.isPremium
+                              ? styles.statusBadgePremium
+                              : styles.statusBadgeNeutral
+                          }
+                        >
+                          {material.isPremium ? "Premium" : "Free"}
+                        </span>
+                      </td>
+
+                      <td>
+                        <div className={styles.tableActions}>
+                          <Link
+                            href={`/admin/materials/${material.id}/preview`}
+                            className={styles.previewLink}
+                          >
+                            Предпросмотр
+                          </Link>
+
+                          {publicHref && material.isPublished && (
+                            <Link
+                              href={publicHref}
+                              className={styles.openLink}
+                              target="_blank"
+                            >
+                              На сайте
+                            </Link>
+                          )}
+
+                          <Link
+                            href={`/admin/materials/${material.id}/edit`}
+                            className={styles.editLink}
+                          >
+                            Редактировать
+                          </Link>
+
+                          <form action={deleteMaterialAction}>
+                            <input type="hidden" name="id" value={material.id} />
+                            <input type="hidden" name="redirectPath" value={currentPath} />
+                            <button className={styles.deleteButton} type="submit">
+                              Удалить
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={6}>
+                    Материалы не найдены. Попробуй сбросить фильтры или создать новый материал.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   );
 }

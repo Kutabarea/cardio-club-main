@@ -100,7 +100,7 @@ export default async function AdminDashboardPage() {
       title: "Материалы",
       value: totalMaterials,
       description: `Опубликовано: ${publishedMaterials} / Черновики: ${draftMaterials}`,
-      href: "/admin/materials",
+      href: "/admin/materials/new",
     },
     {
       title: "Категории",
@@ -132,7 +132,7 @@ export default async function AdminDashboardPage() {
     {
       title: "Добавить материал",
       description: "Создать статью, курс, справочник или видеолекцию.",
-      href: "/admin/materials",
+      href: "/admin/materials/new",
     },
     {
       title: "Управлять категориями",

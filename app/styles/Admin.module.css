@@ -1087,3 +1087,346 @@ a.dashboardItemTitle:hover {
     justify-content: flex-start !important;
   }
 }
+.adminTopbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.primaryAdminAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.875rem;
+  border-radius: 0.875rem;
+  padding: 0.75rem 1.125rem;
+  background-color: #4480ea;
+  color: #fff;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 0.75rem 1.5rem rgba(68, 128, 234, 0.18);
+}
+
+.primaryAdminAction:hover {
+  background-color: #326bd0;
+}
+
+.adminStatsCompact {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.adminStatsCompact div {
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(24, 39, 75, 0.04);
+}
+
+.adminStatsCompact span {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.adminStatsCompact strong {
+  display: block;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.adminHelpCard {
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  border-left: 0.25rem solid #4480ea;
+}
+
+.adminHelpCard strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+.adminHelpCard p {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.adminContentCard {
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(24, 39, 75, 0.04);
+}
+
+.adminSectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.adminSectionHeader h3 {
+  margin: 0 0 0.25rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.adminSectionHeader p {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.statusBadgeSuccess,
+.statusBadgeWarning,
+.statusBadgePremium,
+.statusBadgeNeutral {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.35rem 0.625rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.statusBadgeSuccess {
+  background-color: #eaf8ef;
+  color: #198754;
+}
+
+.statusBadgeWarning {
+  background-color: #fff5d8;
+  color: #7a5a00;
+}
+
+.statusBadgePremium {
+  background-color: #e9eefc;
+  color: #4480ea;
+}
+
+.statusBadgeNeutral {
+  background-color: #f2f2f2;
+  color: #4d4d4d;
+}
+
+.editorLayout {
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.editorGuide {
+  position: sticky;
+  top: 2rem;
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(24, 39, 75, 0.04);
+}
+
+.editorGuide h3 {
+  margin: 0 0 1rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.editorGuide ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.editorGuide li {
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.editorGuide li strong {
+  display: block;
+  color: #000;
+  font-weight: 800;
+}
+
+.editorGuide li span {
+  display: block;
+  margin-top: 0.125rem;
+  color: #4d4d4d;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.editorForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.editorSection {
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(24, 39, 75, 0.04);
+}
+
+.editorSectionHeader {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.editorSectionHeader > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4rem;
+  height: 2rem;
+  border-radius: 999px;
+  background-color: #e9eefc;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.editorSectionHeader h3 {
+  margin: 0 0 0.25rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.editorSectionHeader p {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.publishBox {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.publishBox label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.875rem;
+  background-color: #f4f7ff;
+  padding: 1rem;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.publishBox input {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.editorFooter {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 0.94);
+  padding: 1rem;
+  box-shadow: 0 -0.75rem 2rem rgba(24, 39, 75, 0.08);
+  backdrop-filter: blur(0.75rem);
+}
+
+@media (max-width: 1200px) {
+  .adminTopbar {
+    flex-direction: column;
+  }
+
+  .primaryAdminAction {
+    width: 100%;
+  }
+
+  .adminStatsCompact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editorLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .editorGuide {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .adminStatsCompact,
+  .publishBox {
+    grid-template-columns: 1fr;
+  }
+
+  .adminContentCard,
+  .editorSection,
+  .editorGuide {
+    padding: 1rem;
+  }
+
+  .editorSectionHeader {
+    grid-template-columns: 1fr;
+  }
+
+  .editorFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editorFooter .submitButton,
+  .editorFooter .modalCancelButton {
+    width: 100%;
+  }
+}
