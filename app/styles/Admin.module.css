@@ -408,3 +408,24 @@
     grid-template-columns: 1fr;
   }
 }
+.categoryFiltersForm {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) minmax(12rem, 16rem) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.deleteButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.deleteButton:disabled:hover {
+  background-color: #8a1a1a;
+}
+
+@media (max-width: 768px) {
+  .categoryFiltersForm {
+    grid-template-columns: 1fr;
+  }
+}

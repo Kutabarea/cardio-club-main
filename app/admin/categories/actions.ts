@@ -35,6 +35,7 @@ function revalidateCategoryPages() {
   revalidatePath("/library");
   revalidatePath("/library/base");
   revalidatePath("/videolecture");
+  revalidatePath("/search");
 }
 
 export async function createCategoryAction(formData: FormData) {
@@ -130,6 +131,27 @@ export async function deleteCategoryAction(formData: FormData) {
 
   if (!id) {
     redirect("/admin/categories?error=id-required");
+  }
+
+  const category = await prisma.category.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      _count: {
+        select: {
+          materials: true,
+        },
+      },
+    },
+  });
+
+  if (!category) {
+    redirect("/admin/categories?error=not-found");
+  }
+
+  if (category._count.materials > 0) {
+    redirect("/admin/categories?error=category-has-materials");
   }
 
   await prisma.category.delete({
