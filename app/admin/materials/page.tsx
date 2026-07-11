@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { getMaterialPublicHref } from "@/lib/materialPublicHref";
 import { prisma } from "@/lib/prisma";
 
-import { deleteMaterialAction } from "./actions";
+import DeleteMaterialButton from "./DeleteMaterialButton";
 
 import styles from "@/app/styles/Admin.module.css";
 
@@ -69,6 +69,20 @@ function getMessage(error?: string, success?: string) {
     return {
       type: "error",
       text: "ID материала не найден.",
+    };
+  }
+
+  if (error === "not-found") {
+    return {
+      type: "error",
+      text: "Материал не найден. Возможно, он уже удалён.",
+    };
+  }
+
+  if (error === "delete-not-confirmed") {
+    return {
+      type: "error",
+      text: "Удаление материала не подтверждено.",
     };
   }
 
@@ -486,13 +500,11 @@ export default async function AdminMaterialsPage({
                             Редактировать
                           </Link>
 
-                          <form action={deleteMaterialAction}>
-                            <input type="hidden" name="id" value={material.id} />
-                            <input type="hidden" name="redirectPath" value={currentPath} />
-                            <button className={styles.deleteButton} type="submit">
-                              Удалить
-                            </button>
-                          </form>
+                          <DeleteMaterialButton
+                            materialId={material.id}
+                            materialTitle={material.title}
+                            redirectPath={currentPath}
+                          />
                         </div>
                       </td>
                     </tr>

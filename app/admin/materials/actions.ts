@@ -1,7 +1,7 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { revalidatePath } from "next/cache";
@@ -45,10 +45,27 @@ function getRedirectPath(formData: FormData) {
   return "/admin/materials";
 }
 
-function redirectWithError(pathname: string, error: string) {
+function redirectWithMessage(pathname: string, type: "error" | "success", code: string): never {
   const separator = pathname.includes("?") ? "&" : "?";
 
-  redirect(`${pathname}${separator}error=${error}`);
+  redirect(`${pathname}${separator}${type}=${code}`);
+}
+
+async function deleteUploadedMaterialImage(imageUrl?: string | null) {
+  if (!imageUrl?.startsWith("/uploads/materials/")) {
+    return;
+  }
+
+  const fileName = path.basename(imageUrl);
+  const filePath = path.join(
+    process.cwd(),
+    "public",
+    "uploads",
+    "materials",
+    fileName,
+  );
+
+  await unlink(filePath).catch(() => null);
 }
 
 async function saveImageFile(
@@ -60,11 +77,11 @@ async function saveImageFile(
   }
 
   if (!file.type.startsWith("image/")) {
-    redirectWithError(errorRedirectPath, "invalid-image");
+    redirectWithMessage(errorRedirectPath, "error", "invalid-image");
   }
 
   if (file.size > maxImageSize) {
-    redirectWithError(errorRedirectPath, "image-too-large");
+    redirectWithMessage(errorRedirectPath, "error", "image-too-large");
   }
 
   const extensionFromName = file.name.split(".").pop()?.toLowerCase();
@@ -121,11 +138,11 @@ async function getMaterialPayload(
   const raw = getRawMaterialPayload(formData);
 
   if (!raw.title || !raw.type || !raw.categoryId) {
-    redirectWithError(errorRedirectPath, "required-fields");
+    redirectWithMessage(errorRedirectPath, "error", "required-fields");
   }
 
   if (!raw.slug) {
-    redirectWithError(errorRedirectPath, "slug-required");
+    redirectWithMessage(errorRedirectPath, "error", "slug-required");
   }
 
   const uploadedImageUrl = await saveImageFile(
@@ -148,6 +165,7 @@ async function getMaterialPayload(
 }
 
 function revalidateMaterialPages() {
+  revalidatePath("/admin");
   revalidatePath("/admin/materials");
   revalidatePath("/library");
   revalidatePath("/library/base");
@@ -162,11 +180,11 @@ export async function createMaterialAction(formData: FormData) {
   const raw = getRawMaterialPayload(formData);
 
   if (!raw.title || !raw.type || !raw.categoryId) {
-    redirectWithError(errorRedirectPath, "required-fields");
+    redirectWithMessage(errorRedirectPath, "error", "required-fields");
   }
 
   if (!raw.slug) {
-    redirectWithError(errorRedirectPath, "slug-required");
+    redirectWithMessage(errorRedirectPath, "error", "slug-required");
   }
 
   const existingMaterial = await prisma.material.findUnique({
@@ -179,7 +197,7 @@ export async function createMaterialAction(formData: FormData) {
   });
 
   if (existingMaterial) {
-    redirectWithError(errorRedirectPath, "slug-exists");
+    redirectWithMessage(errorRedirectPath, "error", "slug-exists");
   }
 
   const payload = await getMaterialPayload(formData, errorRedirectPath);
@@ -200,17 +218,17 @@ export async function updateMaterialAction(formData: FormData) {
   const errorRedirectPath = getRedirectPath(formData);
 
   if (!id) {
-    redirectWithError("/admin/materials", "id-required");
+    redirectWithMessage("/admin/materials", "error", "id-required");
   }
 
   const raw = getRawMaterialPayload(formData);
 
   if (!raw.title || !raw.type || !raw.categoryId) {
-    redirectWithError(errorRedirectPath, "required-fields");
+    redirectWithMessage(errorRedirectPath, "error", "required-fields");
   }
 
   if (!raw.slug) {
-    redirectWithError(errorRedirectPath, "slug-required");
+    redirectWithMessage(errorRedirectPath, "error", "slug-required");
   }
 
   const existingMaterial = await prisma.material.findUnique({
@@ -223,7 +241,20 @@ export async function updateMaterialAction(formData: FormData) {
   });
 
   if (existingMaterial && existingMaterial.id !== id) {
-    redirectWithError(errorRedirectPath, "slug-exists");
+    redirectWithMessage(errorRedirectPath, "error", "slug-exists");
+  }
+
+  const oldMaterial = await prisma.material.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      imageUrl: true,
+    },
+  });
+
+  if (!oldMaterial) {
+    redirectWithMessage(errorRedirectPath, "error", "not-found");
   }
 
   const payload = await getMaterialPayload(formData, errorRedirectPath);
@@ -235,6 +266,14 @@ export async function updateMaterialAction(formData: FormData) {
     data: payload,
   });
 
+  if (
+    payload.imageUrl &&
+    oldMaterial.imageUrl &&
+    payload.imageUrl !== oldMaterial.imageUrl
+  ) {
+    await deleteUploadedMaterialImage(oldMaterial.imageUrl);
+  }
+
   revalidateMaterialPages();
 
   redirect("/admin/materials?success=updated");
@@ -244,9 +283,29 @@ export async function deleteMaterialAction(formData: FormData) {
   await requireAdmin();
 
   const id = String(formData.get("id") ?? "").trim();
+  const confirmDelete = String(formData.get("confirmDelete") ?? "").trim();
+  const redirectPath = getRedirectPath(formData);
 
   if (!id) {
-    redirectWithError("/admin/materials", "id-required");
+    redirectWithMessage(redirectPath, "error", "id-required");
+  }
+
+  if (confirmDelete !== "DELETE_MATERIAL") {
+    redirectWithMessage(redirectPath, "error", "delete-not-confirmed");
+  }
+
+  const material = await prisma.material.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      imageUrl: true,
+    },
+  });
+
+  if (!material) {
+    redirectWithMessage(redirectPath, "error", "not-found");
   }
 
   await prisma.material.delete({
@@ -255,7 +314,9 @@ export async function deleteMaterialAction(formData: FormData) {
     },
   });
 
+  await deleteUploadedMaterialImage(material.imageUrl);
+
   revalidateMaterialPages();
 
-  redirect("/admin/materials?success=deleted");
+  redirectWithMessage(redirectPath, "success", "deleted");
 }
