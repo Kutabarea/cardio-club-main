@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
@@ -8,6 +9,16 @@ import styles from "@/app/styles/Admin.module.css";
 
 export const dynamic = "force-dynamic";
 
+type AdminMaterialsPageProps = {
+  searchParams?: Promise<{
+    q?: string;
+    type?: string;
+    categoryId?: string;
+    status?: string;
+    access?: string;
+  }>;
+};
+
 const materialTypes = [
   { value: "ECG_ARTICLE", label: "ЭКГ статья" },
   { value: "VIDEO_LECTURE", label: "Видеолекция" },
@@ -15,14 +26,94 @@ const materialTypes = [
   { value: "HELPER", label: "Справочник" },
 ];
 
-export default async function AdminMaterialsPage() {
-  const [categories, materials] = await Promise.all([
+function getMaterialWhere(params: {
+  q: string;
+  type: string;
+  categoryId: string;
+  status: string;
+  access: string;
+}) {
+  const where: Prisma.MaterialWhereInput = {};
+
+  if (params.q) {
+    where.OR = [
+      {
+        title: {
+          contains: params.q,
+        },
+      },
+      {
+        slug: {
+          contains: params.q,
+        },
+      },
+      {
+        description: {
+          contains: params.q,
+        },
+      },
+      {
+        content: {
+          contains: params.q,
+        },
+      },
+    ];
+  }
+
+  if (params.type && params.type !== "all") {
+    where.type = params.type;
+  }
+
+  if (params.categoryId && params.categoryId !== "all") {
+    where.categoryId = params.categoryId;
+  }
+
+  if (params.status === "published") {
+    where.isPublished = true;
+  }
+
+  if (params.status === "draft") {
+    where.isPublished = false;
+  }
+
+  if (params.access === "premium") {
+    where.isPremium = true;
+  }
+
+  if (params.access === "free") {
+    where.isPremium = false;
+  }
+
+  return where;
+}
+
+export default async function AdminMaterialsPage({
+  searchParams,
+}: AdminMaterialsPageProps) {
+  const params = await searchParams;
+
+  const q = params?.q?.trim() ?? "";
+  const type = params?.type ?? "all";
+  const categoryId = params?.categoryId ?? "all";
+  const status = params?.status ?? "all";
+  const access = params?.access ?? "all";
+
+  const where = getMaterialWhere({
+    q,
+    type,
+    categoryId,
+    status,
+    access,
+  });
+
+  const [categories, materials, totalMaterials] = await Promise.all([
     prisma.category.findMany({
       orderBy: {
         title: "asc",
       },
     }),
     prisma.material.findMany({
+      where,
       include: {
         category: true,
       },
@@ -30,16 +121,100 @@ export default async function AdminMaterialsPage() {
         createdAt: "desc",
       },
     }),
+    prisma.material.count(),
   ]);
+
+  const hasActiveFilters =
+    Boolean(q) ||
+    type !== "all" ||
+    categoryId !== "all" ||
+    status !== "all" ||
+    access !== "all";
 
   return (
     <div>
       <div className={styles.pageHeader}>
         <h2 className={styles.pageTitle}>Материалы</h2>
         <p className={styles.pageDescription}>
-          Здесь можно добавлять статьи, видеолекции, курсы и справочные материалы.
+          Здесь можно добавлять, искать, фильтровать, редактировать и удалять материалы.
         </p>
       </div>
+
+      <section className={styles.filterCard}>
+        <div className={styles.filterHeader}>
+          <div>
+            <h3 className={styles.filterTitle}>Фильтры</h3>
+            <p className={styles.filterDescription}>
+              Показано: {materials.length} из {totalMaterials}
+            </p>
+          </div>
+
+          {hasActiveFilters && (
+            <Link href="/admin/materials" className={styles.resetLink}>
+              Сбросить фильтры
+            </Link>
+          )}
+        </div>
+
+        <form action="/admin/materials" method="get" className={styles.filtersForm}>
+          <label className={styles.field}>
+            <span>Поиск</span>
+            <input
+              name="q"
+              defaultValue={q}
+              placeholder="Название, slug, описание, текст"
+            />
+          </label>
+
+          <label className={styles.field}>
+            <span>Тип</span>
+            <select name="type" defaultValue={type}>
+              <option value="all">Все типы</option>
+              {materialTypes.map((materialType) => (
+                <option key={materialType.value} value={materialType.value}>
+                  {materialType.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className={styles.field}>
+            <span>Категория</span>
+            <select name="categoryId" defaultValue={categoryId}>
+              <option value="all">Все категории</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.title}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className={styles.field}>
+            <span>Статус</span>
+            <select name="status" defaultValue={status}>
+              <option value="all">Все статусы</option>
+              <option value="published">Опубликовано</option>
+              <option value="draft">Черновик</option>
+            </select>
+          </label>
+
+          <label className={styles.field}>
+            <span>Доступ</span>
+            <select name="access" defaultValue={access}>
+              <option value="all">Весь доступ</option>
+              <option value="free">Free</option>
+              <option value="premium">Premium</option>
+            </select>
+          </label>
+
+          <div className={styles.filterActions}>
+            <button className={styles.submitButton} type="submit">
+              Применить
+            </button>
+          </div>
+        </form>
+      </section>
 
       <form action={createMaterialAction} className={styles.form}>
         <div className={styles.formGrid}>
@@ -56,9 +231,9 @@ export default async function AdminMaterialsPage() {
           <label className={styles.field}>
             <span>Тип</span>
             <select name="type" required defaultValue="ECG_ARTICLE">
-              {materialTypes.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
+              {materialTypes.map((materialType) => (
+                <option key={materialType.value} value={materialType.value}>
+                  {materialType.label}
                 </option>
               ))}
             </select>
@@ -93,7 +268,7 @@ export default async function AdminMaterialsPage() {
           <textarea
             name="content"
             rows={7}
-            placeholder="Основной текст материала"
+            placeholder="Основной текст материала. Можно использовать Markdown."
           />
         </label>
 
@@ -145,35 +320,41 @@ export default async function AdminMaterialsPage() {
           </thead>
 
           <tbody>
-            {materials.map((material) => (
-              <tr key={material.id}>
-                <td>
-                  <div className={styles.materialTitle}>{material.title}</div>
-                  <div className={styles.materialSlug}>{material.slug}</div>
-                </td>
-                <td>{material.type}</td>
-                <td>{material.category?.title ?? "Без категории"}</td>
-                <td>{material.isPublished ? "Опубликовано" : "Черновик"}</td>
-                <td>{material.isPremium ? "Premium" : "Free"}</td>
-                <td>
-                  <div className={styles.tableActions}>
-                    <Link
-                      href={`/admin/materials/${material.id}/edit`}
-                      className={styles.editLink}
-                    >
-                      Редактировать
-                    </Link>
+            {materials.length > 0 ? (
+              materials.map((material) => (
+                <tr key={material.id}>
+                  <td>
+                    <div className={styles.materialTitle}>{material.title}</div>
+                    <div className={styles.materialSlug}>{material.slug}</div>
+                  </td>
+                  <td>{material.type}</td>
+                  <td>{material.category?.title ?? "Без категории"}</td>
+                  <td>{material.isPublished ? "Опубликовано" : "Черновик"}</td>
+                  <td>{material.isPremium ? "Premium" : "Free"}</td>
+                  <td>
+                    <div className={styles.tableActions}>
+                      <Link
+                        href={`/admin/materials/${material.id}/edit`}
+                        className={styles.editLink}
+                      >
+                        Редактировать
+                      </Link>
 
-                    <form action={deleteMaterialAction}>
-                      <input type="hidden" name="id" value={material.id} />
-                      <button className={styles.deleteButton} type="submit">
-                        Удалить
-                      </button>
-                    </form>
-                  </div>
-                </td>
+                      <form action={deleteMaterialAction}>
+                        <input type="hidden" name="id" value={material.id} />
+                        <button className={styles.deleteButton} type="submit">
+                          Удалить
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6}>Материалы не найдены.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

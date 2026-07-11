@@ -329,3 +329,82 @@
 .smallButton:hover {
   background-color: #316fd4;
 }
+.filterCard {
+  border-radius: 1rem;
+  background-color: #f4f7ff;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.filterHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filterTitle {
+  margin: 0 0 0.25rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.filterDescription {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.filtersForm {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.5fr) repeat(4, minmax(9rem, 1fr)) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.filterActions {
+  display: flex;
+  align-items: end;
+}
+
+.resetLink {
+  flex-shrink: 0;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.resetLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1200px) {
+  .filtersForm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filterActions {
+    align-items: stretch;
+  }
+
+  .filterActions .submitButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .filterHeader {
+    flex-direction: column;
+  }
+
+  .filtersForm {
+    grid-template-columns: 1fr;
+  }
+}
