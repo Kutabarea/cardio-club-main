@@ -13,6 +13,9 @@ type EditMaterialPageProps = {
   params: Promise<{
     id: string;
   }>;
+  searchParams?: Promise<{
+    error?: string;
+  }>;
 };
 
 const materialTypes = [
@@ -22,10 +25,52 @@ const materialTypes = [
   { value: "HELPER", label: "Справочник" },
 ];
 
+function getMessage(error?: string) {
+  if (error === "slug-exists") {
+    return {
+      type: "error",
+      text: "Материал с таким slug уже существует. Укажи другой slug.",
+    };
+  }
+
+  if (error === "required-fields") {
+    return {
+      type: "error",
+      text: "Название, тип и категория обязательны.",
+    };
+  }
+
+  if (error === "slug-required") {
+    return {
+      type: "error",
+      text: "Slug не сформировался. Укажи slug вручную.",
+    };
+  }
+
+  if (error === "invalid-image") {
+    return {
+      type: "error",
+      text: "Можно загружать только изображения.",
+    };
+  }
+
+  if (error === "image-too-large") {
+    return {
+      type: "error",
+      text: "Файл слишком большой. Максимум 5 МБ.",
+    };
+  }
+
+  return null;
+}
+
 export default async function EditMaterialPage({
   params,
+  searchParams,
 }: EditMaterialPageProps) {
   const { id } = await params;
+  const query = await searchParams;
+  const message = getMessage(query?.error);
 
   const [material, categories] = await Promise.all([
     prisma.material.findUnique({
@@ -55,8 +100,15 @@ export default async function EditMaterialPage({
         <p className={styles.pageDescription}>{material.title}</p>
       </div>
 
+      {message && <div className={styles.adminMessageError}>{message.text}</div>}
+
       <form action={updateMaterialAction} className={styles.form}>
         <input type="hidden" name="id" value={material.id} />
+        <input
+          type="hidden"
+          name="redirectPath"
+          value={`/admin/materials/${material.id}/edit`}
+        />
 
         <div className={styles.formGrid}>
           <label className={styles.field}>
@@ -120,7 +172,7 @@ export default async function EditMaterialPage({
             name="content"
             rows={12}
             defaultValue={material.content ?? ""}
-            placeholder="Основной текст материала"
+            placeholder="Основной текст материала. Можно использовать Markdown."
           />
         </label>
 

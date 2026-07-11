@@ -16,6 +16,8 @@ type AdminMaterialsPageProps = {
     categoryId?: string;
     status?: string;
     access?: string;
+    error?: string;
+    success?: string;
   }>;
 };
 
@@ -25,6 +27,73 @@ const materialTypes = [
   { value: "COURSE", label: "Курс" },
   { value: "HELPER", label: "Справочник" },
 ];
+
+function getMessage(error?: string, success?: string) {
+  if (error === "slug-exists") {
+    return {
+      type: "error",
+      text: "Материал с таким slug уже существует. Укажи другой slug.",
+    };
+  }
+
+  if (error === "required-fields") {
+    return {
+      type: "error",
+      text: "Название, тип и категория обязательны.",
+    };
+  }
+
+  if (error === "slug-required") {
+    return {
+      type: "error",
+      text: "Slug не сформировался. Укажи slug вручную.",
+    };
+  }
+
+  if (error === "invalid-image") {
+    return {
+      type: "error",
+      text: "Можно загружать только изображения.",
+    };
+  }
+
+  if (error === "image-too-large") {
+    return {
+      type: "error",
+      text: "Файл слишком большой. Максимум 5 МБ.",
+    };
+  }
+
+  if (error === "id-required") {
+    return {
+      type: "error",
+      text: "ID материала не найден.",
+    };
+  }
+
+  if (success === "created") {
+    return {
+      type: "success",
+      text: "Материал создан.",
+    };
+  }
+
+  if (success === "updated") {
+    return {
+      type: "success",
+      text: "Материал обновлён.",
+    };
+  }
+
+  if (success === "deleted") {
+    return {
+      type: "success",
+      text: "Материал удалён.",
+    };
+  }
+
+  return null;
+}
 
 function getMaterialWhere(params: {
   q: string;
@@ -92,6 +161,8 @@ export default async function AdminMaterialsPage({
 }: AdminMaterialsPageProps) {
   const params = await searchParams;
 
+  const message = getMessage(params?.error, params?.success);
+
   const q = params?.q?.trim() ?? "";
   const type = params?.type ?? "all";
   const categoryId = params?.categoryId ?? "all";
@@ -139,6 +210,18 @@ export default async function AdminMaterialsPage({
           Здесь можно добавлять, искать, фильтровать, редактировать и удалять материалы.
         </p>
       </div>
+
+      {message && (
+        <div
+          className={
+            message.type === "error"
+              ? styles.adminMessageError
+              : styles.adminMessageSuccess
+          }
+        >
+          {message.text}
+        </div>
+      )}
 
       <section className={styles.filterCard}>
         <div className={styles.filterHeader}>
@@ -217,6 +300,8 @@ export default async function AdminMaterialsPage({
       </section>
 
       <form action={createMaterialAction} className={styles.form}>
+        <input type="hidden" name="redirectPath" value="/admin/materials" />
+
         <div className={styles.formGrid}>
           <label className={styles.field}>
             <span>Название</span>

@@ -10,6 +10,8 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+const maxImageSize = 5 * 1024 * 1024;
+
 function createSlug(value: string) {
   return value
     .toLowerCase()
@@ -33,13 +35,36 @@ async function requireAdmin() {
   return user;
 }
 
-async function saveImageFile(file: FormDataEntryValue | null) {
+function getRedirectPath(formData: FormData) {
+  const redirectPath = String(formData.get("redirectPath") ?? "").trim();
+
+  if (redirectPath.startsWith("/admin/materials")) {
+    return redirectPath;
+  }
+
+  return "/admin/materials";
+}
+
+function redirectWithError(pathname: string, error: string) {
+  const separator = pathname.includes("?") ? "&" : "?";
+
+  redirect(`${pathname}${separator}error=${error}`);
+}
+
+async function saveImageFile(
+  file: FormDataEntryValue | null,
+  errorRedirectPath: string,
+) {
   if (!(file instanceof File) || file.size === 0) {
     return null;
   }
 
   if (!file.type.startsWith("image/")) {
-    throw new Error("Можно загружать только изображения");
+    redirectWithError(errorRedirectPath, "invalid-image");
+  }
+
+  if (file.size > maxImageSize) {
+    redirectWithError(errorRedirectPath, "image-too-large");
   }
 
   const extensionFromName = file.name.split(".").pop()?.toLowerCase();
@@ -62,7 +87,7 @@ async function saveImageFile(file: FormDataEntryValue | null) {
   return `/uploads/materials/${fileName}`;
 }
 
-async function getMaterialPayload(formData: FormData) {
+function getRawMaterialPayload(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const slugInput = String(formData.get("slug") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
@@ -73,26 +98,52 @@ async function getMaterialPayload(formData: FormData) {
   const categoryId = String(formData.get("categoryId") ?? "").trim();
   const isPremium = formData.get("isPremium") === "on";
   const isPublished = formData.get("isPublished") === "on";
-
-  if (!title || !type || !categoryId) {
-    throw new Error("Название, тип и категория обязательны");
-  }
-
-  const uploadedImageUrl = await saveImageFile(formData.get("imageFile"));
-  const imageUrl = uploadedImageUrl || imageUrlInput || null;
   const slug = slugInput || createSlug(title);
 
   return {
     title,
     slug,
-    description: description || null,
-    content: content || null,
+    description,
+    content,
     type,
-    imageUrl,
-    videoUrl: videoUrl || null,
+    imageUrlInput,
+    videoUrl,
     categoryId,
     isPremium,
     isPublished,
+  };
+}
+
+async function getMaterialPayload(
+  formData: FormData,
+  errorRedirectPath: string,
+) {
+  const raw = getRawMaterialPayload(formData);
+
+  if (!raw.title || !raw.type || !raw.categoryId) {
+    redirectWithError(errorRedirectPath, "required-fields");
+  }
+
+  if (!raw.slug) {
+    redirectWithError(errorRedirectPath, "slug-required");
+  }
+
+  const uploadedImageUrl = await saveImageFile(
+    formData.get("imageFile"),
+    errorRedirectPath,
+  );
+
+  return {
+    title: raw.title,
+    slug: raw.slug,
+    description: raw.description || null,
+    content: raw.content || null,
+    type: raw.type,
+    imageUrl: uploadedImageUrl || raw.imageUrlInput || null,
+    videoUrl: raw.videoUrl || null,
+    categoryId: raw.categoryId,
+    isPremium: raw.isPremium,
+    isPublished: raw.isPublished,
   };
 }
 
@@ -107,25 +158,75 @@ function revalidateMaterialPages() {
 export async function createMaterialAction(formData: FormData) {
   await requireAdmin();
 
-  const payload = await getMaterialPayload(formData);
+  const errorRedirectPath = getRedirectPath(formData);
+  const raw = getRawMaterialPayload(formData);
+
+  if (!raw.title || !raw.type || !raw.categoryId) {
+    redirectWithError(errorRedirectPath, "required-fields");
+  }
+
+  if (!raw.slug) {
+    redirectWithError(errorRedirectPath, "slug-required");
+  }
+
+  const existingMaterial = await prisma.material.findUnique({
+    where: {
+      slug: raw.slug,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (existingMaterial) {
+    redirectWithError(errorRedirectPath, "slug-exists");
+  }
+
+  const payload = await getMaterialPayload(formData, errorRedirectPath);
 
   await prisma.material.create({
     data: payload,
   });
 
   revalidateMaterialPages();
+
+  redirect("/admin/materials?success=created");
 }
 
 export async function updateMaterialAction(formData: FormData) {
   await requireAdmin();
 
   const id = String(formData.get("id") ?? "").trim();
+  const errorRedirectPath = getRedirectPath(formData);
 
   if (!id) {
-    throw new Error("ID материала обязателен");
+    redirectWithError("/admin/materials", "id-required");
   }
 
-  const payload = await getMaterialPayload(formData);
+  const raw = getRawMaterialPayload(formData);
+
+  if (!raw.title || !raw.type || !raw.categoryId) {
+    redirectWithError(errorRedirectPath, "required-fields");
+  }
+
+  if (!raw.slug) {
+    redirectWithError(errorRedirectPath, "slug-required");
+  }
+
+  const existingMaterial = await prisma.material.findUnique({
+    where: {
+      slug: raw.slug,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (existingMaterial && existingMaterial.id !== id) {
+    redirectWithError(errorRedirectPath, "slug-exists");
+  }
+
+  const payload = await getMaterialPayload(formData, errorRedirectPath);
 
   await prisma.material.update({
     where: {
@@ -136,7 +237,7 @@ export async function updateMaterialAction(formData: FormData) {
 
   revalidateMaterialPages();
 
-  redirect("/admin/materials");
+  redirect("/admin/materials?success=updated");
 }
 
 export async function deleteMaterialAction(formData: FormData) {
@@ -145,7 +246,7 @@ export async function deleteMaterialAction(formData: FormData) {
   const id = String(formData.get("id") ?? "").trim();
 
   if (!id) {
-    throw new Error("ID материала обязателен");
+    redirectWithError("/admin/materials", "id-required");
   }
 
   await prisma.material.delete({
@@ -155,4 +256,6 @@ export async function deleteMaterialAction(formData: FormData) {
   });
 
   revalidateMaterialPages();
+
+  redirect("/admin/materials?success=deleted");
 }
