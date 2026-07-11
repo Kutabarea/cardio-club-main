@@ -38,6 +38,13 @@ function getMessage(error?: string, success?: string) {
     };
   }
 
+  if (error === "user-not-found") {
+    return {
+      type: "error",
+      text: "Пользователь не найден. Возможно, он уже удалён или база изменилась.",
+    };
+  }
+
   if (error === "invalid-role") {
     return {
       type: "error",
@@ -56,6 +63,13 @@ function getMessage(error?: string, success?: string) {
     return {
       type: "error",
       text: "Некорректный статус подписки.",
+    };
+  }
+
+  if (error === "invalid-date") {
+    return {
+      type: "error",
+      text: "Некорректная дата окончания подписки.",
     };
   }
 
@@ -136,6 +150,51 @@ function getUserWhere(params: {
   return where;
 }
 
+function getCurrentAdminUsersPath(params: {
+  q: string;
+  role: string;
+  plan: string;
+  status: string;
+}) {
+  const search = new URLSearchParams();
+
+  if (params.q) {
+    search.set("q", params.q);
+  }
+
+  if (params.role !== "all") {
+    search.set("role", params.role);
+  }
+
+  if (params.plan !== "all") {
+    search.set("plan", params.plan);
+  }
+
+  if (params.status !== "all") {
+    search.set("status", params.status);
+  }
+
+  const query = search.toString();
+
+  return query ? `/admin/users?${query}` : "/admin/users";
+}
+
+function getSubscriptionLabel(subscription?: {
+  plan: string;
+  status: string;
+  endsAt: Date | null;
+}) {
+  if (!subscription) {
+    return "Подписки нет";
+  }
+
+  const endsAtText = subscription.endsAt
+    ? `до ${subscription.endsAt.toLocaleDateString("ru-RU")}`
+    : "без ограничения";
+
+  return `${subscription.plan} / ${subscription.status} / ${endsAtText}`;
+}
+
 export default async function AdminUsersPage({
   searchParams,
 }: AdminUsersPageProps) {
@@ -176,6 +235,13 @@ export default async function AdminUsersPage({
 
   const hasActiveFilters =
     Boolean(q) || role !== "all" || plan !== "all" || status !== "all";
+
+  const currentPath = getCurrentAdminUsersPath({
+    q,
+    role,
+    plan,
+    status,
+  });
 
   return (
     <div>
@@ -297,11 +363,16 @@ export default async function AdminUsersPage({
                           Телефон: {user.profile.phone}
                         </div>
                       )}
+
+                      <div className={styles.materialSlug}>
+                        {getSubscriptionLabel(subscription)}
+                      </div>
                     </td>
 
                     <td>
                       <form action={updateUserRoleAction} className={styles.inlineForm}>
                         <input type="hidden" name="userId" value={user.id} />
+                        <input type="hidden" name="redirectPath" value={currentPath} />
 
                         <select name="role" defaultValue={user.role}>
                           <option value="USER">USER</option>
@@ -320,6 +391,7 @@ export default async function AdminUsersPage({
                         className={styles.inlineForm}
                       >
                         <input type="hidden" name="userId" value={user.id} />
+                        <input type="hidden" name="redirectPath" value={currentPath} />
 
                         <select name="plan" defaultValue={subscription?.plan ?? "FREE"}>
                           <option value="FREE">FREE</option>

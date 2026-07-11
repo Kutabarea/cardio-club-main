@@ -6,6 +6,10 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+const roles = ["USER", "ADMIN"];
+const plans = ["FREE", "PREMIUM_MONTH", "PREMIUM_YEAR"];
+const statuses = ["ACTIVE", "CANCELED", "EXPIRED"];
+
 async function requireAdmin() {
   const user = await getCurrentUser();
 
@@ -20,30 +24,76 @@ async function requireAdmin() {
   return user;
 }
 
+function getRedirectPath(formData: FormData) {
+  const redirectPath = String(formData.get("redirectPath") ?? "").trim();
+
+  if (redirectPath.startsWith("/admin/users")) {
+    return redirectPath;
+  }
+
+  return "/admin/users";
+}
+
+function redirectWithMessage(pathname: string, type: "error" | "success", code: string) {
+  const separator = pathname.includes("?") ? "&" : "?";
+
+  redirect(`${pathname}${separator}${type}=${code}`);
+}
+
 function revalidateUsersPages() {
   revalidatePath("/admin/users");
   revalidatePath("/profile/subscription");
   revalidatePath("/library");
   revalidatePath("/library/base");
   revalidatePath("/videolecture");
+  revalidatePath("/search");
+}
+
+function parseEndsAt(value: string) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(`${value}T23:59:59.999Z`);
+
+  if (Number.isNaN(date.getTime())) {
+    return "INVALID_DATE";
+  }
+
+  return date;
 }
 
 export async function updateUserRoleAction(formData: FormData) {
   const currentUser = await requireAdmin();
 
+  const redirectPath = getRedirectPath(formData);
   const userId = String(formData.get("userId") ?? "").trim();
   const role = String(formData.get("role") ?? "").trim();
 
   if (!userId) {
-    redirect("/admin/users?error=user-id-required");
+    redirectWithMessage(redirectPath, "error", "user-id-required");
   }
 
-  if (!["USER", "ADMIN"].includes(role)) {
-    redirect("/admin/users?error=invalid-role");
+  if (!roles.includes(role)) {
+    redirectWithMessage(redirectPath, "error", "invalid-role");
+  }
+
+  const targetUser = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      role: true,
+    },
+  });
+
+  if (!targetUser) {
+    redirectWithMessage(redirectPath, "error", "user-not-found");
   }
 
   if (currentUser.id === userId && role !== "ADMIN") {
-    redirect("/admin/users?error=self-admin-remove");
+    redirectWithMessage(redirectPath, "error", "self-admin-remove");
   }
 
   await prisma.user.update({
@@ -57,30 +107,48 @@ export async function updateUserRoleAction(formData: FormData) {
 
   revalidateUsersPages();
 
-  redirect("/admin/users?success=role-updated");
+  redirectWithMessage(redirectPath, "success", "role-updated");
 }
 
 export async function updateUserSubscriptionAction(formData: FormData) {
   await requireAdmin();
 
+  const redirectPath = getRedirectPath(formData);
   const userId = String(formData.get("userId") ?? "").trim();
   const plan = String(formData.get("plan") ?? "").trim();
   const status = String(formData.get("status") ?? "").trim();
   const endsAtInput = String(formData.get("endsAt") ?? "").trim();
 
   if (!userId) {
-    redirect("/admin/users?error=user-id-required");
+    redirectWithMessage(redirectPath, "error", "user-id-required");
   }
 
-  if (!["FREE", "PREMIUM_MONTH", "PREMIUM_YEAR"].includes(plan)) {
-    redirect("/admin/users?error=invalid-plan");
+  if (!plans.includes(plan)) {
+    redirectWithMessage(redirectPath, "error", "invalid-plan");
   }
 
-  if (!["ACTIVE", "CANCELED", "EXPIRED"].includes(status)) {
-    redirect("/admin/users?error=invalid-status");
+  if (!statuses.includes(status)) {
+    redirectWithMessage(redirectPath, "error", "invalid-status");
   }
 
-  const endsAt = endsAtInput ? new Date(`${endsAtInput}T23:59:59.999Z`) : null;
+  const targetUser = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!targetUser) {
+    redirectWithMessage(redirectPath, "error", "user-not-found");
+  }
+
+  const endsAt = parseEndsAt(endsAtInput);
+
+  if (endsAt === "INVALID_DATE") {
+    redirectWithMessage(redirectPath, "error", "invalid-date");
+  }
 
   const currentSubscription = await prisma.subscription.findFirst({
     where: {
@@ -115,5 +183,5 @@ export async function updateUserSubscriptionAction(formData: FormData) {
 
   revalidateUsersPages();
 
-  redirect("/admin/users?success=subscription-updated");
+  redirectWithMessage(redirectPath, "success", "subscription-updated");
 }
