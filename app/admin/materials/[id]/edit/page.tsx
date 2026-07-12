@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 
 import styles from "@/app/styles/Admin.module.css";
 
+import EcgSectionFields from "../../EcgSectionFields";
 import MaterialContentEditor from "../../MaterialContentEditor";
 import { updateMaterialAction } from "../../actions";
 
@@ -22,54 +23,15 @@ type EditMaterialPageProps = {
 };
 
 function getMessage(error?: string, success?: string) {
-  if (success === "updated") {
-    return {
-      type: "success",
-      text: "Материал сохранён.",
-    };
-  }
-
-  if (error === "required-fields") {
-    return {
-      type: "error",
-      text: "Заполни название, тип и категорию материала.",
-    };
-  }
-
-  if (error === "slug-required") {
-    return {
-      type: "error",
-      text: "Не удалось создать slug. Укажи slug вручную.",
-    };
-  }
-
-  if (error === "slug-exists") {
-    return {
-      type: "error",
-      text: "Материал с таким slug уже существует.",
-    };
-  }
-
-  if (error === "invalid-image") {
-    return {
-      type: "error",
-      text: "Можно загружать только изображения.",
-    };
-  }
-
-  if (error === "image-too-large") {
-    return {
-      type: "error",
-      text: "Картинка слишком большая. Максимум — 5 МБ.",
-    };
-  }
-
-  if (error === "not-found") {
-    return {
-      type: "error",
-      text: "Материал не найден.",
-    };
-  }
+  if (success === "updated") return { type: "success", text: "Материал сохранён." };
+  if (error === "required-fields") return { type: "error", text: "Заполни название, тип и категорию материала." };
+  if (error === "slug-required") return { type: "error", text: "Не удалось создать slug. Укажи slug вручную." };
+  if (error === "slug-exists") return { type: "error", text: "Материал с таким slug уже существует." };
+  if (error === "invalid-image") return { type: "error", text: "Можно загружать только JPG, PNG, WEBP или GIF." };
+  if (error === "image-too-large") return { type: "error", text: "Картинка слишком большая. Максимум — 5 МБ." };
+  if (error === "invalid-url") return { type: "error", text: "Проверь ссылку на изображение или видео. Разрешены только безопасные URL." };
+  if (error === "content-too-large") return { type: "error", text: "Текст материала слишком большой. Раздели его на несколько частей." };
+  if (error === "not-found") return { type: "error", text: "Материал не найден." };
 
   return null;
 }
@@ -89,19 +51,30 @@ export default async function EditMaterialPage({
   const { id } = await params;
   const { error, success } = await searchParams;
 
-  const [material, categories] = await Promise.all([
+  const [material, categories, ecgSections] = await Promise.all([
     prisma.material.findUnique({
       where: {
         id,
       },
       include: {
         category: true,
+        ecgSection: true,
       },
     }),
     prisma.category.findMany({
       orderBy: {
         title: "asc",
       },
+    }),
+    prisma.ecgSection.findMany({
+      orderBy: [
+        {
+          sortOrder: "asc",
+        },
+        {
+          title: "asc",
+        },
+      ],
     }),
   ]);
 
@@ -249,6 +222,11 @@ export default async function EditMaterialPage({
             </div>
           </details>
 
+          <EcgSectionFields
+            sections={ecgSections}
+            currentSectionId={material.ecgSectionId}
+          />
+
           <details className={styles.simpleEditDetails}>
             <summary>Изображение и видео</summary>
 
@@ -274,10 +252,10 @@ export default async function EditMaterialPage({
                   className={styles.input}
                   name="imageFile"
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
                 />
                 <span className={styles.formHint}>
-                  Максимум 5 МБ. Если загрузить новую картинку, старая удалится.
+                  Максимум 5 МБ. Разрешены JPG, PNG, WEBP, GIF.
                 </span>
               </label>
 
@@ -337,6 +315,11 @@ export default async function EditMaterialPage({
               <div>
                 <span>Категория</span>
                 <strong>{material.category?.title ?? "Без категории"}</strong>
+              </div>
+
+              <div>
+                <span>Подраздел ЭКГ</span>
+                <strong>{material.ecgSection?.title ?? "Не выбран"}</strong>
               </div>
             </div>
 

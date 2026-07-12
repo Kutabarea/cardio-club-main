@@ -21,6 +21,16 @@
   margin-bottom: 3.125rem;
 }
 
+.base__section__link {
+  display: inline-flex;
+  color: inherit;
+  text-decoration: none;
+}
+
+.base__section__link:hover {
+  opacity: .75;
+}
+
 .base__paragraphs {
   margin-top: 1.875rem;
   display: grid;
@@ -33,6 +43,12 @@
   display: flex;
   align-items: center;
   gap: .625rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.base__paragraph:hover {
+  opacity: .75;
 }
 
 .search {

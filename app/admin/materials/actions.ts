@@ -10,6 +10,7 @@ import {
   sanitizeMaterialContent,
   sanitizeVideoUrl,
 } from "@/lib/contentSecurity";
+import { resolveMaterialEcgSectionId } from "@/lib/ecgSections";
 import { prisma } from "@/lib/prisma";
 import {
   deleteUploadedMaterialImage,
@@ -71,6 +72,9 @@ function getRawMaterialPayload(formData: FormData) {
   const videoUrlRaw = String(formData.get("videoUrl") ?? "").trim();
   const videoUrl = sanitizeVideoUrl(videoUrlRaw);
   const categoryId = String(formData.get("categoryId") ?? "").trim();
+  const ecgSectionId = String(formData.get("ecgSectionId") ?? "").trim();
+  const newEcgSectionTitle = String(formData.get("newEcgSectionTitle") ?? "").trim();
+  const newEcgSectionDescription = String(formData.get("newEcgSectionDescription") ?? "").trim();
   const isPremium = formData.get("isPremium") === "on";
   const isPublished = formData.get("isPublished") === "on";
   const slug = slugInput || createSlug(title);
@@ -87,64 +91,12 @@ function getRawMaterialPayload(formData: FormData) {
     videoUrlRaw,
     videoUrl,
     categoryId,
+    ecgSectionId,
+    newEcgSectionTitle,
+    newEcgSectionDescription,
     isPremium,
     isPublished,
   };
-}
-
-async function getMaterialPayload(
-  formData: FormData,
-  errorRedirectPath: string,
-) {
-  const raw = getRawMaterialPayload(formData);
-
-  if (!raw.title || !raw.type || !raw.categoryId) {
-    redirectWithMessage(errorRedirectPath, "error", "required-fields");
-  }
-
-  if (!raw.slug) {
-    redirectWithMessage(errorRedirectPath, "error", "slug-required");
-  }
-
-  if (raw.contentInput.length > MAX_MATERIAL_CONTENT_LENGTH) {
-    redirectWithMessage(errorRedirectPath, "error", "content-too-large");
-  }
-
-  if (raw.imageUrlInputRaw && !raw.imageUrlInput) {
-    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
-  }
-
-  if (raw.videoUrlRaw && !raw.videoUrl) {
-    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
-  }
-
-  const uploadedImage = await saveMaterialImageFile(formData.get("imageFile"));
-
-  if (!uploadedImage.ok) {
-    redirectWithMessage(errorRedirectPath, "error", uploadedImage.error);
-  }
-
-  return {
-    title: raw.title,
-    slug: raw.slug,
-    description: raw.description || null,
-    content: raw.content || null,
-    type: raw.type,
-    imageUrl: uploadedImage.imageUrl || raw.imageUrlInput || null,
-    videoUrl: raw.videoUrl || null,
-    categoryId: raw.categoryId,
-    isPremium: raw.isPremium,
-    isPublished: raw.isPublished,
-  };
-}
-
-function revalidateMaterialPages() {
-  revalidatePath("/admin");
-  revalidatePath("/admin/materials");
-  revalidatePath("/library");
-  revalidatePath("/library/base");
-  revalidatePath("/videolecture");
-  revalidatePath("/search");
 }
 
 function validateRawMaterialPayload(
@@ -170,6 +122,52 @@ function validateRawMaterialPayload(
   if (raw.videoUrlRaw && !raw.videoUrl) {
     redirectWithMessage(errorRedirectPath, "error", "invalid-url");
   }
+}
+
+async function getMaterialPayload(
+  formData: FormData,
+  errorRedirectPath: string,
+) {
+  const raw = getRawMaterialPayload(formData);
+
+  validateRawMaterialPayload(raw, errorRedirectPath);
+
+  const uploadedImage = await saveMaterialImageFile(formData.get("imageFile"));
+
+  if (!uploadedImage.ok) {
+    redirectWithMessage(errorRedirectPath, "error", uploadedImage.error);
+  }
+
+  const ecgSectionId = await resolveMaterialEcgSectionId({
+    categoryId: raw.categoryId,
+    ecgSectionId: raw.ecgSectionId,
+    newEcgSectionTitle: raw.newEcgSectionTitle,
+    newEcgSectionDescription: raw.newEcgSectionDescription,
+  });
+
+  return {
+    title: raw.title,
+    slug: raw.slug,
+    description: raw.description || null,
+    content: raw.content || null,
+    type: raw.type,
+    imageUrl: uploadedImage.imageUrl || raw.imageUrlInput || null,
+    videoUrl: raw.videoUrl || null,
+    categoryId: raw.categoryId,
+    ecgSectionId,
+    isPremium: raw.isPremium,
+    isPublished: raw.isPublished,
+  };
+}
+
+function revalidateMaterialPages() {
+  revalidatePath("/admin");
+  revalidatePath("/admin/materials");
+  revalidatePath("/admin/ecg-sections");
+  revalidatePath("/library");
+  revalidatePath("/library/base");
+  revalidatePath("/videolecture");
+  revalidatePath("/search");
 }
 
 export async function createMaterialAction(formData: FormData) {

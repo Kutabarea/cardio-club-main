@@ -2989,3 +2989,11 @@ a.dashboardItemTitle:hover {
     width: 100%;
   }
 }
+.adminListTitle {
+  margin: 0 0 .5rem;
+  color: #000000;
+  font-family: var(--font-unbounded);
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.25;
+}

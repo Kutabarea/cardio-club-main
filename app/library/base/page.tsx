@@ -1,17 +1,38 @@
-import EcgBase from "@/app/components/EcgBase";
+import Base from "../../components/Base";
+
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-type LibraryBasePageProps = {
-  searchParams?: Promise<{
-    search?: string;
-  }>;
-};
+export default async function BasePage() {
+  const sections = await prisma.ecgSection.findMany({
+    orderBy: [
+      {
+        sortOrder: "asc",
+      },
+      {
+        title: "asc",
+      },
+    ],
+    include: {
+      materials: {
+        where: {
+          isPublished: true,
+          category: {
+            slug: "ecg-base",
+          },
+        },
+        orderBy: {
+          title: "asc",
+        },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+        },
+      },
+    },
+  });
 
-export default async function LibraryBasePage({
-  searchParams,
-}: LibraryBasePageProps) {
-  const params = await searchParams;
-
-  return <EcgBase searchQuery={params?.search} />;
+  return <Base sections={sections} />;
 }

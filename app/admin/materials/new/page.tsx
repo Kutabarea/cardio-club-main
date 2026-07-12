@@ -2,45 +2,28 @@ import Link from "next/link";
 
 import { prisma } from "@/lib/prisma";
 
-import { createMaterialAction } from "../actions";
-
 import styles from "@/app/styles/Admin.module.css";
+
+import EcgSectionFields from "../EcgSectionFields";
+import MaterialContentEditor from "../MaterialContentEditor";
+import { createMaterialAction } from "../actions";
 
 export const dynamic = "force-dynamic";
 
 type NewMaterialPageProps = {
-  searchParams?: Promise<{
+  searchParams: Promise<{
     error?: string;
   }>;
 };
 
-const materialTypes = [
-  { value: "ECG_ARTICLE", label: "ЭКГ статья" },
-  { value: "VIDEO_LECTURE", label: "Видеолекция" },
-  { value: "COURSE", label: "Курс" },
-  { value: "HELPER", label: "Справочник" },
-];
-
 function getMessage(error?: string) {
-  if (error === "slug-exists") {
-    return "Материал с таким slug уже существует. Укажи другой slug.";
-  }
-
-  if (error === "required-fields") {
-    return "Название, тип и категория обязательны.";
-  }
-
-  if (error === "slug-required") {
-    return "Slug не сформировался. Укажи slug вручную.";
-  }
-
-  if (error === "invalid-image") {
-    return "Можно загружать только изображения.";
-  }
-
-  if (error === "image-too-large") {
-    return "Файл слишком большой. Максимум 5 МБ.";
-  }
+  if (error === "required-fields") return "Заполни название, тип и категорию материала.";
+  if (error === "slug-required") return "Не удалось создать slug. Укажи slug вручную.";
+  if (error === "slug-exists") return "Материал с таким slug уже существует.";
+  if (error === "invalid-image") return "Можно загружать только JPG, PNG, WEBP или GIF.";
+  if (error === "image-too-large") return "Картинка слишком большая. Максимум — 5 МБ.";
+  if (error === "invalid-url") return "Проверь ссылку на изображение или видео. Разрешены только безопасные URL.";
+  if (error === "content-too-large") return "Текст материала слишком большой. Раздели его на несколько частей.";
 
   return null;
 }
@@ -48,104 +31,114 @@ function getMessage(error?: string) {
 export default async function NewMaterialPage({
   searchParams,
 }: NewMaterialPageProps) {
-  const params = await searchParams;
-  const message = getMessage(params?.error);
+  const { error } = await searchParams;
 
-  const categories = await prisma.category.findMany({
-    orderBy: {
-      title: "asc",
-    },
-  });
+  const [categories, ecgSections] = await Promise.all([
+    prisma.category.findMany({
+      orderBy: {
+        title: "asc",
+      },
+    }),
+    prisma.ecgSection.findMany({
+      orderBy: [
+        {
+          sortOrder: "asc",
+        },
+        {
+          title: "asc",
+        },
+      ],
+    }),
+  ]);
+
+  const message = getMessage(error);
 
   return (
-    <div>
-      <div className={styles.adminTopbar}>
+    <div className={styles.adminPage}>
+      <div className={styles.simpleEditHeader}>
         <div>
           <Link href="/admin/materials" className={styles.backLink}>
-            ← Назад к материалам
+            ← Материалы
           </Link>
 
-          <h2 className={styles.pageTitle}>Создать материал</h2>
+          <h1 className={styles.pageTitle}>Новый материал</h1>
+
           <p className={styles.pageDescription}>
-            Отдельная страница для редактора: сначала основная информация, потом текст, медиа и публикация.
+            Создание статьи, видеолекции или полезного ресурса.
           </p>
         </div>
       </div>
 
-      {message && <div className={styles.adminMessageError}>{message}</div>}
+      {message ? (
+        <div className={styles.adminNoticeError}>
+          {message}
+        </div>
+      ) : null}
 
-      <div className={styles.editorLayout}>
-        <aside className={styles.editorGuide}>
-          <h3>Порядок заполнения</h3>
+      <form action={createMaterialAction} className={styles.simpleEditLayout}>
+        <input type="hidden" name="redirectPath" value="/admin/materials/new" />
 
-          <ol>
-            <li>
-              <strong>Основное</strong>
-              <span>Название, тип и категория.</span>
-            </li>
-
-            <li>
-              <strong>Описание</strong>
-              <span>Короткий текст для карточки материала.</span>
-            </li>
-
-            <li>
-              <strong>Контент</strong>
-              <span>Основная статья. Можно использовать Markdown.</span>
-            </li>
-
-            <li>
-              <strong>Медиа</strong>
-              <span>Картинка или ссылка на видео.</span>
-            </li>
-
-            <li>
-              <strong>Публикация</strong>
-              <span>Черновик, Premium или открытый материал.</span>
-            </li>
-          </ol>
-        </aside>
-
-        <form action={createMaterialAction} className={styles.editorForm}>
-          <input type="hidden" name="redirectPath" value="/admin/materials/new" />
-
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <span>Шаг 1</span>
-              <div>
-                <h3>Основная информация</h3>
-                <p>Эти поля определяют, где материал будет отображаться на сайте.</p>
-              </div>
+        <main className={styles.simpleEditMain}>
+          <section className={styles.simpleEditCard}>
+            <div className={styles.simpleEditCardHeader}>
+              <h2>Основное</h2>
+              <p>Название, описание и содержание материала.</p>
             </div>
 
-            <div className={styles.formGrid}>
-              <label className={styles.field}>
-                <span>Название</span>
-                <input name="title" required placeholder="Например: Комплекс QRS" />
-              </label>
+            <label className={styles.formGroup}>
+              <span className={styles.label}>Название</span>
+              <input
+                className={styles.input}
+                name="title"
+                placeholder="Например: Зубец T"
+                required
+              />
+            </label>
 
-              <label className={styles.field}>
-                <span>Slug</span>
-                <input name="slug" placeholder="complex-qrs" />
-              </label>
+            <label className={styles.formGroup}>
+              <span className={styles.label}>Короткое описание</span>
+              <textarea
+                className={styles.textareaSmall}
+                name="description"
+                placeholder="1–2 предложения для карточки материала."
+              />
+            </label>
 
-              <label className={styles.field}>
-                <span>Тип</span>
-                <select name="type" required defaultValue="ECG_ARTICLE">
-                  {materialTypes.map((materialType) => (
-                    <option key={materialType.value} value={materialType.value}>
-                      {materialType.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+            <MaterialContentEditor defaultValue="" />
+          </section>
 
-              <label className={styles.field}>
-                <span>Категория</span>
-                <select name="categoryId" required defaultValue="">
-                  <option value="" disabled>
-                    Выбери категорию
-                  </option>
+          <details className={styles.simpleEditDetails} open>
+            <summary>Служебные настройки</summary>
+
+            <div className={styles.simpleEditDetailsBody}>
+              <div className={styles.formGrid}>
+                <label className={styles.formGroup}>
+                  <span className={styles.label}>Slug</span>
+                  <input
+                    className={styles.input}
+                    name="slug"
+                    placeholder="zubec-t"
+                  />
+                  <span className={styles.formHint}>
+                    Если оставить пустым, slug создастся из названия.
+                  </span>
+                </label>
+
+                <label className={styles.formGroup}>
+                  <span className={styles.label}>Тип материала</span>
+                  <select className={styles.input} name="type" defaultValue="ECG_ARTICLE" required>
+                    <option value="ECG_ARTICLE">Статья / ЭКГ материал</option>
+                    <option value="VIDEO_LECTURE">Видеолекция</option>
+                    <option value="HELPER">Полезный ресурс</option>
+                  </select>
+                </label>
+              </div>
+
+              <label className={styles.formGroup}>
+                <span className={styles.label}>Категория</span>
+                <select className={styles.input} name="categoryId" required>
+                  <option value="">Выбери категорию</option>
+
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.title}
@@ -154,108 +147,69 @@ export default async function NewMaterialPage({
                 </select>
               </label>
             </div>
-          </section>
+          </details>
 
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <span>Шаг 2</span>
-              <div>
-                <h3>Описание</h3>
-                <p>Короткое описание видно в карточках, поиске и списках.</p>
-              </div>
-            </div>
+          <EcgSectionFields sections={ecgSections} />
 
-            <label className={styles.field}>
-              <span>Краткое описание</span>
-              <textarea
-                name="description"
-                rows={4}
-                placeholder="Напиши 1–2 предложения, чтобы было понятно, о чём материал."
-              />
-            </label>
-          </section>
+          <details className={styles.simpleEditDetails}>
+            <summary>Изображение и видео</summary>
 
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <span>Шаг 3</span>
-              <div>
-                <h3>Контент</h3>
-                <p>
-                  Основной текст статьи. Поддерживается Markdown: заголовки, списки, жирный текст и ссылки.
-                </p>
-              </div>
-            </div>
-
-            <label className={styles.field}>
-              <span>Текст материала</span>
-              <textarea
-                name="content"
-                rows={16}
-                placeholder={"## Основные признаки\n\n- Первый пункт\n- Второй пункт\n\n**Важно:** текст можно выделять жирным."}
-              />
-            </label>
-          </section>
-
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <span>Шаг 4</span>
-              <div>
-                <h3>Медиа</h3>
-                <p>Можно загрузить картинку с компьютера или указать ссылку.</p>
-              </div>
-            </div>
-
-            <div className={styles.formGrid}>
-              <label className={styles.field}>
-                <span>Картинка по ссылке</span>
-                <input name="imageUrl" placeholder="/images/materials__img__1.png" />
+            <div className={styles.simpleEditDetailsBody}>
+              <label className={styles.formGroup}>
+                <span className={styles.label}>Загрузить картинку</span>
+                <input
+                  className={styles.input}
+                  name="imageFile"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                />
               </label>
 
-              <label className={styles.field}>
-                <span>Загрузить картинку</span>
-                <input name="imageFile" type="file" accept="image/*" />
+              <label className={styles.formGroup}>
+                <span className={styles.label}>URL изображения</span>
+                <input
+                  className={styles.input}
+                  name="imageUrl"
+                  placeholder="/images/materials__img__1.png"
+                />
               </label>
 
-              <label className={styles.field}>
-                <span>Видео</span>
-                <input name="videoUrl" placeholder="https://..." />
+              <label className={styles.formGroup}>
+                <span className={styles.label}>Видео URL</span>
+                <input
+                  className={styles.input}
+                  name="videoUrl"
+                  placeholder="https://example.com/video"
+                />
               </label>
             </div>
-          </section>
+          </details>
+        </main>
 
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <span>Шаг 5</span>
-              <div>
-                <h3>Доступ и публикация</h3>
-                <p>Для проверки лучше сначала оставить черновик, потом открыть предпросмотр и опубликовать.</p>
-              </div>
-            </div>
-
-            <div className={styles.publishBox}>
-              <label>
-                <input name="isPremium" type="checkbox" />
-                <span>Premium материал</span>
-              </label>
-
-              <label>
+        <aside className={styles.simpleEditSide}>
+          <section className={styles.simpleEditCard}>
+            <div className={styles.simplePublishControls}>
+              <label className={styles.simpleCheckbox}>
                 <input name="isPublished" type="checkbox" />
-                <span>Опубликовать сразу</span>
+                <span>Опубликован</span>
+              </label>
+
+              <label className={styles.simpleCheckbox}>
+                <input name="isPremium" type="checkbox" />
+                <span>Premium-доступ</span>
               </label>
             </div>
-          </section>
 
-          <div className={styles.editorFooter}>
-            <Link href="/admin/materials" className={styles.modalCancelButton}>
-              Отмена
-            </Link>
-
-            <button className={styles.submitButton} type="submit">
+            <button className={styles.simpleSaveButton} type="submit">
               Создать материал
             </button>
-          </div>
-        </form>
-      </div>
+
+            <Link href="/admin/materials" className={styles.simplePreviewButton}>
+              Отмена
+            </Link>
+          </section>
+        </aside>
+      </form>
     </div>
   );
 }
