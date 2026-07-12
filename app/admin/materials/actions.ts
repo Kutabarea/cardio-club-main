@@ -276,7 +276,7 @@ export async function updateMaterialAction(formData: FormData) {
 
   revalidateMaterialPages();
 
-  redirect("/admin/materials?success=updated");
+  redirectWithMessage(errorRedirectPath, "success", "updated");
 }
 
 export async function deleteMaterialAction(formData: FormData) {
