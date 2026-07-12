@@ -1,14 +1,23 @@
-import React from "react";
 import Rates from "./Rates";
 
 type SubscriptionStatus = "active" | "inactive";
 
-interface ProfileProps {
+type ProfileSubscriptionProps = {
   status: SubscriptionStatus;
-}
+  endsAtText?: string | null;
+  planLabel?: string | null;
+};
 
-export default function ProfileSubscription({ status }: ProfileProps) {
+export default function ProfileSubscription({
+  status,
+  endsAtText,
+  planLabel,
+}: ProfileSubscriptionProps) {
   return (
-    <Rates status={status}></Rates>
+    <Rates
+      status={status}
+      endsAtText={endsAtText}
+      planLabel={planLabel}
+    />
   );
 }

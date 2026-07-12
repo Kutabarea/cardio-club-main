@@ -18,7 +18,8 @@
     "demo:serve": "next start -p 3001",
     "demo:win": "powershell -ExecutionPolicy Bypass -File scripts/start-demo-local.ps1",
     "demo:tunnel": "powershell -ExecutionPolicy Bypass -File scripts/start-demo-public-link.ps1",
-    "demo:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-demo.ps1"
+    "demo:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-demo.ps1",
+    "subscriptions:expire": "tsx scripts/expire-subscriptions.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",

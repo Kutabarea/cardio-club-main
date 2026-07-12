@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { expireEndedSubscriptionsForUser } from "@/lib/subscriptions";
 
 export const SESSION_COOKIE_NAME = "cardio_session";
 
@@ -81,7 +82,17 @@ export async function getCurrentUser() {
     return null;
   }
 
-  return session.user;
+  await expireEndedSubscriptionsForUser(session.user.id);
+
+  return prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+    include: {
+      profile: true,
+      subscriptions: true,
+    },
+  });
 }
 
 export async function deleteCurrentSession() {

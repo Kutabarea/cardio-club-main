@@ -58,9 +58,8 @@
 .profile__notification__text {
   font-family: Montserrat;
   font-weight: 600;
-  font-style: SemiBold;
+  font-style: normal;
   font-size: 15px;
-  leading-trim: NONE;
   line-height: 123%;
   letter-spacing: .0213rem;
 
@@ -74,7 +73,6 @@
 }
 
 .rates__inner {
-
   width: 100%;
 
   margin-top: 40px;
@@ -138,12 +136,10 @@
 .price {
   font-family: Montserrat;
   font-weight: 500;
-  font-style: Medium;
+  font-style: normal;
   font-size: .75rem;
-  leading-trim: NONE;
   line-height: 123%;
   letter-spacing: .0213rem;
-
 }
 
 .rates__pay__btn {

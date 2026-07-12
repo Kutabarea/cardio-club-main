@@ -33,10 +33,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  font-family: var(--font-montserrat);
+  font-size: .75rem;
+  font-weight: 500;
+  line-height: 123%;
 }
 
 .profile__notification__wrapper {
-  border: .125rem solid #8A1A1A;
   border-radius: 10px;
 
   padding: 18px;
@@ -48,23 +52,45 @@
   width: 500px;
 }
 
+.profile__notification__wrapper_inactive {
+  border: .125rem solid #8A1A1A;
+}
+
+.profile__notification__wrapper_active {
+  border: .125rem solid #436A00;
+}
+
 .profile__notification__marker {
   width: 25px;
   height: 25px;
 
   margin-right: 15px;
+  flex: 0 0 auto;
 }
 
 .profile__notification__text {
   font-family: Montserrat;
   font-weight: 600;
-  font-style: SemiBold;
+  font-style: normal;
   font-size: 15px;
-  leading-trim: NONE;
   line-height: 123%;
   letter-spacing: .0213rem;
 
+  display: grid;
+  gap: .75rem;
+}
+
+.profile__notification__text_inactive {
   color: #8A1A1A;
+}
+
+.profile__notification__text_active {
+  color: #436A00;
+}
+
+.profile__notification__text span {
+  color: #808080;
+  font-weight: 400;
 }
 
 .rates {
@@ -74,7 +100,6 @@
 }
 
 .rates__inner {
-
   width: 100%;
 
   margin-top: 40px;
@@ -142,12 +167,10 @@
 .price {
   font-family: Montserrat;
   font-weight: 500;
-  font-style: Medium;
+  font-style: normal;
   font-size: .75rem;
-  leading-trim: NONE;
   line-height: 123%;
   letter-spacing: .0213rem;
-
 }
 
 .rates__pay__btn {
@@ -178,9 +201,7 @@
   .rates__subscription__block {
     width: 80%;
   }
-}
 
-@media (max-width: 1200px) {
   .profile__notification__wrapper {
     width: 100%;
   }
@@ -222,7 +243,6 @@
   }
 
   .profile__notification__wrapper {
-    /* width: 80%; */
     display: flex;
     justify-content: center;
   }
@@ -231,4 +251,3 @@
     font-size: 12px;
   }
 }
-
