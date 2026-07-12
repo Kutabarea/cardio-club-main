@@ -4,6 +4,11 @@ import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import {
+  isExternalContentUrl,
+  isSafeContentUrl,
+} from "@/lib/contentSecurity";
+
 import styles from "@/app/styles/Admin.module.css";
 
 type MaterialContentEditorProps = {
@@ -241,11 +246,31 @@ export default function MaterialContentEditor({
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                a: ({ children, ...props }) => (
-                  <a {...props} target="_blank" rel="noreferrer">
-                    {children}
-                  </a>
-                ),
+                a: ({ children, href, ...props }) => {
+                  const safeHref =
+                    typeof href === "string" && isSafeContentUrl(href)
+                      ? href
+                      : undefined;
+
+                  return (
+                    <a
+                      {...props}
+                      href={safeHref}
+                      target={
+                        safeHref && isExternalContentUrl(safeHref)
+                          ? "_blank"
+                          : undefined
+                      }
+                      rel={
+                        safeHref && isExternalContentUrl(safeHref)
+                          ? "noreferrer"
+                          : undefined
+                      }
+                    >
+                      {children}
+                    </a>
+                  );
+                },
               }}
             >
               {content}

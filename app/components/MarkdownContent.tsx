@@ -1,6 +1,11 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import {
+  isExternalContentUrl,
+  isSafeContentUrl,
+} from "@/lib/contentSecurity";
+
 import styles from "../styles/MarkdownContent.module.css";
 
 type MarkdownContentProps = {
@@ -25,11 +30,31 @@ export default function MarkdownContent({
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          a: ({ children, ...props }) => (
-            <a {...props} target="_blank" rel="noreferrer">
-              {children}
-            </a>
-          ),
+          a: ({ children, href, ...props }) => {
+            const safeHref =
+              typeof href === "string" && isSafeContentUrl(href)
+                ? href
+                : undefined;
+
+            return (
+              <a
+                {...props}
+                href={safeHref}
+                target={
+                  safeHref && isExternalContentUrl(safeHref)
+                    ? "_blank"
+                    : undefined
+                }
+                rel={
+                  safeHref && isExternalContentUrl(safeHref)
+                    ? "noreferrer"
+                    : undefined
+                }
+              >
+                {children}
+              </a>
+            );
+          },
         }}
       >
         {content}

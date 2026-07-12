@@ -89,6 +89,20 @@ function getMessage(error?: string, success?: string) {
     };
   }
 
+  if (error === "invalid-url") {
+    return {
+      type: "error",
+      text: "Проверь ссылку на изображение или видео. Разрешены только безопасные URL.",
+    };
+  }
+
+  if (error === "content-too-large") {
+    return {
+      type: "error",
+      text: "Текст материала слишком большой. Сократи материал или раздели его на несколько частей.",
+    };
+  }
+
   if (error === "id-required") {
     return {
       type: "error",

@@ -7,10 +7,23 @@ import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import {
+  MAX_MATERIAL_CONTENT_LENGTH,
+  sanitizeAssetUrl,
+  sanitizeMaterialContent,
+  sanitizeVideoUrl,
+} from "@/lib/contentSecurity";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const maxImageSize = 5 * 1024 * 1024;
+
+const allowedImageTypes = new Map([
+  ["image/jpeg", "jpg"],
+  ["image/png", "png"],
+  ["image/webp", "webp"],
+  ["image/gif", "gif"],
+]);
 
 function createSlug(value: string) {
   return value
@@ -45,7 +58,11 @@ function getRedirectPath(formData: FormData) {
   return "/admin/materials";
 }
 
-function redirectWithMessage(pathname: string, type: "error" | "success", code: string): never {
+function redirectWithMessage(
+  pathname: string,
+  type: "error" | "success",
+  code: string,
+): never {
   const separator = pathname.includes("?") ? "&" : "?";
 
   redirect(`${pathname}${separator}${type}=${code}`);
@@ -76,19 +93,15 @@ async function saveImageFile(
     return null;
   }
 
-  if (!file.type.startsWith("image/")) {
+  const extension = allowedImageTypes.get(file.type);
+
+  if (!extension) {
     redirectWithMessage(errorRedirectPath, "error", "invalid-image");
   }
 
   if (file.size > maxImageSize) {
     redirectWithMessage(errorRedirectPath, "error", "image-too-large");
   }
-
-  const extensionFromName = file.name.split(".").pop()?.toLowerCase();
-  const extension =
-    extensionFromName && /^[a-z0-9]+$/.test(extensionFromName)
-      ? extensionFromName
-      : "png";
 
   const fileName = `${randomUUID()}.${extension}`;
   const uploadDir = path.join(process.cwd(), "public", "uploads", "materials");
@@ -108,10 +121,13 @@ function getRawMaterialPayload(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const slugInput = String(formData.get("slug") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
-  const content = String(formData.get("content") ?? "").trim();
+  const contentInput = String(formData.get("content") ?? "").trim();
+  const content = sanitizeMaterialContent(contentInput);
   const type = String(formData.get("type") ?? "").trim();
-  const imageUrlInput = String(formData.get("imageUrl") ?? "").trim();
-  const videoUrl = String(formData.get("videoUrl") ?? "").trim();
+  const imageUrlInputRaw = String(formData.get("imageUrl") ?? "").trim();
+  const imageUrlInput = sanitizeAssetUrl(imageUrlInputRaw);
+  const videoUrlRaw = String(formData.get("videoUrl") ?? "").trim();
+  const videoUrl = sanitizeVideoUrl(videoUrlRaw);
   const categoryId = String(formData.get("categoryId") ?? "").trim();
   const isPremium = formData.get("isPremium") === "on";
   const isPublished = formData.get("isPublished") === "on";
@@ -122,8 +138,11 @@ function getRawMaterialPayload(formData: FormData) {
     slug,
     description,
     content,
+    contentInput,
     type,
+    imageUrlInputRaw,
     imageUrlInput,
+    videoUrlRaw,
     videoUrl,
     categoryId,
     isPremium,
@@ -143,6 +162,18 @@ async function getMaterialPayload(
 
   if (!raw.slug) {
     redirectWithMessage(errorRedirectPath, "error", "slug-required");
+  }
+
+  if (raw.contentInput.length > MAX_MATERIAL_CONTENT_LENGTH) {
+    redirectWithMessage(errorRedirectPath, "error", "content-too-large");
+  }
+
+  if (raw.imageUrlInputRaw && !raw.imageUrlInput) {
+    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
+  }
+
+  if (raw.videoUrlRaw && !raw.videoUrl) {
+    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
   }
 
   const uploadedImageUrl = await saveImageFile(
@@ -187,6 +218,18 @@ export async function createMaterialAction(formData: FormData) {
     redirectWithMessage(errorRedirectPath, "error", "slug-required");
   }
 
+  if (raw.contentInput.length > MAX_MATERIAL_CONTENT_LENGTH) {
+    redirectWithMessage(errorRedirectPath, "error", "content-too-large");
+  }
+
+  if (raw.imageUrlInputRaw && !raw.imageUrlInput) {
+    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
+  }
+
+  if (raw.videoUrlRaw && !raw.videoUrl) {
+    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
+  }
+
   const existingMaterial = await prisma.material.findUnique({
     where: {
       slug: raw.slug,
@@ -229,6 +272,18 @@ export async function updateMaterialAction(formData: FormData) {
 
   if (!raw.slug) {
     redirectWithMessage(errorRedirectPath, "error", "slug-required");
+  }
+
+  if (raw.contentInput.length > MAX_MATERIAL_CONTENT_LENGTH) {
+    redirectWithMessage(errorRedirectPath, "error", "content-too-large");
+  }
+
+  if (raw.imageUrlInputRaw && !raw.imageUrlInput) {
+    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
+  }
+
+  if (raw.videoUrlRaw && !raw.videoUrl) {
+    redirectWithMessage(errorRedirectPath, "error", "invalid-url");
   }
 
   const existingMaterial = await prisma.material.findUnique({

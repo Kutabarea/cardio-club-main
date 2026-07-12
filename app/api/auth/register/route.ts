@@ -1,6 +1,8 @@
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -11,6 +13,30 @@ const registerSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  // AUTH_REGISTER_RATE_LIMIT
+  const rateLimitResult = rateLimit({
+    key: `register:${getClientIp(request)}`,
+    limit: 3,
+    windowMs: 600000,
+  });
+
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json(
+      {
+        error: "Слишком много попыток регистрации. Попробуйте позже.",
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimitResult.retryAfterSeconds),
+          "X-RateLimit-Limit": String(rateLimitResult.limit),
+          "X-RateLimit-Remaining": String(rateLimitResult.remaining),
+        },
+      },
+    );
+  }
+
+
   try {
     const body = await request.json();
     const data = registerSchema.parse(body);
