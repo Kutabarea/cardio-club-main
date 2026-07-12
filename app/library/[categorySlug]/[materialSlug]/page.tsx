@@ -1,128 +1,95 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+
 import MarkdownContent from "@/app/components/MarkdownContent";
-import { getCurrentUser } from "@/lib/auth";
+import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
+import { getCurrentMaterialAccessState } from "@/lib/materialAccess";
 import { prisma } from "@/lib/prisma";
 
-import DescriptionText from "@/app/components/DescriptionText";
-import HeaderText from "@/app/components/HeaderText";
-import styles from "@/app/styles/LibraryPublic.module.css";
+import styles from "@/app/styles/MaterialArticle.module.css";
 
 export const dynamic = "force-dynamic";
 
-type LibraryMaterialPageProps = {
+type CategoryMaterialPageProps = {
   params: Promise<{
     categorySlug: string;
     materialSlug: string;
   }>;
 };
 
-export default async function LibraryMaterialPage({
+export default async function CategoryMaterialPage({
   params,
-}: LibraryMaterialPageProps) {
+}: CategoryMaterialPageProps) {
   const { categorySlug, materialSlug } = await params;
 
-  const material = await prisma.material.findUnique({
+  const material = await prisma.material.findFirst({
     where: {
       slug: materialSlug,
+      isPublished: true,
+      category: {
+        slug: categorySlug,
+      },
     },
     include: {
       category: true,
     },
   });
 
-  if (
-    !material ||
-    !material.isPublished ||
-    !material.category ||
-    material.category.slug !== categorySlug
-  ) {
+  if (!material) {
     notFound();
   }
 
-  if (material.type === "VIDEO_LECTURE") {
-    redirect(`/videolecture/${material.slug}`);
-  }
-
-  if (material.category.slug === "ecg-base") {
-    redirect(`/library/base/${material.slug}`);
-  }
-
-  if (material.isPremium) {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      redirect("/login");
-    }
-
-    const hasActiveSubscription = user.subscriptions.some((subscription) => {
-      if (subscription.status !== "ACTIVE") {
-        return false;
-      }
-
-      if (!subscription.endsAt) {
-        return true;
-      }
-
-      return new Date(subscription.endsAt) > new Date();
-    });
-
-    if (!hasActiveSubscription) {
-      redirect("/profile/subscription");
-    }
-  }
+  const access = await getCurrentMaterialAccessState(material);
+  const backHref = `/library/${categorySlug}`;
 
   return (
     <main className={styles.page}>
-      <div className="container">
-        <div className={styles.articleInner}>
-          <div className={styles.breadcrumbs}>
-            <Link href="/library">Библиотека</Link>
-            <span>›</span>
-            <Link href={`/library/${material.category.slug}`}>
-              {material.category.title}
-            </Link>
-            <span>›</span>
-            <span>{material.title}</span>
-          </div>
+      <Link href={backHref} className={styles.backLink}>
+        ← {material.category?.title ?? "Раздел"}
+      </Link>
 
-          <div className={styles.articleHeader}>
-            <div>
-              <HeaderText color="#000" className={styles.title}>
-                {material.title}
-              </HeaderText>
+      <section className={styles.hero}>
+        <div className={styles.badges}>
+          <span className={styles.badge}>
+            {material.category?.title ?? "Материал"}
+          </span>
 
-              {material.description && (
-                <DescriptionText className={styles.description}>
-                  {material.description}
-                </DescriptionText>
-              )}
-            </div>
-
-            {material.isPremium && (
-              <span className={styles.premium}>Premium</span>
-            )}
-          </div>
-
-          {material.imageUrl && (
-            <Image
-              src={material.imageUrl}
-              alt=""
-              width={900}
-              height={420}
-              className={styles.articleImage}
-            />
-          )}
-
-          <article className={styles.content}>
-            <MarkdownContent content={material.content} />
-          </article>
-          <Link href={`/library/${material.category.slug}`} className={styles.backLink}>
-            ← Назад к категории
-          </Link>
+          <span className={material.isPremium ? styles.badgePremium : styles.badgeFree}>
+            {material.isPremium ? "Premium" : "Free"}
+          </span>
         </div>
-      </div>
+
+        <h1 className={styles.title}>{material.title}</h1>
+
+        {material.description ? (
+          <p className={styles.description}>{material.description}</p>
+        ) : null}
+      </section>
+
+      {material.imageUrl ? (
+        <div className={styles.cover}>
+          <img src={material.imageUrl} alt="" />
+        </div>
+      ) : null}
+
+      <PremiumAccessNotice access={access} />
+
+      {access.canRead ? (
+        <article className={styles.contentCard}>
+          <MarkdownContent content={material.content} />
+        </article>
+      ) : (
+        <section className={styles.lockedCard}>
+          <span>Содержание скрыто</span>
+          <strong>Оформите Premium, чтобы читать материал полностью.</strong>
+          <p>
+            Описание материала доступно выше. Полный текст откроется после входа
+            и активной premium-подписки.
+          </p>
+        </section>
+      )}
     </main>
   );
 }

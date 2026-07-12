@@ -1,128 +1,102 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+
 import MarkdownContent from "@/app/components/MarkdownContent";
-import { getCurrentUser } from "@/lib/auth";
+import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
+import { getCurrentMaterialAccessState } from "@/lib/materialAccess";
 import { prisma } from "@/lib/prisma";
 
-import DescriptionText from "@/app/components/DescriptionText";
-import HeaderText from "@/app/components/HeaderText";
-import styles from "@/app/styles/VideoLectureArticle.module.css";
+import styles from "@/app/styles/MaterialArticle.module.css";
 
 export const dynamic = "force-dynamic";
 
-type VideoLectureArticlePageProps = {
+type VideoLecturePageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
 
-export default async function VideoLectureArticlePage({
-  params,
-}: VideoLectureArticlePageProps) {
+export default async function VideoLecturePage({ params }: VideoLecturePageProps) {
   const { slug } = await params;
 
-  const lecture = await prisma.material.findUnique({
+  const material = await prisma.material.findFirst({
     where: {
       slug,
+      type: "VIDEO_LECTURE",
+      isPublished: true,
     },
     include: {
       category: true,
     },
   });
 
-  if (!lecture || !lecture.isPublished || lecture.type !== "VIDEO_LECTURE") {
+  if (!material) {
     notFound();
   }
 
-  if (lecture.isPremium) {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      redirect("/login");
-    }
-
-    const hasActiveSubscription = user.subscriptions.some((subscription) => {
-      if (subscription.status !== "ACTIVE") {
-        return false;
-      }
-
-      if (!subscription.endsAt) {
-        return true;
-      }
-
-      return new Date(subscription.endsAt) > new Date();
-    });
-
-    if (!hasActiveSubscription) {
-      redirect("/profile/subscription");
-    }
-  }
+  const access = await getCurrentMaterialAccessState(material);
 
   return (
-    <main className={styles.lecture}>
-      <div className="container">
-        <div className={styles.inner}>
-          <div className={styles.breadcrumbs}>
-            <Link href="/videolecture">Видеолекции</Link>
-            <span>›</span>
-            <span>{lecture.title}</span>
-          </div>
+    <main className={styles.page}>
+      <Link href="/videolecture" className={styles.backLink}>
+        ← Видеолекции
+      </Link>
 
-          <div className={styles.header}>
-            <div>
-              <HeaderText color="#000" className={styles.title}>
-                {lecture.title}
-              </HeaderText>
+      <section className={styles.hero}>
+        <div className={styles.badges}>
+          <span className={styles.badge}>Видеолекция</span>
 
-              {lecture.description && (
-                <DescriptionText className={styles.description}>
-                  {lecture.description}
-                </DescriptionText>
-              )}
-            </div>
+          <span className={material.isPremium ? styles.badgePremium : styles.badgeFree}>
+            {material.isPremium ? "Premium" : "Free"}
+          </span>
+        </div>
 
-            {lecture.isPremium && (
-              <span className={styles.premiumBadge}>Premium</span>
-            )}
-          </div>
+        <h1 className={styles.title}>{material.title}</h1>
 
-          {lecture.imageUrl && (
-            <Image
-              src={lecture.imageUrl}
-              alt=""
-              width={960}
-              height={420}
-              className={styles.cover}
-            />
-          )}
+        {material.description ? (
+          <p className={styles.description}>{material.description}</p>
+        ) : null}
+      </section>
 
-          <section className={styles.playerBox}>
-            {lecture.videoUrl ? (
-              <a
-                href={lecture.videoUrl}
-                target="_blank"
-                rel="noreferrer"
-                className={styles.videoLink}
-              >
+      {material.imageUrl ? (
+        <div className={styles.cover}>
+          <img src={material.imageUrl} alt="" />
+        </div>
+      ) : null}
+
+      <PremiumAccessNotice access={access} />
+
+      {access.canRead ? (
+        <>
+          {material.videoUrl ? (
+            <section className={styles.videoCard}>
+              <div>
+                <span>Видео</span>
+                <strong>Ссылка на видеолекцию</strong>
+              </div>
+
+              <a href={material.videoUrl} target="_blank" rel="noreferrer">
                 Открыть видео
               </a>
-            ) : (
-              <p>Видео пока не прикреплено. Здесь позже будет плеер или ссылка на видеоматериал.</p>
-            )}
-          </section>
+            </section>
+          ) : null}
 
-          <article className={styles.content}>
-            <MarkdownContent
-              content={lecture.content}
-              emptyText="Описание лекции пока заполняется."
-            />
+          <article className={styles.contentCard}>
+            <MarkdownContent content={material.content} />
           </article>
-          <Link href="/videolecture" className={styles.backLink}>
-            ← Назад к видеолекциям
-          </Link>
-        </div>
-      </div>
+        </>
+      ) : (
+        <section className={styles.lockedCard}>
+          <span>Видеолекция скрыта</span>
+          <strong>Оформите Premium, чтобы открыть лекцию.</strong>
+          <p>
+            Описание видеолекции доступно выше. Видео и материалы откроются после
+            входа и активной premium-подписки.
+          </p>
+        </section>
+      )}
     </main>
   );
 }

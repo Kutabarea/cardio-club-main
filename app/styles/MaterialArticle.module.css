@@ -1,0 +1,201 @@
+.page {
+  width: min(960px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 4rem;
+}
+
+.backLink {
+  display: inline-flex;
+  margin-bottom: 1.25rem;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: .9375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.hero {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.badge,
+.badgePremium,
+.badgeFree {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rem;
+  padding: .4rem .65rem;
+  font-family: var(--font-montserrat);
+  font-size: .75rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.badge {
+  background-color: #eef3ff;
+  color: #326bd0;
+}
+
+.badgePremium {
+  background-color: #fff6df;
+  color: #8a5a00;
+}
+
+.badgeFree {
+  background-color: #e8f8ef;
+  color: #176b39;
+}
+
+.title {
+  max-width: 52rem;
+  margin: 0;
+  color: #000000;
+  font-family: var(--font-unbounded);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.description {
+  max-width: 48rem;
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.cover {
+  overflow: hidden;
+  margin: 1.5rem 0;
+  border-radius: 1.25rem;
+  background-color: #eef3ff;
+}
+
+.cover img {
+  display: block;
+  width: 100%;
+  max-height: 28rem;
+  object-fit: cover;
+}
+
+.contentCard,
+.videoCard,
+.lockedCard {
+  border: 1px solid #dfe7fb;
+  border-radius: 1.25rem;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  box-shadow: 0 .75rem 2rem rgba(20, 42, 80, .06);
+}
+
+.contentCard {
+  margin-top: 1.5rem;
+}
+
+.videoCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.videoCard div {
+  display: grid;
+  gap: .35rem;
+}
+
+.videoCard span,
+.lockedCard span {
+  color: #6c7a92;
+  font-family: var(--font-montserrat);
+  font-size: .75rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.videoCard strong,
+.lockedCard strong {
+  color: #000000;
+  font-family: var(--font-unbounded);
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.videoCard a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  border-radius: .875rem;
+  background-color: #4480ea;
+  padding: .75rem 1rem;
+  color: #ffffff;
+  font-family: var(--font-montserrat);
+  font-size: .9375rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.videoCard a:hover {
+  background-color: #326bd0;
+}
+
+.lockedCard {
+  display: grid;
+  gap: .5rem;
+  margin-top: 1.5rem;
+}
+
+.lockedCard p {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: .9375rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 720px) {
+  .page {
+    width: min(100% - 1rem, 960px);
+    padding: 2rem 0 3rem;
+  }
+
+  .contentCard,
+  .videoCard,
+  .lockedCard {
+    padding: 1rem;
+  }
+
+  .videoCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .videoCard a {
+    width: 100%;
+  }
+}
