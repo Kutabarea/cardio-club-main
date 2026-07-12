@@ -1,7 +1,6 @@
 "use server";
 
-import { unlink } from "node:fs/promises";
-import path from "node:path";
+import { deleteUploadedMaterialImage } from "@/lib/uploads";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -42,24 +41,8 @@ function revalidateCategoryPages() {
 }
 
 async function deleteUploadedMaterialImages(imageUrls: Array<string | null>) {
-  const uploadedImages = imageUrls.filter(
-    (imageUrl): imageUrl is string =>
-      Boolean(imageUrl) && imageUrl!.startsWith("/uploads/materials/"),
-  );
-
-  await Promise.allSettled(
-    uploadedImages.map((imageUrl) => {
-      const fileName = path.basename(imageUrl);
-      const filePath = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        "materials",
-        fileName,
-      );
-
-      return unlink(filePath);
-    }),
+  await Promise.all(
+    imageUrls.map((imageUrl) => deleteUploadedMaterialImage(imageUrl)),
   );
 }
 
