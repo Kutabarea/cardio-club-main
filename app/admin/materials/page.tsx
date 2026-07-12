@@ -1,53 +1,77 @@
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 import { getMaterialPublicHref } from "@/lib/materialPublicHref";
 import { prisma } from "@/lib/prisma";
 
-import DeleteMaterialButton from "./DeleteMaterialButton";
-
 import styles from "@/app/styles/Admin.module.css";
+
+import DeleteMaterialButton from "./DeleteMaterialButton";
 
 export const dynamic = "force-dynamic";
 
-type AdminMaterialsPageProps = {
-  searchParams?: Promise<{
-    q?: string;
-    type?: string;
-    categoryId?: string;
-    status?: string;
-    access?: string;
-    error?: string;
-    success?: string;
+type MaterialsPageProps = {
+  searchParams: Promise<{
+    q?: string | string[];
+    status?: string | string[];
+    access?: string | string[];
+    type?: string | string[];
+    categoryId?: string | string[];
+    error?: string | string[];
+    success?: string | string[];
   }>;
 };
 
-const materialTypes = [
-  { value: "ECG_ARTICLE", label: "ЭКГ статья" },
-  { value: "VIDEO_LECTURE", label: "Видеолекция" },
-  { value: "COURSE", label: "Курс" },
-  { value: "HELPER", label: "Справочник" },
-];
+function getSingleParam(value?: string | string[]) {
+  if (Array.isArray(value)) {
+    return value[0] ?? "";
+  }
+
+  return value ?? "";
+}
 
 function getMessage(error?: string, success?: string) {
-  if (error === "slug-exists") {
+  if (success === "created") {
     return {
-      type: "error",
-      text: "Материал с таким slug уже существует. Укажи другой slug.",
+      type: "success",
+      text: "Материал создан.",
+    };
+  }
+
+  if (success === "updated") {
+    return {
+      type: "success",
+      text: "Материал обновлён.",
+    };
+  }
+
+  if (success === "deleted") {
+    return {
+      type: "success",
+      text: "Материал удалён.",
     };
   }
 
   if (error === "required-fields") {
     return {
       type: "error",
-      text: "Название, тип и категория обязательны.",
+      text: "Заполни название, тип и категорию материала.",
     };
   }
 
   if (error === "slug-required") {
     return {
       type: "error",
-      text: "Slug не сформировался. Укажи slug вручную.",
+      text: "Не удалось создать slug. Укажи slug вручную.",
+    };
+  }
+
+  if (error === "slug-exists") {
+    return {
+      type: "error",
+      text: "Материал с таким slug уже существует.",
     };
   }
 
@@ -61,7 +85,7 @@ function getMessage(error?: string, success?: string) {
   if (error === "image-too-large") {
     return {
       type: "error",
-      text: "Файл слишком большой. Максимум 5 МБ.",
+      text: "Картинка слишком большая. Максимум — 5 МБ.",
     };
   }
 
@@ -86,166 +110,155 @@ function getMessage(error?: string, success?: string) {
     };
   }
 
-  if (success === "created") {
-    return {
-      type: "success",
-      text: "Материал создан.",
-    };
-  }
-
-  if (success === "updated") {
-    return {
-      type: "success",
-      text: "Материал обновлён.",
-    };
-  }
-
-  if (success === "deleted") {
-    return {
-      type: "success",
-      text: "Материал удалён.",
-    };
-  }
-
   return null;
 }
 
-function getMaterialWhere(params: {
-  q: string;
-  type: string;
-  categoryId: string;
-  status: string;
-  access: string;
-}) {
-  const where: Prisma.MaterialWhereInput = {};
+function getMaterialTypeLabel(type: string) {
+  if (type === "ECG_ARTICLE") return "Статья";
+  if (type === "VIDEO_LECTURE") return "Видеолекция";
+  if (type === "HELPER") return "Ресурс";
 
-  if (params.q) {
-    where.OR = [
-      {
-        title: {
-          contains: params.q,
-        },
-      },
-      {
-        slug: {
-          contains: params.q,
-        },
-      },
-      {
-        description: {
-          contains: params.q,
-        },
-      },
-      {
-        content: {
-          contains: params.q,
-        },
-      },
-    ];
-  }
-
-  if (params.type && params.type !== "all") {
-    where.type = params.type;
-  }
-
-  if (params.categoryId && params.categoryId !== "all") {
-    where.categoryId = params.categoryId;
-  }
-
-  if (params.status === "published") {
-    where.isPublished = true;
-  }
-
-  if (params.status === "draft") {
-    where.isPublished = false;
-  }
-
-  if (params.access === "premium") {
-    where.isPremium = true;
-  }
-
-  if (params.access === "free") {
-    where.isPremium = false;
-  }
-
-  return where;
+  return type;
 }
 
-function getCurrentFiltersPath(params: {
+function createCurrentPath(params: {
   q: string;
-  type: string;
-  categoryId: string;
   status: string;
   access: string;
+  type: string;
+  categoryId: string;
 }) {
-  const search = new URLSearchParams();
+  const query = new URLSearchParams();
 
-  if (params.q) {
-    search.set("q", params.q);
+  if (params.q) query.set("q", params.q);
+  if (params.status && params.status !== "all") query.set("status", params.status);
+  if (params.access && params.access !== "all") query.set("access", params.access);
+  if (params.type && params.type !== "all") query.set("type", params.type);
+  if (params.categoryId && params.categoryId !== "all") {
+    query.set("categoryId", params.categoryId);
   }
 
-  if (params.type !== "all") {
-    search.set("type", params.type);
-  }
+  const queryString = query.toString();
 
-  if (params.categoryId !== "all") {
-    search.set("categoryId", params.categoryId);
-  }
-
-  if (params.status !== "all") {
-    search.set("status", params.status);
-  }
-
-  if (params.access !== "all") {
-    search.set("access", params.access);
-  }
-
-  const query = search.toString();
-
-  return query ? `/admin/materials?${query}` : "/admin/materials";
+  return queryString ? `/admin/materials?${queryString}` : "/admin/materials";
 }
 
 export default async function AdminMaterialsPage({
   searchParams,
-}: AdminMaterialsPageProps) {
-  const params = await searchParams;
+}: MaterialsPageProps) {
+  const resolvedSearchParams = await searchParams;
 
-  const message = getMessage(params?.error, params?.success);
+  const q = getSingleParam(resolvedSearchParams.q).trim();
+  const status = getSingleParam(resolvedSearchParams.status) || "all";
+  const access = getSingleParam(resolvedSearchParams.access) || "all";
+  const type = getSingleParam(resolvedSearchParams.type) || "all";
+  const categoryId = getSingleParam(resolvedSearchParams.categoryId) || "all";
+  const error = getSingleParam(resolvedSearchParams.error);
+  const success = getSingleParam(resolvedSearchParams.success);
 
-  const q = params?.q?.trim() ?? "";
-  const type = params?.type ?? "all";
-  const categoryId = params?.categoryId ?? "all";
-  const status = params?.status ?? "all";
-  const access = params?.access ?? "all";
+  const whereParts: Prisma.MaterialWhereInput[] = [];
 
-  const where = getMaterialWhere({
-    q,
-    type,
-    categoryId,
-    status,
-    access,
-  });
+  if (q) {
+    whereParts.push({
+      OR: [
+        {
+          title: {
+            contains: q,
+          },
+        },
+        {
+          slug: {
+            contains: q,
+          },
+        },
+        {
+          description: {
+            contains: q,
+          },
+        },
+        {
+          content: {
+            contains: q,
+          },
+        },
+        {
+          category: {
+            is: {
+              title: {
+                contains: q,
+              },
+            },
+          },
+        },
+      ],
+    });
+  }
+
+  if (status === "published") {
+    whereParts.push({
+      isPublished: true,
+    });
+  }
+
+  if (status === "draft") {
+    whereParts.push({
+      isPublished: false,
+    });
+  }
+
+  if (access === "premium") {
+    whereParts.push({
+      isPremium: true,
+    });
+  }
+
+  if (access === "free") {
+    whereParts.push({
+      isPremium: false,
+    });
+  }
+
+  if (type !== "all") {
+    whereParts.push({
+      type,
+    });
+  }
+
+  if (categoryId !== "all") {
+    whereParts.push({
+      categoryId,
+    });
+  }
+
+  const where: Prisma.MaterialWhereInput =
+    whereParts.length > 0
+      ? {
+          AND: whereParts,
+        }
+      : {};
 
   const [
-    categories,
     materials,
+    categories,
     totalMaterials,
     publishedMaterials,
     draftMaterials,
     premiumMaterials,
+    videoLectures,
+    filteredMaterials,
   ] = await Promise.all([
-    prisma.category.findMany({
-      orderBy: {
-        title: "asc",
-      },
-    }),
     prisma.material.findMany({
       where,
       include: {
         category: true,
       },
       orderBy: {
-        createdAt: "desc",
+        title: "asc",
+      },
+    }),
+    prisma.category.findMany({
+      orderBy: {
+        title: "asc",
       },
     }),
     prisma.material.count(),
@@ -264,122 +277,136 @@ export default async function AdminMaterialsPage({
         isPremium: true,
       },
     }),
+    prisma.material.count({
+      where: {
+        type: "VIDEO_LECTURE",
+      },
+    }),
+    prisma.material.count({
+      where,
+    }),
   ]);
 
-  const hasActiveFilters =
-    Boolean(q) ||
-    type !== "all" ||
-    categoryId !== "all" ||
-    status !== "all" ||
-    access !== "all";
-
-  const currentPath = getCurrentFiltersPath({
+  const message = getMessage(error, success);
+  const currentPath = createCurrentPath({
     q,
-    type,
-    categoryId,
     status,
     access,
+    type,
+    categoryId,
   });
 
   return (
-    <div>
+    <div className={styles.adminPage}>
       <div className={styles.adminTopbar}>
         <div>
-          <h2 className={styles.pageTitle}>Материалы</h2>
+          <h1 className={styles.pageTitle}>Материалы</h1>
+
           <p className={styles.pageDescription}>
-            Управление статьями, видеолекциями, курсами и справочными материалами.
+            Управление статьями, видеолекциями, черновиками, premium-доступом и публикацией.
           </p>
         </div>
 
         <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
-          + Создать материал
+          Добавить материал
         </Link>
       </div>
 
-      {message && (
+      {message ? (
         <div
           className={
-            message.type === "error"
-              ? styles.adminMessageError
-              : styles.adminMessageSuccess
+            message.type === "success"
+              ? styles.adminNoticeSuccess
+              : styles.adminNoticeError
           }
         >
           {message.text}
         </div>
-      )}
+      ) : null}
 
-      <section className={styles.adminStatsCompact}>
-        <div>
+      <section className={styles.materialsStatsGrid}>
+        <div className={styles.materialsStatCard}>
           <span>Всего</span>
           <strong>{totalMaterials}</strong>
         </div>
 
-        <div>
+        <div className={styles.materialsStatCard}>
           <span>Опубликовано</span>
           <strong>{publishedMaterials}</strong>
         </div>
 
-        <div>
+        <div className={styles.materialsStatCard}>
           <span>Черновики</span>
           <strong>{draftMaterials}</strong>
         </div>
 
-        <div>
+        <div className={styles.materialsStatCard}>
           <span>Premium</span>
           <strong>{premiumMaterials}</strong>
         </div>
-      </section>
 
-      <section className={styles.adminHelpCard}>
-        <strong>Как работать с материалами</strong>
-        <p>
-          Нажми «Создать материал», заполни название, категорию, текст и картинку.
-          Сначала можно сохранить как черновик, открыть предпросмотр, а затем опубликовать.
-        </p>
-      </section>
-
-      <section className={styles.filterCard}>
-        <div className={styles.filterHeader}>
-          <div>
-            <h3 className={styles.filterTitle}>Поиск и фильтры</h3>
-            <p className={styles.filterDescription}>
-              Сейчас показано: {materials.length} из {totalMaterials}
-            </p>
-          </div>
-
-          {hasActiveFilters && (
-            <Link href="/admin/materials" className={styles.resetLink}>
-              Сбросить фильтры
-            </Link>
-          )}
+        <div className={styles.materialsStatCard}>
+          <span>Видеолекции</span>
+          <strong>{videoLectures}</strong>
         </div>
 
-        <form action="/admin/materials" method="get" className={styles.filtersForm}>
-          <label className={styles.field}>
+        <div className={styles.materialsStatCard}>
+          <span>Найдено</span>
+          <strong>{filteredMaterials}</strong>
+        </div>
+      </section>
+
+      <section className={styles.materialsControlPanel}>
+        <div>
+          <h2>Фильтры и поиск</h2>
+          <p>
+            Быстро найди материал по названию, slug, тексту, категории, статусу или типу.
+          </p>
+        </div>
+
+        <form className={styles.materialsFiltersForm} action="/admin/materials">
+          <label className={styles.materialsSearchField}>
             <span>Поиск</span>
             <input
               name="q"
               defaultValue={q}
-              placeholder="Название, slug, описание, текст"
+              placeholder="Название, slug, текст или категория"
             />
           </label>
 
-          <label className={styles.field}>
-            <span>Тип</span>
-            <select name="type" defaultValue={type}>
-              <option value="all">Все типы</option>
-              {materialTypes.map((materialType) => (
-                <option key={materialType.value} value={materialType.value}>
-                  {materialType.label}
-                </option>
-              ))}
+          <label className={styles.materialsFilterField}>
+            <span>Статус</span>
+            <select name="status" defaultValue={status}>
+              <option value="all">Все статусы</option>
+              <option value="published">Опубликованные</option>
+              <option value="draft">Черновики</option>
             </select>
           </label>
 
-          <label className={styles.field}>
+          <label className={styles.materialsFilterField}>
+            <span>Доступ</span>
+            <select name="access" defaultValue={access}>
+              <option value="all">Любой доступ</option>
+              <option value="free">Free</option>
+              <option value="premium">Premium</option>
+            </select>
+          </label>
+
+          <label className={styles.materialsFilterField}>
+            <span>Тип</span>
+            <select name="type" defaultValue={type}>
+              <option value="all">Все типы</option>
+              <option value="ECG_ARTICLE">Статьи</option>
+              <option value="VIDEO_LECTURE">Видеолекции</option>
+              <option value="HELPER">Ресурсы</option>
+            </select>
+          </label>
+
+          <label className={styles.materialsFilterField}>
             <span>Категория</span>
             <select name="categoryId" defaultValue={categoryId}>
               <option value="all">Все категории</option>
+
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.title}
@@ -388,139 +415,138 @@ export default async function AdminMaterialsPage({
             </select>
           </label>
 
-          <label className={styles.field}>
-            <span>Статус</span>
-            <select name="status" defaultValue={status}>
-              <option value="all">Все статусы</option>
-              <option value="published">Опубликовано</option>
-              <option value="draft">Черновик</option>
-            </select>
-          </label>
-
-          <label className={styles.field}>
-            <span>Доступ</span>
-            <select name="access" defaultValue={access}>
-              <option value="all">Весь доступ</option>
-              <option value="free">Free</option>
-              <option value="premium">Premium</option>
-            </select>
-          </label>
-
-          <div className={styles.filterActions}>
-            <button className={styles.submitButton} type="submit">
-              Применить
-            </button>
+          <div className={styles.materialsFilterActions}>
+            <button type="submit">Применить</button>
+            <Link href="/admin/materials">Сбросить</Link>
           </div>
         </form>
       </section>
 
-      <section className={styles.adminContentCard}>
-        <div className={styles.adminSectionHeader}>
-          <div>
-            <h3>Список материалов</h3>
-            <p>Открой предпросмотр, отредактируй или удали материал.</p>
+      {materials.length > 0 ? (
+        <section className={styles.materialsCardsGrid}>
+          {materials.map((material) => {
+            const publicHref = getMaterialPublicHref(material);
+
+            return (
+              <article key={material.id} className={styles.materialCard}>
+                <div className={styles.materialCardImage}>
+                  {material.imageUrl ? (
+                    <img src={material.imageUrl} alt="" />
+                  ) : (
+                    <div className={styles.materialCardImagePlaceholder}>
+                      {material.title.slice(0, 1).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.materialCardBody}>
+                  <div className={styles.materialCardBadges}>
+                    <span
+                      className={
+                        material.isPublished
+                          ? styles.materialBadgePublished
+                          : styles.materialBadgeDraft
+                      }
+                    >
+                      {material.isPublished ? "Опубликован" : "Черновик"}
+                    </span>
+
+                    <span
+                      className={
+                        material.isPremium
+                          ? styles.materialBadgePremium
+                          : styles.materialBadgeFree
+                      }
+                    >
+                      {material.isPremium ? "Premium" : "Free"}
+                    </span>
+
+                    <span className={styles.materialBadgeType}>
+                      {getMaterialTypeLabel(material.type)}
+                    </span>
+                  </div>
+
+                  <h2 className={styles.materialCardTitle}>
+                    {material.title}
+                  </h2>
+
+                  <p className={styles.materialCardDescription}>
+                    {material.description || "Описание пока не заполнено."}
+                  </p>
+
+                  <div className={styles.materialCardMeta}>
+                    <div>
+                      <span>Категория</span>
+                      <strong>{material.category?.title ?? "Без категории"}</strong>
+                    </div>
+
+                    <div>
+                      <span>Slug</span>
+                      <strong>{material.slug}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.materialCardActions}>
+                  <Link
+                    href={`/admin/materials/${material.id}/edit`}
+                    className={styles.materialActionPrimary}
+                  >
+                    Редактировать
+                  </Link>
+
+                  <Link
+                    href={`/admin/materials/${material.id}/preview`}
+                    className={styles.materialActionSecondary}
+                  >
+                    Предпросмотр
+                  </Link>
+
+                  {material.isPublished && publicHref ? (
+                    <Link
+                      href={publicHref}
+                      className={styles.materialActionSecondary}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      На сайте
+                    </Link>
+                  ) : (
+                    <span className={styles.materialActionDisabled}>
+                      Не опубликован
+                    </span>
+                  )}
+
+                  <DeleteMaterialButton
+                    materialId={material.id}
+                    materialTitle={material.title}
+                    redirectPath={currentPath}
+                  />
+                </div>
+              </article>
+            );
+          })}
+        </section>
+      ) : (
+        <section className={styles.materialsEmptyState}>
+          <h2>Материалы не найдены</h2>
+
+          <p>
+            Попробуй изменить фильтры или создать новый материал. Если база пустая,
+            можно запустить демо-наполнение.
+          </p>
+
+          <div className={styles.materialsEmptyActions}>
+            <Link href="/admin/materials" className={styles.secondaryAdminAction}>
+              Сбросить фильтры
+            </Link>
+
+            <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
+              Добавить материал
+            </Link>
           </div>
-        </div>
-
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Материал</th>
-                <th>Тип</th>
-                <th>Категория</th>
-                <th>Статус</th>
-                <th>Доступ</th>
-                <th>Действия</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {materials.length > 0 ? (
-                materials.map((material) => {
-                  const publicHref = getMaterialPublicHref(material);
-
-                  return (
-                    <tr key={material.id}>
-                      <td>
-                        <div className={styles.materialTitle}>{material.title}</div>
-                        <div className={styles.materialSlug}>{material.slug}</div>
-                      </td>
-
-                      <td>{material.type}</td>
-                      <td>{material.category?.title ?? "Без категории"}</td>
-
-                      <td>
-                        <span
-                          className={
-                            material.isPublished
-                              ? styles.statusBadgeSuccess
-                              : styles.statusBadgeWarning
-                          }
-                        >
-                          {material.isPublished ? "Опубликовано" : "Черновик"}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span
-                          className={
-                            material.isPremium
-                              ? styles.statusBadgePremium
-                              : styles.statusBadgeNeutral
-                          }
-                        >
-                          {material.isPremium ? "Premium" : "Free"}
-                        </span>
-                      </td>
-
-                      <td>
-                        <div className={styles.tableActions}>
-                          <Link
-                            href={`/admin/materials/${material.id}/preview`}
-                            className={styles.previewLink}
-                          >
-                            Предпросмотр
-                          </Link>
-
-                          {publicHref && material.isPublished && (
-                            <Link
-                              href={publicHref}
-                              className={styles.openLink}
-                              target="_blank"
-                            >
-                              На сайте
-                            </Link>
-                          )}
-
-                          <Link
-                            href={`/admin/materials/${material.id}/edit`}
-                            className={styles.editLink}
-                          >
-                            Редактировать
-                          </Link>
-
-                          <DeleteMaterialButton
-                            materialId={material.id}
-                            materialTitle={material.title}
-                            redirectPath={currentPath}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={6}>
-                    Материалы не найдены. Попробуй сбросить фильтры или создать новый материал.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

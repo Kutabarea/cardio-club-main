@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -7,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 
 import styles from "@/app/styles/Admin.module.css";
 
+import MaterialContentEditor from "../../MaterialContentEditor";
 import { updateMaterialAction } from "../../actions";
 
 type EditMaterialPageProps = {
@@ -113,25 +115,25 @@ export default async function EditMaterialPage({
 
   return (
     <div className={styles.adminPage}>
-      <div className={styles.adminTopbar}>
+      <div className={styles.simpleEditHeader}>
         <div>
           <Link href="/admin/materials" className={styles.backLink}>
-            ← К списку материалов
+            ← Материалы
           </Link>
 
           <h1 className={styles.pageTitle}>Редактирование материала</h1>
 
           <p className={styles.pageDescription}>
-            Обнови текст, статус публикации, premium-доступ, изображение и связь с категорией.
+            Рабочий экран для редактора: текст, предпросмотр, публикация и служебные настройки.
           </p>
         </div>
 
-        <div className={styles.editorHeaderActions}>
+        <div className={styles.simpleEditHeaderActions}>
           <Link
             href={`/admin/materials/${material.id}/preview`}
             className={styles.secondaryAdminAction}
           >
-            Предпросмотр
+            Отдельный предпросмотр
           </Link>
 
           {material.isPublished && publicHref ? (
@@ -139,14 +141,11 @@ export default async function EditMaterialPage({
               href={publicHref}
               className={styles.primaryAdminAction}
               target="_blank"
+              rel="noreferrer"
             >
-              Открыть на сайте
+              На сайте
             </Link>
-          ) : (
-            <span className={styles.disabledAdminAction}>
-              Не опубликовано
-            </span>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -162,149 +161,73 @@ export default async function EditMaterialPage({
         </div>
       ) : null}
 
-      <div className={styles.editorLayout}>
-        <aside className={styles.editorGuide}>
-          <div className={styles.editorGuideCard}>
-            <p className={styles.editorGuideEyebrow}>Статус</p>
+      <form action={updateMaterialAction} className={styles.simpleEditLayout}>
+        <input type="hidden" name="id" value={material.id} />
+        <input type="hidden" name="redirectPath" value={currentPath} />
 
-            <h2 className={styles.editorGuideTitle}>
-              {material.isPublished ? "Материал опубликован" : "Материал в черновике"}
-            </h2>
-
-            <p className={styles.editorGuideText}>
-              {material.isPublished
-                ? "Материал виден пользователям на публичной части сайта."
-                : "Черновик виден только в админке и preview-режиме."}
-            </p>
-
-            <div className={styles.editorMetaList}>
-              <div>
-                <span>Тип</span>
-                <strong>{getMaterialTypeLabel(material.type)}</strong>
-              </div>
-
-              <div>
-                <span>Доступ</span>
-                <strong>{material.isPremium ? "Premium" : "Free"}</strong>
-              </div>
-
-              <div>
-                <span>Категория</span>
-                <strong>{material.category?.title ?? "Без категории"}</strong>
-              </div>
-
-              <div>
-                <span>Slug</span>
-                <strong>{material.slug}</strong>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.editorGuideCard}>
-            <p className={styles.editorGuideEyebrow}>Как заполнять</p>
-
-            <h2 className={styles.editorGuideTitle}>Минимальный стандарт статьи</h2>
-
-            <ul className={styles.editorGuideList}>
-              <li>Название — короткое и понятное.</li>
-              <li>Описание — 1–2 предложения для карточки.</li>
-              <li>Контент — через Markdown: заголовки, списки, цитаты.</li>
-              <li>Premium включай только для закрытых материалов.</li>
-              <li>Публикуй только после проверки через предпросмотр.</li>
-            </ul>
-          </div>
-
-          <div className={styles.editorGuideCard}>
-            <p className={styles.editorGuideEyebrow}>Безопасность</p>
-
-            <h2 className={styles.editorGuideTitle}>Не вставляй опасный HTML</h2>
-
-            <p className={styles.editorGuideText}>
-              Пока используем Markdown. Не нужно вставлять скрипты, iframe и чужой HTML-код.
-              Позже добавим дополнительную очистку и ограничения.
-            </p>
-          </div>
-        </aside>
-
-        <form action={updateMaterialAction} className={styles.editorForm}>
-          <input type="hidden" name="id" value={material.id} />
-          <input type="hidden" name="redirectPath" value={currentPath} />
-
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <div>
-                <p className={styles.editorStep}>Шаг 1</p>
-                <h2>Основная информация</h2>
-              </div>
-
-              <p>
-                Эти данные используются в карточках, поиске, списках и публичных страницах.
-              </p>
-            </div>
-
-            <div className={styles.formGrid}>
-              <label className={styles.formGroup}>
-                <span className={styles.label}>Название</span>
-                <input
-                  className={styles.input}
-                  name="title"
-                  defaultValue={material.title}
-                  placeholder="Например: Комплекс QRS"
-                  required
-                />
-              </label>
-
-              <label className={styles.formGroup}>
-                <span className={styles.label}>Slug</span>
-                <input
-                  className={styles.input}
-                  name="slug"
-                  defaultValue={material.slug}
-                  placeholder="complex-qrs"
-                />
-                <span className={styles.formHint}>
-                  Используется в ссылке. Лучше латиница, цифры и дефисы.
-                </span>
-              </label>
+        <main className={styles.simpleEditMain}>
+          <section className={styles.simpleEditCard}>
+            <div className={styles.simpleEditCardHeader}>
+              <h2>Основное</h2>
+              <p>Название, описание и содержание материала.</p>
             </div>
 
             <label className={styles.formGroup}>
-              <span className={styles.label}>Описание</span>
+              <span className={styles.label}>Название</span>
+              <input
+                className={styles.input}
+                name="title"
+                defaultValue={material.title}
+                placeholder="Например: Комплекс QRS"
+                required
+              />
+            </label>
+
+            <label className={styles.formGroup}>
+              <span className={styles.label}>Короткое описание</span>
               <textarea
                 className={styles.textareaSmall}
                 name="description"
                 defaultValue={material.description ?? ""}
-                placeholder="Короткое описание для карточки материала."
+                placeholder="1–2 предложения для карточки материала."
               />
             </label>
+
+            <MaterialContentEditor defaultValue={material.content ?? ""} />
           </section>
 
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <div>
-                <p className={styles.editorStep}>Шаг 2</p>
-                <h2>Тип, категория и доступ</h2>
+          <details className={styles.simpleEditDetails}>
+            <summary>Служебные настройки</summary>
+
+            <div className={styles.simpleEditDetailsBody}>
+              <div className={styles.formGrid}>
+                <label className={styles.formGroup}>
+                  <span className={styles.label}>Slug</span>
+                  <input
+                    className={styles.input}
+                    name="slug"
+                    defaultValue={material.slug}
+                    placeholder="complex-qrs"
+                  />
+                  <span className={styles.formHint}>
+                    Используется в ссылке. Лучше латиница, цифры и дефисы.
+                  </span>
+                </label>
+
+                <label className={styles.formGroup}>
+                  <span className={styles.label}>Тип материала</span>
+                  <select
+                    className={styles.input}
+                    name="type"
+                    defaultValue={material.type}
+                    required
+                  >
+                    <option value="ECG_ARTICLE">Статья / ЭКГ материал</option>
+                    <option value="VIDEO_LECTURE">Видеолекция</option>
+                    <option value="HELPER">Полезный ресурс</option>
+                  </select>
+                </label>
               </div>
-
-              <p>
-                От этих настроек зависит, где материал появится на сайте и кому он будет доступен.
-              </p>
-            </div>
-
-            <div className={styles.formGrid}>
-              <label className={styles.formGroup}>
-                <span className={styles.label}>Тип материала</span>
-                <select
-                  className={styles.input}
-                  name="type"
-                  defaultValue={material.type}
-                  required
-                >
-                  <option value="ECG_ARTICLE">Статья / ЭКГ материал</option>
-                  <option value="VIDEO_LECTURE">Видеолекция</option>
-                  <option value="HELPER">Полезный ресурс</option>
-                </select>
-              </label>
 
               <label className={styles.formGroup}>
                 <span className={styles.label}>Категория</span>
@@ -324,141 +247,132 @@ export default async function EditMaterialPage({
                 </select>
               </label>
             </div>
+          </details>
 
-            <div className={styles.publishBox}>
-              <label className={styles.checkboxLabel}>
+          <details className={styles.simpleEditDetails}>
+            <summary>Изображение и видео</summary>
+
+            <div className={styles.simpleEditDetailsBody}>
+              {material.imageUrl ? (
+                <div className={styles.simpleImagePreview}>
+                  <img src={material.imageUrl} alt="" />
+
+                  <div>
+                    <span>Текущее изображение</span>
+                    <strong>{material.imageUrl}</strong>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.emptyEditorState}>
+                  У материала пока нет изображения.
+                </div>
+              )}
+
+              <label className={styles.formGroup}>
+                <span className={styles.label}>Загрузить новую картинку</span>
                 <input
-                  name="isPremium"
-                  type="checkbox"
-                  defaultChecked={material.isPremium}
+                  className={styles.input}
+                  name="imageFile"
+                  type="file"
+                  accept="image/*"
                 />
-                <span>
-                  Premium-материал
-                  <small>Будет закрыт для пользователей без активной premium-подписки.</small>
+                <span className={styles.formHint}>
+                  Максимум 5 МБ. Если загрузить новую картинку, старая удалится.
                 </span>
               </label>
 
-              <label className={styles.checkboxLabel}>
+              <label className={styles.formGroup}>
+                <span className={styles.label}>URL изображения</span>
+                <input
+                  className={styles.input}
+                  name="imageUrl"
+                  defaultValue={material.imageUrl ?? ""}
+                  placeholder="/images/materials__img__1.png"
+                />
+              </label>
+
+              <label className={styles.formGroup}>
+                <span className={styles.label}>Видео URL</span>
+                <input
+                  className={styles.input}
+                  name="videoUrl"
+                  defaultValue={material.videoUrl ?? ""}
+                  placeholder="https://example.com/video"
+                />
+              </label>
+            </div>
+          </details>
+        </main>
+
+        <aside className={styles.simpleEditSide}>
+          <section className={styles.simpleEditCard}>
+            <div className={styles.simpleStatusLine}>
+              <span
+                className={
+                  material.isPublished
+                    ? styles.materialBadgePublished
+                    : styles.materialBadgeDraft
+                }
+              >
+                {material.isPublished ? "Опубликован" : "Черновик"}
+              </span>
+
+              <span
+                className={
+                  material.isPremium
+                    ? styles.materialBadgePremium
+                    : styles.materialBadgeFree
+                }
+              >
+                {material.isPremium ? "Premium" : "Free"}
+              </span>
+            </div>
+
+            <div className={styles.simpleEditMeta}>
+              <div>
+                <span>Тип</span>
+                <strong>{getMaterialTypeLabel(material.type)}</strong>
+              </div>
+
+              <div>
+                <span>Категория</span>
+                <strong>{material.category?.title ?? "Без категории"}</strong>
+              </div>
+            </div>
+
+            <div className={styles.simplePublishControls}>
+              <label className={styles.simpleCheckbox}>
                 <input
                   name="isPublished"
                   type="checkbox"
                   defaultChecked={material.isPublished}
                 />
-                <span>
-                  Опубликован
-                  <small>Материал появится на публичной части сайта.</small>
-                </span>
+                <span>Опубликован</span>
+              </label>
+
+              <label className={styles.simpleCheckbox}>
+                <input
+                  name="isPremium"
+                  type="checkbox"
+                  defaultChecked={material.isPremium}
+                />
+                <span>Premium-доступ</span>
               </label>
             </div>
-          </section>
 
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <div>
-                <p className={styles.editorStep}>Шаг 3</p>
-                <h2>Изображение и видео</h2>
-              </div>
-
-              <p>
-                Картинка нужна для карточек. Видео-ссылка используется только для видеолекций.
-              </p>
-            </div>
-
-            {material.imageUrl ? (
-              <div className={styles.currentImageBox}>
-                <div>
-                  <span>Текущее изображение</span>
-                  <strong>{material.imageUrl}</strong>
-                </div>
-
-                <img
-                  src={material.imageUrl}
-                  alt=""
-                  className={styles.previewThumb}
-                />
-              </div>
-            ) : (
-              <div className={styles.emptyEditorState}>
-                У материала пока нет изображения.
-              </div>
-            )}
-
-            <label className={styles.formGroup}>
-              <span className={styles.label}>Загрузить новую картинку</span>
-              <input
-                className={styles.input}
-                name="imageFile"
-                type="file"
-                accept="image/*"
-              />
-              <span className={styles.formHint}>
-                Максимум 5 МБ. Если загрузить новую картинку, старая удалится.
-              </span>
-            </label>
-
-            <label className={styles.formGroup}>
-              <span className={styles.label}>URL изображения</span>
-              <input
-                className={styles.input}
-                name="imageUrl"
-                defaultValue={material.imageUrl ?? ""}
-                placeholder="/images/materials__img__1.png"
-              />
-            </label>
-
-            <label className={styles.formGroup}>
-              <span className={styles.label}>Видео URL</span>
-              <input
-                className={styles.input}
-                name="videoUrl"
-                defaultValue={material.videoUrl ?? ""}
-                placeholder="https://example.com/video"
-              />
-            </label>
-          </section>
-
-          <section className={styles.editorSection}>
-            <div className={styles.editorSectionHeader}>
-              <div>
-                <p className={styles.editorStep}>Шаг 4</p>
-                <h2>Содержание материала</h2>
-              </div>
-
-              <p>
-                Сейчас используется Markdown. Следующим шагом добавим нормальные кнопки редактора.
-              </p>
-            </div>
-
-            <label className={styles.formGroup}>
-              <span className={styles.label}>Текст материала</span>
-              <textarea
-                className={styles.markdownTextarea}
-                name="content"
-                defaultValue={material.content ?? ""}
-                placeholder={"## Заголовок\n\nТекст материала...\n\n- пункт списка\n- пункт списка\n\n> важная заметка"}
-              />
-            </label>
-
-            <div className={styles.markdownHelp}>
-              <span>Markdown-подсказка:</span>
-              <code>## Заголовок</code>
-              <code>**жирный текст**</code>
-              <code>- список</code>
-              <code>{"> цитата"}</code>
-            </div>
-          </section>
-
-          <div className={styles.editorFooter}>
-            <Link href="/admin/materials" className={styles.modalCancelButton}>
-              Отмена
-            </Link>
-
-            <button className={styles.primaryAdminAction} type="submit">
-              Сохранить материал
+            <button className={styles.simpleSaveButton} type="submit">
+              Сохранить
             </button>
-          </div>
-        </form>
-      </div>
+
+            <Link
+              href={`/admin/materials/${material.id}/preview`}
+              className={styles.simplePreviewButton}
+            >
+              Открыть предпросмотр
+            </Link>
+          </section>
+        </aside>
+      </form>
     </div>
   );
 }
