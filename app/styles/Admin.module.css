@@ -3105,3 +3105,21 @@ a.dashboardItemTitle:hover {
     width: 100%;
   }
 }
+.ecgMaterialVisibilityForm {
+  display: grid;
+  gap: .75rem;
+  align-content: start;
+  border-radius: .875rem;
+  background-color: #f8faff;
+  padding: .75rem;
+}
+
+.ecgMaterialVisibilityForm button {
+  width: 100%;
+}
+
+@media (max-width: 1180px) {
+  .ecgMaterialVisibilityForm {
+    grid-template-columns: 1fr;
+  }
+}

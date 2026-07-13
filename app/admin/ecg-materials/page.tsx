@@ -1,11 +1,16 @@
 import Link from "next/link";
 
+import {
+  getMaterialContentStatusLabel,
+  isMaterialContentFilled,
+} from "@/lib/materialContentStatus";
 import { getMaterialPublicHref } from "@/lib/materialPublicHref";
 import { prisma } from "@/lib/prisma";
 
 import styles from "@/app/styles/Admin.module.css";
 
 import { moveMaterialEcgSectionAction } from "../ecg-sections/actions";
+import { updateEcgMaterialVisibilityAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +18,8 @@ type EcgMaterialsPageProps = {
   searchParams: Promise<{
     q?: string;
     section?: string;
+    status?: string;
+    content?: string;
     error?: string;
     success?: string;
   }>;
@@ -23,6 +30,13 @@ function getMessage(error?: string, success?: string) {
     return {
       type: "success",
       text: "Материал обновлён.",
+    };
+  }
+
+  if (success === "visibility-updated") {
+    return {
+      type: "success",
+      text: "Публикация и premium-доступ обновлены.",
     };
   }
 
@@ -57,11 +71,13 @@ function getMessage(error?: string, success?: string) {
   return null;
 }
 
-function getCurrentPath(q: string, section: string) {
+function getCurrentPath(q: string, section: string, status: string, content: string) {
   const params = new URLSearchParams();
 
   if (q) params.set("q", q);
   if (section) params.set("section", section);
+  if (status) params.set("status", status);
+  if (content) params.set("content", content);
 
   const query = params.toString();
 
@@ -71,14 +87,23 @@ function getCurrentPath(q: string, section: string) {
 export default async function AdminEcgMaterialsPage({
   searchParams,
 }: EcgMaterialsPageProps) {
-  const { q = "", section = "", error, success } = await searchParams;
+  const {
+    q = "",
+    section = "",
+    status = "",
+    content = "",
+    error,
+    success,
+  } = await searchParams;
 
   const cleanQuery = q.trim();
   const cleanSection = section.trim();
-  const currentPath = getCurrentPath(cleanQuery, cleanSection);
+  const cleanStatus = status.trim();
+  const cleanContent = content.trim();
+  const currentPath = getCurrentPath(cleanQuery, cleanSection, cleanStatus, cleanContent);
   const message = getMessage(error, success);
 
-  const [sections, materials, totalMaterials, unassignedCount] = await Promise.all([
+  const [sections, rawMaterials, allEcgMaterials, unassignedCount] = await Promise.all([
     prisma.ecgSection.findMany({
       orderBy: [
         {
@@ -106,6 +131,15 @@ export default async function AdminEcgMaterialsPage({
           : cleanSection
             ? {
                 ecgSectionId: cleanSection,
+              }
+            : {}),
+        ...(cleanStatus === "published"
+          ? {
+              isPublished: true,
+            }
+          : cleanStatus === "draft"
+            ? {
+                isPublished: false,
               }
             : {}),
         ...(cleanQuery
@@ -149,11 +183,16 @@ export default async function AdminEcgMaterialsPage({
       },
     }),
 
-    prisma.material.count({
+    prisma.material.findMany({
       where: {
         category: {
           slug: "ecg-base",
         },
+      },
+      select: {
+        id: true,
+        content: true,
+        isPublished: true,
       },
     }),
 
@@ -167,6 +206,26 @@ export default async function AdminEcgMaterialsPage({
     }),
   ]);
 
+  const materials = rawMaterials.filter((material) => {
+    if (cleanContent === "filled") {
+      return isMaterialContentFilled(material.content);
+    }
+
+    if (cleanContent === "empty") {
+      return !isMaterialContentFilled(material.content);
+    }
+
+    return true;
+  });
+
+  const emptyCount = allEcgMaterials.filter((material) => {
+    return !isMaterialContentFilled(material.content);
+  }).length;
+
+  const draftCount = allEcgMaterials.filter((material) => {
+    return !material.isPublished;
+  }).length;
+
   return (
     <div className={styles.adminPage}>
       <div className={styles.adminTopbar}>
@@ -174,8 +233,8 @@ export default async function AdminEcgMaterialsPage({
           <h1 className={styles.pageTitle}>ЭКГ материалы</h1>
 
           <p className={styles.pageDescription}>
-            Единый список материалов ЭКГ базы. Здесь удобно искать материалы,
-            переносить их между подразделами и менять позицию в списке.
+            Единый список материалов ЭКГ базы. Здесь видно, что заполнено, что
+            опубликовано и какие материалы ещё нужно дописать.
           </p>
         </div>
 
@@ -208,7 +267,7 @@ export default async function AdminEcgMaterialsPage({
       <section className={styles.adminStatsGrid}>
         <div className={styles.adminStatCard}>
           <span>Всего материалов</span>
-          <strong>{totalMaterials}</strong>
+          <strong>{allEcgMaterials.length}</strong>
         </div>
 
         <div className={styles.adminStatCard}>
@@ -217,13 +276,18 @@ export default async function AdminEcgMaterialsPage({
         </div>
 
         <div className={styles.adminStatCard}>
-          <span>Без подраздела</span>
-          <strong>{unassignedCount}</strong>
+          <span>Пустые</span>
+          <strong>{emptyCount}</strong>
         </div>
 
         <div className={styles.adminStatCard}>
-          <span>Подразделов</span>
-          <strong>{sections.length}</strong>
+          <span>Черновики</span>
+          <strong>{draftCount}</strong>
+        </div>
+
+        <div className={styles.adminStatCard}>
+          <span>Без подраздела</span>
+          <strong>{unassignedCount}</strong>
         </div>
       </section>
 
@@ -235,7 +299,7 @@ export default async function AdminEcgMaterialsPage({
           </div>
 
           <p>
-            Поиск работает по названию, описанию и тексту материала.
+            Можно быстро найти пустые материалы, черновики или материалы конкретного подраздела.
           </p>
         </div>
 
@@ -265,6 +329,26 @@ export default async function AdminEcgMaterialsPage({
             </select>
           </label>
 
+          <label className={styles.formGroup}>
+            <span className={styles.label}>Публикация</span>
+
+            <select className={styles.input} name="status" defaultValue={cleanStatus}>
+              <option value="">Все</option>
+              <option value="published">Опубликованные</option>
+              <option value="draft">Черновики</option>
+            </select>
+          </label>
+
+          <label className={styles.formGroup}>
+            <span className={styles.label}>Заполненность</span>
+
+            <select className={styles.input} name="content" defaultValue={cleanContent}>
+              <option value="">Все</option>
+              <option value="filled">Заполненные</option>
+              <option value="empty">Пустые</option>
+            </select>
+          </label>
+
           <button className={styles.primaryAdminAction} type="submit">
             Применить
           </button>
@@ -283,7 +367,7 @@ export default async function AdminEcgMaterialsPage({
           </div>
 
           <p>
-            Меньшая позиция означает более высокое место в списке на странице ЭКГ базы.
+            Если материал пустой, его нужно открыть через «Редактировать» и заполнить текст.
           </p>
         </div>
 
@@ -321,6 +405,16 @@ export default async function AdminEcgMaterialsPage({
                       }
                     >
                       {material.isPremium ? "Premium" : "Free"}
+                    </span>
+
+                    <span
+                      className={
+                        isMaterialContentFilled(material.content)
+                          ? styles.materialBadgePublished
+                          : styles.materialBadgeDraft
+                      }
+                    >
+                      {getMaterialContentStatusLabel(material.content)}
                     </span>
 
                     <span className={styles.materialBadgeCategory}>
@@ -363,7 +457,37 @@ export default async function AdminEcgMaterialsPage({
                   </label>
 
                   <button className={styles.primaryAdminAction} type="submit">
-                    Сохранить
+                    Позиция
+                  </button>
+                </form>
+
+                <form
+                  action={updateEcgMaterialVisibilityAction}
+                  className={styles.ecgMaterialVisibilityForm}
+                >
+                  <input type="hidden" name="materialId" value={material.id} />
+                  <input type="hidden" name="redirectPath" value={currentPath} />
+
+                  <label className={styles.simpleCheckbox}>
+                    <input
+                      name="isPublished"
+                      type="checkbox"
+                      defaultChecked={material.isPublished}
+                    />
+                    <span>Опубликован</span>
+                  </label>
+
+                  <label className={styles.simpleCheckbox}>
+                    <input
+                      name="isPremium"
+                      type="checkbox"
+                      defaultChecked={material.isPremium}
+                    />
+                    <span>Premium</span>
+                  </label>
+
+                  <button className={styles.secondaryAdminAction} type="submit">
+                    Доступ
                   </button>
                 </form>
 
