@@ -2,149 +2,157 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+
+import type { HomeMaterialCard } from "@/lib/homeMaterials";
 
 import DescriptionText from "./DescriptionText";
 import HeaderText from "./HeaderText";
 
 import styles from "../styles/Slider.module.css";
 
-export type HomeSliderMaterial = {
-  img: string;
-  header: string;
-  subheader: string;
-  description: string;
-  href: string;
-};
-
 type SliderProps = {
-  materials: HomeSliderMaterial[];
+  materials: HomeMaterialCard[];
 };
 
-const fallbackMaterials: HomeSliderMaterial[] = [
-  {
-    img: "/images/materials__img__1.png",
-    header: "Видео",
-    subheader: "Типы инфаркта миокарда. Интерпретация тропонинов",
-    description:
-      'В этой лекции вы найдете ответы на два вопроса: "Какие существуют причины ИМ?" и "Как понимать результаты тропонинов?"',
-    href: "/videolecture",
-  },
-  {
-    img: "/images/materials__img__2.png",
-    header: "Статья",
-    subheader: "QRS и его обличия",
-    description:
-      "Мы разобрали с вами блокады п.Гиса, ЭОС и гипертрофию левого желудочка. А что их связывает? А связывает их комплекс QRS.",
-    href: "/library/base",
-  },
-  {
-    img: "/images/materials__img__3.png",
-    header: "Видео",
-    subheader:
-      "Реноваскулярная артериальная гипертензия. Этиология, патогенез, клиника, диагностика, лечение.",
-    description:
-      'В этой лекции ответим на два вопроса: "Какие существуют причины ИМ?" и "Как понимать результаты тропонинов?"',
-    href: "/videolecture",
-  },
-];
+function getVisibleCount() {
+  if (typeof window === "undefined") return 3;
+
+  if (window.innerWidth < 768) return 1;
+  if (window.innerWidth < 1100) return 2;
+
+  return 3;
+}
 
 export default function Slider({ materials }: SliderProps) {
-  const items = materials.length > 0 ? materials : fallbackMaterials;
   const [startIndex, setStartIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(3);
 
+  const items = useMemo(() => {
+    return materials.filter((material) => {
+      return Boolean(material.href && material.title);
+    });
+  }, [materials]);
+
   useEffect(() => {
-    const updateCount = () => {
-      if (window.innerWidth < 768) {
-        setVisibleCount(1);
-      } else if (window.innerWidth < 1024) {
-        setVisibleCount(2);
-      } else {
-        setVisibleCount(3);
-      }
-    };
+    function updateCount() {
+      setVisibleCount(getVisibleCount());
+      setStartIndex(0);
+    }
 
     updateCount();
+
     window.addEventListener("resize", updateCount);
 
-    return () => window.removeEventListener("resize", updateCount);
+    return () => {
+      window.removeEventListener("resize", updateCount);
+    };
   }, []);
 
-  const handlePrev = () => {
-    setStartIndex((prev) => {
-      if (items.length <= visibleCount) return 0;
+  const canSlide = items.length > visibleCount;
 
-      return prev - visibleCount < 0
-        ? Math.max(items.length - visibleCount, 0)
-        : prev - visibleCount;
+  const handlePrev = () => {
+    if (!canSlide) return;
+
+    setStartIndex((prev) => {
+      const nextIndex = prev - visibleCount;
+
+      return nextIndex < 0 ? Math.max(items.length - visibleCount, 0) : nextIndex;
     });
   };
 
   const handleNext = () => {
-    setStartIndex((prev) => {
-      if (items.length <= visibleCount) return 0;
+    if (!canSlide) return;
 
-      return prev + visibleCount >= items.length ? 0 : prev + visibleCount;
+    setStartIndex((prev) => {
+      const nextIndex = prev + visibleCount;
+
+      return nextIndex >= items.length ? 0 : nextIndex;
     });
   };
 
   const visibleItems = items.slice(startIndex, startIndex + visibleCount);
 
   return (
-    <div className={styles.materials}>
+    <section className={styles.materials}>
       <div className={styles.materials__container}>
         <div className={styles.materials__inner}>
-          <button
-            className={`${styles.slider__arrow} ${styles.slider__arrow__left}`}
-            onClick={handlePrev}
-            type="button"
-            aria-label="Предыдущие материалы"
-          >
-            ‹
-          </button>
-
           <HeaderText className={`header__style ${styles.materials_header}`}>
             Последние материалы
           </HeaderText>
 
-          <div className={styles.materials__slider}>
-            {visibleItems.map((item) => (
-              <Link className={styles.materials__item} key={item.href} href={item.href}>
-                <img
-                  src={item.img}
-                  className={styles.materials__item__img}
-                  alt={item.subheader}
-                />
+          {items.length > 0 ? (
+            <div className={styles.materials__slider}>
+              <button
+                className={`${styles.slider__arrow} ${styles.slider__arrow__left}`}
+                onClick={handlePrev}
+                type="button"
+                aria-label="Предыдущие материалы"
+                disabled={!canSlide}
+              >
+                ‹
+              </button>
 
-                <div className={styles.materials__item__text}>
-                  <div className={styles.materials__item__header}>
-                    {item.header}
-                  </div>
+              <div className={styles.materials__track}>
+                {visibleItems.map((item) => (
+                  <Link className={styles.materials__item} key={item.id} href={item.href}>
+                    <img
+                      src={item.imageUrl}
+                      className={styles.materials__item__img}
+                      alt={item.title}
+                      onError={(event) => {
+                        event.currentTarget.src = "/images/materials__img__1.png";
+                      }}
+                    />
 
-                  <div className={styles.materials__item__subheader}>
-                    {item.subheader}
-                  </div>
+                    <div className={styles.materials__item__text}>
+                      <div className={styles.materials__item__meta}>
+                        <span className={styles.materials__item__header}>
+                          {item.typeLabel}
+                        </span>
 
-                  <DescriptionText className={styles.materials__item__description}>
-                    {item.description}
-                  </DescriptionText>
-                </div>
-              </Link>
-            ))}
+                        {item.isPremium ? (
+                          <span className={styles.materials__item__premium}>
+                            Premium
+                          </span>
+                        ) : null}
+                      </div>
 
-            <button
-              className={`${styles.slider__arrow} ${styles.slider__arrow__right}`}
-              onClick={handleNext}
-              type="button"
-              aria-label="Следующие материалы"
-            >
-              ›
-            </button>
-          </div>
+                      <div className={styles.materials__item__category}>
+                        {item.categoryTitle}
+                      </div>
+
+                      <div className={styles.materials__item__subheader}>
+                        {item.title}
+                      </div>
+
+                      <DescriptionText className={styles.materials__item__description}>
+                        {item.description}
+                      </DescriptionText>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <button
+                className={`${styles.slider__arrow} ${styles.slider__arrow__right}`}
+                onClick={handleNext}
+                type="button"
+                aria-label="Следующие материалы"
+                disabled={!canSlide}
+              >
+                ›
+              </button>
+            </div>
+          ) : (
+            <div className={styles.materials__empty}>
+              Опубликованные материалы пока не добавлены. Добавь материал в админке
+              и включи «Опубликован».
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
