@@ -24,7 +24,10 @@ async function requireAdmin() {
 function getRedirectPath(formData: FormData) {
   const redirectPath = String(formData.get("redirectPath") ?? "").trim();
 
-  if (redirectPath.startsWith("/admin/ecg-sections")) {
+  if (
+    redirectPath.startsWith("/admin/ecg-sections") ||
+    redirectPath.startsWith("/admin/ecg-materials")
+  ) {
     return redirectPath;
   }
 
@@ -43,6 +46,7 @@ function redirectWithMessage(
 
 function revalidateEcgSectionPages() {
   revalidatePath("/admin/ecg-sections");
+  revalidatePath("/admin/ecg-materials");
   revalidatePath("/admin/materials");
   revalidatePath("/library/base");
   revalidatePath("/search");
@@ -219,4 +223,101 @@ export async function moveMaterialEcgSectionAction(formData: FormData) {
   revalidatePath("/library/base");
 
   redirectWithMessage(redirectPath, "success", "material-moved");
+}
+
+export async function moveMaterialOrderAction(formData: FormData) {
+  await requireAdmin();
+
+  const redirectPath = getRedirectPath(formData);
+  const materialId = String(formData.get("materialId") ?? "").trim();
+  const direction = String(formData.get("direction") ?? "").trim();
+
+  if (!materialId) {
+    redirectWithMessage(redirectPath, "error", "material-required");
+  }
+
+  if (direction !== "up" && direction !== "down") {
+    redirectWithMessage(redirectPath, "error", "invalid-order-direction");
+  }
+
+  const material = await prisma.material.findUnique({
+    where: {
+      id: materialId,
+    },
+    include: {
+      category: {
+        select: {
+          slug: true,
+        },
+      },
+    },
+  });
+
+  if (!material) {
+    redirectWithMessage(redirectPath, "error", "material-not-found");
+  }
+
+  if (material.category?.slug !== "ecg-base") {
+    redirectWithMessage(redirectPath, "error", "not-ecg-base");
+  }
+
+  const materialsInSameSection = await prisma.material.findMany({
+    where: {
+      category: {
+        slug: "ecg-base",
+      },
+      ecgSectionId: material.ecgSectionId,
+    },
+    orderBy: [
+      {
+        sortOrder: "asc",
+      },
+      {
+        title: "asc",
+      },
+      {
+        id: "asc",
+      },
+    ],
+    select: {
+      id: true,
+    },
+  });
+
+  const currentIndex = materialsInSameSection.findIndex((item) => item.id === material.id);
+
+  if (currentIndex === -1) {
+    redirectWithMessage(redirectPath, "error", "material-not-found");
+  }
+
+  const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+  if (targetIndex < 0 || targetIndex >= materialsInSameSection.length) {
+    redirectWithMessage(redirectPath, "success", "order-updated");
+  }
+
+  const reorderedMaterials = [...materialsInSameSection];
+  const currentItem = reorderedMaterials[currentIndex];
+  const targetItem = reorderedMaterials[targetIndex];
+
+  reorderedMaterials[currentIndex] = targetItem;
+  reorderedMaterials[targetIndex] = currentItem;
+
+  await prisma.$transaction(
+    reorderedMaterials.map((item, index) => {
+      return prisma.material.update({
+        where: {
+          id: item.id,
+        },
+        data: {
+          sortOrder: (index + 1) * 10,
+        },
+      });
+    }),
+  );
+
+  revalidateEcgSectionPages();
+  revalidatePath("/library/base");
+
+  redirectWithMessage(redirectPath, "success", "order-updated");
 }

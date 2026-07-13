@@ -9,7 +9,10 @@ import { prisma } from "@/lib/prisma";
 
 import styles from "@/app/styles/Admin.module.css";
 
-import { moveMaterialEcgSectionAction } from "../ecg-sections/actions";
+import {
+  moveMaterialEcgSectionAction,
+  moveMaterialOrderAction,
+} from "../ecg-sections/actions";
 import { updateEcgMaterialVisibilityAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +33,13 @@ function getMessage(error?: string, success?: string) {
     return {
       type: "success",
       text: "Материал обновлён.",
+    };
+  }
+
+  if (success === "order-updated") {
+    return {
+      type: "success",
+      text: "Позиция материала обновлена.",
     };
   }
 
@@ -492,6 +502,26 @@ export default async function AdminEcgMaterialsPage({
                 </form>
 
                 <div className={styles.ecgMaterialActions}>
+                  <form action={moveMaterialOrderAction} className={styles.ecgMaterialOrderForm}>
+                    <input type="hidden" name="materialId" value={material.id} />
+                    <input type="hidden" name="redirectPath" value={currentPath} />
+                    <input type="hidden" name="direction" value="up" />
+
+                    <button className={styles.secondaryAdminAction} type="submit">
+                      Выше
+                    </button>
+                  </form>
+
+                  <form action={moveMaterialOrderAction} className={styles.ecgMaterialOrderForm}>
+                    <input type="hidden" name="materialId" value={material.id} />
+                    <input type="hidden" name="redirectPath" value={currentPath} />
+                    <input type="hidden" name="direction" value="down" />
+
+                    <button className={styles.secondaryAdminAction} type="submit">
+                      Ниже
+                    </button>
+                  </form>
+
                   <Link
                     href={`/admin/materials/${material.id}/edit`}
                     className={styles.primaryAdminAction}

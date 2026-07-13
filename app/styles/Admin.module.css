@@ -3123,3 +3123,12 @@ a.dashboardItemTitle:hover {
     grid-template-columns: 1fr;
   }
 }
+.ecgMaterialOrderForm {
+  margin: 0;
+}
+
+.ecgMaterialOrderForm button {
+  width: 100%;
+  min-height: 2.5rem;
+  cursor: pointer;
+}
