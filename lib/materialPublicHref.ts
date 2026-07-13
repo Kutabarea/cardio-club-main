@@ -11,6 +11,10 @@ export function getMaterialPublicHref(material: MaterialPublicHrefInput) {
     return `/videolecture/${material.slug}`;
   }
 
+  if (material.type === "VIDEO_COURSE") {
+    return `/videocourses/${material.slug}`;
+  }
+
   if (material.category?.slug === "ecg-base") {
     return `/library/base/${material.slug}`;
   }

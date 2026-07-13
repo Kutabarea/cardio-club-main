@@ -196,7 +196,7 @@
   }
 }
 
-/* Только адаптация исходного CSS под динамические Link/img из БД */
+/* Адаптация под динамические данные из БД без изменения общего дизайна ZIP/Figma */
 .materials__item {
   display: block;
   color: inherit;
@@ -221,4 +221,16 @@
   border-radius: 30px;
   background-color: #F4F7FF;
   padding: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .materials__item__img {
+    height: 11.5rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .materials__item__img {
+    height: 12.5rem;
+  }
 }

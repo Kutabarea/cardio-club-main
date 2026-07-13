@@ -7,6 +7,7 @@ import Helper from "./components/Helper";
 import { getLatestHomeMaterials } from "@/lib/homeMaterials";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function Home() {
   const latestMaterials = await getLatestHomeMaterials(12);

@@ -8,9 +8,9 @@ import Link from "next/link";
 import type { HomeMaterialCard } from "@/lib/homeMaterials";
 
 import DescriptionText from "./DescriptionText";
-import HeaderText from "./HeaderText";
 
 import styles from "../styles/Slider.module.css";
+import HeaderText from "./HeaderText";
 
 type SliderProps = {
   materials: HomeMaterialCard[];
@@ -39,7 +39,7 @@ export default function Slider({ materials }: SliderProps) {
 
   const items = useMemo(() => {
     return materials.filter((material) => {
-      return Boolean(material.href && material.title);
+      return Boolean(material.href && material.title && material.imageUrl);
     });
   }, [materials]);
 
@@ -110,8 +110,13 @@ export default function Slider({ materials }: SliderProps) {
                     src={item.imageUrl}
                     className={styles.materials__item__img}
                     alt={item.title}
+                    loading="lazy"
                     onError={(event) => {
-                      event.currentTarget.src = "/images/materials__img__1.png";
+                      if (event.currentTarget.src.endsWith(item.fallbackImageUrl)) {
+                        return;
+                      }
+
+                      event.currentTarget.src = item.fallbackImageUrl;
                     }}
                   />
 

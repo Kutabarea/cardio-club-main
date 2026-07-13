@@ -1,3 +1,4 @@
+import { sanitizeAssetUrl } from "@/lib/contentSecurity";
 import { getMaterialPublicHref } from "@/lib/materialPublicHref";
 import { prisma } from "@/lib/prisma";
 
@@ -5,6 +6,7 @@ export type HomeMaterialCard = {
   id: string;
   href: string;
   imageUrl: string;
+  fallbackImageUrl: string;
   typeLabel: string;
   title: string;
   description: string;
@@ -44,14 +46,36 @@ function getFallbackImage(type: string, index: number) {
   return `/images/materials__img__${(index % 3) + 1}.png`;
 }
 
-function isSafeImageUrl(value?: string | null) {
-  if (!value) return false;
+function normalizeStoredImageUrl(value?: string | null) {
+  if (!value) return null;
 
-  return (
-    value.startsWith("/") ||
-    value.startsWith("https://") ||
-    value.startsWith("http://")
-  );
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) return null;
+
+  if (
+    trimmedValue.startsWith("uploads/") ||
+    trimmedValue.startsWith("images/")
+  ) {
+    return `/${trimmedValue}`;
+  }
+
+  if (
+    trimmedValue.startsWith("public/uploads/") ||
+    trimmedValue.startsWith("public/images/")
+  ) {
+    return trimmedValue.replace(/^public/i, "");
+  }
+
+  return trimmedValue;
+}
+
+function getSafeImageUrl(value?: string | null) {
+  const normalizedValue = normalizeStoredImageUrl(value);
+
+  if (!normalizedValue) return null;
+
+  return sanitizeAssetUrl(normalizedValue);
 }
 
 function extractFirstContentImage(content?: string | null) {
@@ -59,9 +83,9 @@ function extractFirstContentImage(content?: string | null) {
 
   const markdownImageMatch = content.match(/!\[[^\]]*]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
   const htmlImageMatch = content.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i);
-  const imageUrl = markdownImageMatch?.[1] || htmlImageMatch?.[1];
+  const imageUrl = markdownImageMatch?.[1] || htmlImageMatch?.[1] || null;
 
-  return isSafeImageUrl(imageUrl) ? imageUrl : null;
+  return getSafeImageUrl(imageUrl);
 }
 
 function stripMarkdown(value?: string | null) {
@@ -89,17 +113,29 @@ function getShortDescription(material: MaterialForHome) {
 }
 
 function getMaterialImage(material: MaterialForHome, index: number) {
-  if (isSafeImageUrl(material.imageUrl)) {
-    return material.imageUrl;
+  const fallbackImageUrl = getFallbackImage(material.type, index);
+  const directImage = getSafeImageUrl(material.imageUrl);
+
+  if (directImage) {
+    return {
+      imageUrl: directImage,
+      fallbackImageUrl,
+    };
   }
 
   const contentImage = extractFirstContentImage(material.content);
 
   if (contentImage) {
-    return contentImage;
+    return {
+      imageUrl: contentImage,
+      fallbackImageUrl,
+    };
   }
 
-  return getFallbackImage(material.type, index);
+  return {
+    imageUrl: fallbackImageUrl,
+    fallbackImageUrl,
+  };
 }
 
 export async function getLatestHomeMaterials(take = 12): Promise<HomeMaterialCard[]> {
@@ -109,13 +145,13 @@ export async function getLatestHomeMaterials(take = 12): Promise<HomeMaterialCar
     },
     orderBy: [
       {
-        updatedAt: "desc",
-      },
-      {
         createdAt: "desc",
       },
+      {
+        updatedAt: "desc",
+      },
     ],
-    take,
+    take: take * 3,
     include: {
       category: {
         select: {
@@ -134,10 +170,13 @@ export async function getLatestHomeMaterials(take = 12): Promise<HomeMaterialCar
         return null;
       }
 
+      const image = getMaterialImage(material, index);
+
       return {
         id: material.id,
         href,
-        imageUrl: getMaterialImage(material, index),
+        imageUrl: image.imageUrl,
+        fallbackImageUrl: image.fallbackImageUrl,
         typeLabel: getMaterialTypeLabel(material.type),
         title: material.title,
         description: getShortDescription(material),
@@ -145,5 +184,6 @@ export async function getLatestHomeMaterials(take = 12): Promise<HomeMaterialCar
         isPremium: material.isPremium,
       };
     })
-    .filter((item): item is HomeMaterialCard => Boolean(item));
+    .filter((item): item is HomeMaterialCard => Boolean(item))
+    .slice(0, take);
 }
