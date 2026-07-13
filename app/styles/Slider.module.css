@@ -196,41 +196,29 @@
   }
 }
 
-
-
-/* Premium badge polish */
-.materials__item__premium {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: .35rem !important;
-  width: fit-content !important;
-  min-height: 1.75rem !important;
-  border: 1px solid rgba(255, 199, 89, .85) !important;
-  border-radius: 999px !important;
-  background:
-    linear-gradient(135deg, #fff7d6 0%, #ffd36a 45%, #f6a800 100%) !important;
-  color: #5c3700 !important;
-  padding: .32rem .72rem !important;
-  font-size: .74rem !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  letter-spacing: .03em !important;
-  text-transform: uppercase !important;
-  box-shadow:
-    0 .45rem 1rem rgba(246, 168, 0, .24),
-    inset 0 1px 0 rgba(255, 255, 255, .75) !important;
+/* Только адаптация исходного CSS под динамические Link/img из БД */
+.materials__item {
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
 
-.materials__item__premiumIcon {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 1rem !important;
-  height: 1rem !important;
-  border-radius: 999px !important;
-  background: rgba(255, 255, 255, .55) !important;
-  color: #8a4b00 !important;
-  font-size: .68rem !important;
-  line-height: 1 !important;
+.materials__item__img {
+  display: block;
+  height: 12.5rem;
+  object-fit: cover;
+  object-position: center;
+  background-color: #EAF0FF;
+}
+
+.slider__arrow:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.materials__empty {
+  margin-top: 1.5625rem;
+  border-radius: 30px;
+  background-color: #F4F7FF;
+  padding: 2rem;
 }

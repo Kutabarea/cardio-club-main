@@ -20,9 +20,17 @@ function getVisibleCount() {
   if (typeof window === "undefined") return 3;
 
   if (window.innerWidth < 768) return 1;
-  if (window.innerWidth < 1100) return 2;
+  if (window.innerWidth < 1024) return 2;
 
   return 3;
+}
+
+function getHeaderClass(typeLabel: string) {
+  if (typeLabel === "Статья") {
+    return `${styles.materials__item__header} ${styles.materials__article}`;
+  }
+
+  return styles.materials__item__header;
 }
 
 export default function Slider({ materials }: SliderProps) {
@@ -36,10 +44,10 @@ export default function Slider({ materials }: SliderProps) {
   }, [materials]);
 
   useEffect(() => {
-    function updateCount() {
+    const updateCount = () => {
       setVisibleCount(getVisibleCount());
       setStartIndex(0);
-    }
+    };
 
     updateCount();
 
@@ -55,86 +63,73 @@ export default function Slider({ materials }: SliderProps) {
   const handlePrev = () => {
     if (!canSlide) return;
 
-    setStartIndex((prev) => {
-      const nextIndex = prev - visibleCount;
-
-      return nextIndex < 0 ? Math.max(items.length - visibleCount, 0) : nextIndex;
-    });
+    setStartIndex((prev) =>
+      prev - visibleCount < 0
+        ? Math.max(items.length - visibleCount, 0)
+        : prev - visibleCount,
+    );
   };
 
   const handleNext = () => {
     if (!canSlide) return;
 
-    setStartIndex((prev) => {
-      const nextIndex = prev + visibleCount;
-
-      return nextIndex >= items.length ? 0 : nextIndex;
-    });
+    setStartIndex((prev) =>
+      prev + visibleCount >= items.length ? 0 : prev + visibleCount,
+    );
   };
 
   const visibleItems = items.slice(startIndex, startIndex + visibleCount);
 
   return (
-    <section className={styles.materials}>
+    <div className={styles.materials}>
       <div className={styles.materials__container}>
         <div className={styles.materials__inner}>
+          <button
+            className={`${styles.slider__arrow} ${styles.slider__arrow__left}`}
+            onClick={handlePrev}
+            type="button"
+            aria-label="Предыдущие материалы"
+            disabled={!canSlide}
+          >
+            ‹
+          </button>
+
           <HeaderText className={`header__style ${styles.materials_header}`}>
             Последние материалы
           </HeaderText>
 
           {items.length > 0 ? (
             <div className={styles.materials__slider}>
-              <button
-                className={`${styles.slider__arrow} ${styles.slider__arrow__left}`}
-                onClick={handlePrev}
-                type="button"
-                aria-label="Предыдущие материалы"
-                disabled={!canSlide}
-              >
-                ‹
-              </button>
+              {visibleItems.map((item) => (
+                <Link
+                  className={styles.materials__item}
+                  href={item.href}
+                  key={item.id}
+                >
+                  <img
+                    src={item.imageUrl}
+                    className={styles.materials__item__img}
+                    alt={item.title}
+                    onError={(event) => {
+                      event.currentTarget.src = "/images/materials__img__1.png";
+                    }}
+                  />
 
-              <div className={styles.materials__track}>
-                {visibleItems.map((item) => (
-                  <Link className={styles.materials__item} key={item.id} href={item.href}>
-                    <img
-                      src={item.imageUrl}
-                      className={styles.materials__item__img}
-                      alt={item.title}
-                      onError={(event) => {
-                        event.currentTarget.src = "/images/materials__img__1.png";
-                      }}
-                    />
-
-                    <div className={styles.materials__item__text}>
-                      <div className={styles.materials__item__meta}>
-                        <span className={styles.materials__item__header}>
-                          {item.typeLabel}
-                        </span>
-
-                        {item.isPremium ? (
-                          <span className={styles.materials__item__premium}>
-                            <span className={styles.materials__item__premiumIcon}>★</span>
-                            Premium
-                          </span>
-                        ) : null}
-                      </div>
-
-                      <div className={styles.materials__item__category}>
-                        {item.categoryTitle}
-                      </div>
-
-                      <div className={styles.materials__item__subheader}>
-                        {item.title}
-                      </div>
-
-                      <DescriptionText className={styles.materials__item__description}>
-                        {item.description}
-                      </DescriptionText>
+                  <div className={styles.materials__item__text}>
+                    <div className={getHeaderClass(item.typeLabel)}>
+                      {item.typeLabel}
                     </div>
-                  </Link>
-                ))}
-              </div>
+
+                    <div className={styles.materials__item__subheader}>
+                      {item.title}
+                    </div>
+
+                    <DescriptionText className={styles.materials__item__description}>
+                      {item.description}
+                    </DescriptionText>
+                  </div>
+                </Link>
+              ))}
 
               <button
                 className={`${styles.slider__arrow} ${styles.slider__arrow__right}`}
@@ -154,6 +149,6 @@ export default function Slider({ materials }: SliderProps) {
           )}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
