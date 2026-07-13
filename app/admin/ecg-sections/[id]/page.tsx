@@ -119,8 +119,11 @@ export default async function AdminEcgSectionMaterialsPage({
             На сайте
           </Link>
 
-          <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
-            Добавить материал
+          <Link
+            href={`/admin/materials/new?categorySlug=ecg-base&ecgSectionId=${section.id}&type=ECG_ARTICLE&sortOrder=${nextSortOrder}&returnTo=${encodeURIComponent(currentPath)}`}
+            className={styles.primaryAdminAction}
+          >
+            Добавить материал сюда
           </Link>
         </div>
       </div>

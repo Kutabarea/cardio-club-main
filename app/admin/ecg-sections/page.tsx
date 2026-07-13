@@ -187,6 +187,13 @@ export default async function AdminEcgSectionsPage({
                   </Link>
 
                   <Link
+                    href={`/admin/materials/new?categorySlug=ecg-base&ecgSectionId=${section.id}&type=ECG_ARTICLE&sortOrder=100&returnTo=${encodeURIComponent(`/admin/ecg-sections/${section.id}`)}`}
+                    className={styles.primaryAdminAction}
+                  >
+                    Добавить сюда
+                  </Link>
+
+                  <Link
                     href={`/library/base/section/${section.slug}`}
                     className={styles.secondaryAdminAction}
                     target="_blank"
