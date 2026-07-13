@@ -23,7 +23,7 @@ function getMessage(error?: string, success?: string) {
   if (success === "created") return { type: "success", text: "Подраздел создан." };
   if (success === "updated") return { type: "success", text: "Подраздел обновлён." };
   if (success === "deleted") return { type: "success", text: "Подраздел удалён. Материалы остались, но стали без подраздела." };
-  if (success === "material-moved") return { type: "success", text: "Материал перенесён." };
+  if (success === "material-moved") return { type: "success", text: "Материал обновлён." };
   if (error === "required-fields") return { type: "error", text: "Заполни название подраздела." };
   if (error === "slug-exists") return { type: "error", text: "Подраздел с таким названием уже существует." };
   if (error === "delete-not-confirmed") return { type: "error", text: "Удаление не подтверждено." };
@@ -76,14 +76,19 @@ export default async function AdminEcgSectionsPage({
           <h1 className={styles.pageTitle}>ЭКГ подразделы</h1>
 
           <p className={styles.pageDescription}>
-            Эти подразделы управляют списком на странице «ЭКГ база». Пункты внутри
-            подразделов являются обычными материалами и редактируются через админку.
+            Здесь редактируются подразделы страницы «ЭКГ база» и материалы внутри них.
           </p>
         </div>
 
-        <Link href="/admin/ecg-sections/unassigned" className={styles.secondaryAdminAction}>
-          Без подраздела: {unassignedCount}
-        </Link>
+        <div className={styles.ecgSectionTopActions}>
+          <Link href="/admin/ecg-sections/unassigned" className={styles.secondaryAdminAction}>
+            Материалы без подраздела: {unassignedCount}
+          </Link>
+
+          <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
+            Добавить материал
+          </Link>
+        </div>
       </div>
 
       {message ? (
@@ -106,7 +111,7 @@ export default async function AdminEcgSectionsPage({
           </div>
 
           <p>
-            Новый подраздел появится на странице ЭКГ базы в том же стиле, что и остальные.
+            Новый подраздел появится на странице ЭКГ базы.
           </p>
         </div>
 
@@ -154,29 +159,39 @@ export default async function AdminEcgSectionsPage({
           </div>
 
           <p>
-            Через кнопку «Материалы» можно редактировать пункты и переносить их между подразделами.
+            Нажми «Открыть материалы», чтобы переносить пункты между подразделами и менять порядок.
           </p>
         </div>
 
         <div className={styles.adminList}>
           {sections.map((section) => (
             <article key={section.id} className={styles.adminListItem}>
-              <div className={styles.simpleEditHeaderActions}>
-                <Link
-                  href={`/admin/ecg-sections/${section.id}`}
-                  className={styles.primaryAdminAction}
-                >
-                  Материалы: {section._count.materials}
-                </Link>
+              <div className={styles.ecgSectionCardHeader}>
+                <div>
+                  <h3 className={styles.adminListTitle}>{section.title}</h3>
 
-                <Link
-                  href={`/library/base/section/${section.slug}`}
-                  className={styles.secondaryAdminAction}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  На сайте
-                </Link>
+                  <p className={styles.pageDescription}>
+                    {section.description || "Описание не заполнено."}
+                  </p>
+                </div>
+
+                <div className={styles.ecgSectionCardActions}>
+                  <Link
+                    href={`/admin/ecg-sections/${section.id}`}
+                    className={styles.primaryAdminAction}
+                  >
+                    Открыть материалы · {section._count.materials}
+                  </Link>
+
+                  <Link
+                    href={`/library/base/section/${section.slug}`}
+                    className={styles.secondaryAdminAction}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    На сайте
+                  </Link>
+                </div>
               </div>
 
               <form action={updateEcgSectionAction} className={styles.formGrid}>
@@ -194,7 +209,7 @@ export default async function AdminEcgSectionsPage({
                 </label>
 
                 <label className={styles.formGroup}>
-                  <span className={styles.label}>Порядок</span>
+                  <span className={styles.label}>Порядок подраздела</span>
                   <input
                     className={styles.input}
                     name="sortOrder"
@@ -213,7 +228,7 @@ export default async function AdminEcgSectionsPage({
                 </label>
 
                 <button className={styles.primaryAdminAction} type="submit">
-                  Сохранить
+                  Сохранить подраздел
                 </button>
               </form>
 

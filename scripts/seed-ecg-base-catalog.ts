@@ -216,8 +216,9 @@ async function main() {
 
     if (!sectionId) continue;
 
-    for (const title of section.materials) {
+    for (const [index, title] of section.materials.entries()) {
       const slug = createSlug(title);
+      const sortOrder = (index + 1) * 10;
 
       const existingMaterial = await prisma.material.findUnique({
         where: {
@@ -238,6 +239,7 @@ async function main() {
             type: "ECG_ARTICLE",
             categoryId: ecgBaseCategory.id,
             ecgSectionId: sectionId,
+            sortOrder,
             isPublished: true,
           },
         });
@@ -251,6 +253,7 @@ async function main() {
             type: "ECG_ARTICLE",
             categoryId: ecgBaseCategory.id,
             ecgSectionId: sectionId,
+            sortOrder,
             isPublished: true,
             isPremium: false,
           },

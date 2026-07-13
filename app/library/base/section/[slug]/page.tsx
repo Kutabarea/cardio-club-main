@@ -28,9 +28,14 @@ export default async function EcgSectionPage({ params }: EcgSectionPageProps) {
             slug: "ecg-base",
           },
         },
-        orderBy: {
-          title: "asc",
-        },
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            title: "asc",
+          },
+        ],
         select: {
           id: true,
           title: true,

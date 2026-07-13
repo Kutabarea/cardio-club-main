@@ -17,7 +17,7 @@ type UnassignedEcgMaterialsPageProps = {
 };
 
 function getMessage(error?: string, success?: string) {
-  if (success === "material-moved") return { type: "success", text: "Материал перенесён." };
+  if (success === "material-moved") return { type: "success", text: "Материал обновлён." };
   if (error === "material-required") return { type: "error", text: "Материал не выбран." };
   if (error === "material-not-found") return { type: "error", text: "Материал не найден." };
   if (error === "not-ecg-base") return { type: "error", text: "Этот материал не относится к ЭКГ базе." };
@@ -40,9 +40,14 @@ export default async function UnassignedEcgMaterialsPage({
           slug: "ecg-base",
         },
       },
-      orderBy: {
-        title: "asc",
-      },
+      orderBy: [
+        {
+          sortOrder: "asc",
+        },
+        {
+          title: "asc",
+        },
+      ],
       include: {
         category: true,
         ecgSection: true,
@@ -106,7 +111,7 @@ export default async function UnassignedEcgMaterialsPage({
           </div>
 
           <p>
-            Перенеси материалы в нужные подразделы, чтобы они правильно отображались на странице ЭКГ базы.
+            Перенеси материалы в нужные подразделы и сразу задай порядок внутри списка.
           </p>
         </div>
 
@@ -151,7 +156,7 @@ export default async function UnassignedEcgMaterialsPage({
                   <input type="hidden" name="redirectPath" value={currentPath} />
 
                   <label className={styles.formGroup}>
-                    <span className={styles.label}>Назначить подраздел</span>
+                    <span className={styles.label}>Подраздел</span>
 
                     <select className={styles.input} name="ecgSectionId" defaultValue="">
                       <option value="">Без подраздела</option>
@@ -164,8 +169,18 @@ export default async function UnassignedEcgMaterialsPage({
                     </select>
                   </label>
 
+                  <label className={styles.formGroup}>
+                    <span className={styles.label}>Порядок материала</span>
+                    <input
+                      className={styles.input}
+                      name="sortOrder"
+                      type="number"
+                      defaultValue={material.sortOrder}
+                    />
+                  </label>
+
                   <button className={styles.primaryAdminAction} type="submit">
-                    Перенести
+                    Сохранить положение
                   </button>
                 </form>
               </article>

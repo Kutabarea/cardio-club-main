@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -45,6 +45,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
           <Link href="/admin/categories" className={styles.navLink}>
             Категории
+          </Link>
+
+          <Link href="/admin/ecg-sections" className={styles.navLink}>
+            ЭКГ подразделы
           </Link>
 
           <Link href="/admin/users" className={styles.navLink}>

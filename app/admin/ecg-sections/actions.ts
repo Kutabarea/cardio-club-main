@@ -161,6 +161,8 @@ export async function moveMaterialEcgSectionAction(formData: FormData) {
   const redirectPath = getRedirectPath(formData);
   const materialId = String(formData.get("materialId") ?? "").trim();
   const ecgSectionIdRaw = String(formData.get("ecgSectionId") ?? "").trim();
+  const sortOrderRaw = String(formData.get("sortOrder") ?? "100").trim();
+  const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const ecgSectionId = ecgSectionIdRaw || null;
 
   if (!materialId) {
@@ -209,6 +211,7 @@ export async function moveMaterialEcgSectionAction(formData: FormData) {
     },
     data: {
       ecgSectionId,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 100,
     },
   });
 

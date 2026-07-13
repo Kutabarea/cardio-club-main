@@ -22,7 +22,7 @@ type AdminEcgSectionMaterialsPageProps = {
 
 function getMessage(error?: string, success?: string) {
   if (success === "updated") return { type: "success", text: "Подраздел обновлён." };
-  if (success === "material-moved") return { type: "success", text: "Материал перенесён." };
+  if (success === "material-moved") return { type: "success", text: "Материал обновлён." };
   if (error === "required-fields") return { type: "error", text: "Заполни название подраздела." };
   if (error === "slug-exists") return { type: "error", text: "Подраздел с таким названием уже существует." };
   if (error === "material-required") return { type: "error", text: "Материал не выбран." };
@@ -52,9 +52,14 @@ export default async function AdminEcgSectionMaterialsPage({
               slug: "ecg-base",
             },
           },
-          orderBy: {
-            title: "asc",
-          },
+          orderBy: [
+            {
+              sortOrder: "asc",
+            },
+            {
+              title: "asc",
+            },
+          ],
           include: {
             category: true,
             ecgSection: true,
@@ -96,7 +101,7 @@ export default async function AdminEcgSectionMaterialsPage({
           <h1 className={styles.pageTitle}>{section.title}</h1>
 
           <p className={styles.pageDescription}>
-            Редактирование подраздела и перенос материалов между подразделами ЭКГ базы.
+            Здесь можно изменить подраздел и порядок материалов на странице ЭКГ базы.
           </p>
         </div>
 
@@ -136,7 +141,7 @@ export default async function AdminEcgSectionMaterialsPage({
           </div>
 
           <p>
-            Название и описание отображаются на странице ЭКГ базы и на странице подраздела.
+            Название и описание отображаются на странице ЭКГ базы.
           </p>
         </div>
 
@@ -155,7 +160,7 @@ export default async function AdminEcgSectionMaterialsPage({
           </label>
 
           <label className={styles.formGroup}>
-            <span className={styles.label}>Порядок</span>
+            <span className={styles.label}>Порядок подраздела</span>
             <input
               className={styles.input}
               name="sortOrder"
@@ -187,7 +192,8 @@ export default async function AdminEcgSectionMaterialsPage({
           </div>
 
           <p>
-            Здесь можно редактировать материалы и переносить их в другой подраздел ЭКГ базы.
+            Чем меньше число порядка, тем выше материал отображается в списке.
+            Удобно использовать 10, 20, 30, чтобы потом вставлять материалы между ними.
           </p>
         </div>
 
@@ -232,7 +238,7 @@ export default async function AdminEcgSectionMaterialsPage({
                   <input type="hidden" name="redirectPath" value={currentPath} />
 
                   <label className={styles.formGroup}>
-                    <span className={styles.label}>Перенести в подраздел</span>
+                    <span className={styles.label}>Подраздел</span>
 
                     <select
                       className={styles.input}
@@ -249,8 +255,18 @@ export default async function AdminEcgSectionMaterialsPage({
                     </select>
                   </label>
 
+                  <label className={styles.formGroup}>
+                    <span className={styles.label}>Порядок материала</span>
+                    <input
+                      className={styles.input}
+                      name="sortOrder"
+                      type="number"
+                      defaultValue={material.sortOrder}
+                    />
+                  </label>
+
                   <button className={styles.primaryAdminAction} type="submit">
-                    Перенести
+                    Сохранить положение
                   </button>
                 </form>
               </article>

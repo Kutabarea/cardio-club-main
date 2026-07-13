@@ -2997,3 +2997,41 @@ a.dashboardItemTitle:hover {
   font-weight: 800;
   line-height: 1.25;
 }
+.ecgSectionTopActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+.ecgSectionCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ecgSectionCardActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .75rem;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 900px) {
+  .ecgSectionTopActions,
+  .ecgSectionCardHeader,
+  .ecgSectionCardActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ecgSectionTopActions a,
+  .ecgSectionCardActions a {
+    width: 100%;
+  }
+}
