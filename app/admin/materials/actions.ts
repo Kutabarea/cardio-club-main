@@ -72,6 +72,8 @@ function getRawMaterialPayload(formData: FormData) {
   const videoUrlRaw = String(formData.get("videoUrl") ?? "").trim();
   const videoUrl = sanitizeVideoUrl(videoUrlRaw);
   const categoryId = String(formData.get("categoryId") ?? "").trim();
+  const sortOrderRaw = String(formData.get("sortOrder") ?? "100").trim();
+  const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const ecgSectionId = String(formData.get("ecgSectionId") ?? "").trim();
   const newEcgSectionTitle = String(formData.get("newEcgSectionTitle") ?? "").trim();
   const newEcgSectionDescription = String(formData.get("newEcgSectionDescription") ?? "").trim();
@@ -91,6 +93,7 @@ function getRawMaterialPayload(formData: FormData) {
     videoUrlRaw,
     videoUrl,
     categoryId,
+    sortOrder: Number.isFinite(sortOrder) ? sortOrder : 100,
     ecgSectionId,
     newEcgSectionTitle,
     newEcgSectionDescription,
@@ -155,6 +158,7 @@ async function getMaterialPayload(
     videoUrl: raw.videoUrl || null,
     categoryId: raw.categoryId,
     ecgSectionId,
+    sortOrder: raw.sortOrder,
     isPremium: raw.isPremium,
     isPublished: raw.isPublished,
   };

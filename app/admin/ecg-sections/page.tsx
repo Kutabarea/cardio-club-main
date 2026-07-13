@@ -127,7 +127,7 @@ export default async function AdminEcgSectionsPage({
           </label>
 
           <label className={styles.formGroup}>
-            <span className={styles.label}>Порядок</span>
+            <span className={styles.label}>Позиция</span>
             <input
               className={styles.input}
               name="sortOrder"
@@ -209,7 +209,7 @@ export default async function AdminEcgSectionsPage({
                 </label>
 
                 <label className={styles.formGroup}>
-                  <span className={styles.label}>Порядок подраздела</span>
+                  <span className={styles.label}>Позиция подраздела</span>
                   <input
                     className={styles.input}
                     name="sortOrder"

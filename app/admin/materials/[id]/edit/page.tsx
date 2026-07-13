@@ -225,6 +225,7 @@ export default async function EditMaterialPage({
           <EcgSectionFields
             sections={ecgSections}
             currentSectionId={material.ecgSectionId}
+            currentSortOrder={material.sortOrder}
           />
 
           <details className={styles.simpleEditDetails}>

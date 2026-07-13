@@ -9,11 +9,13 @@ type EcgSectionOption = {
 type EcgSectionFieldsProps = {
   sections: EcgSectionOption[];
   currentSectionId?: string | null;
+  currentSortOrder?: number | null;
 };
 
 export default function EcgSectionFields({
   sections,
   currentSectionId,
+  currentSortOrder,
 }: EcgSectionFieldsProps) {
   return (
     <section className={styles.editorSection}>
@@ -24,8 +26,8 @@ export default function EcgSectionFields({
         </div>
 
         <p>
-          Работает только если категория материала — «ЭКГ база». Можно выбрать
-          существующий подраздел или сразу создать новый.
+          Работает для материалов категории «ЭКГ база». Можно выбрать подраздел,
+          создать новый и задать позицию материала в списке.
         </p>
       </div>
 
@@ -48,7 +50,24 @@ export default function EcgSectionFields({
           </select>
 
           <span className={styles.formHint}>
-            Например: «Зубцы и волны», «Интервалы и сегменты».
+            Например: «База», «Зубцы», «Сегменты и интервалы».
+          </span>
+        </label>
+
+        <label className={styles.formGroup}>
+          <span className={styles.label}>Позиция в списке</span>
+
+          <input
+            className={styles.input}
+            name="sortOrder"
+            type="number"
+            defaultValue={currentSortOrder ?? 100}
+            min="0"
+            step="1"
+          />
+
+          <span className={styles.formHint}>
+            Меньше число — выше материал. Удобно ставить 10, 20, 30.
           </span>
         </label>
 

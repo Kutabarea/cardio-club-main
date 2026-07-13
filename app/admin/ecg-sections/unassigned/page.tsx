@@ -170,7 +170,7 @@ export default async function UnassignedEcgMaterialsPage({
                   </label>
 
                   <label className={styles.formGroup}>
-                    <span className={styles.label}>Порядок материала</span>
+                    <span className={styles.label}>Позиция в списке</span>
                     <input
                       className={styles.input}
                       name="sortOrder"
@@ -180,7 +180,7 @@ export default async function UnassignedEcgMaterialsPage({
                   </label>
 
                   <button className={styles.primaryAdminAction} type="submit">
-                    Сохранить положение
+                    Сохранить позицию
                   </button>
                 </form>
               </article>
