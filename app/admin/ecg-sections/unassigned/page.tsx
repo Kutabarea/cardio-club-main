@@ -86,8 +86,11 @@ export default async function UnassignedEcgMaterialsPage({
           </p>
         </div>
 
-        <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
-          Добавить материал
+        <Link
+          href="/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=100"
+          className={styles.primaryAdminAction}
+        >
+          Добавить материал в ЭКГ базу
         </Link>
       </div>
 

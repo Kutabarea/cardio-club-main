@@ -51,6 +51,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
             ЭКГ подразделы
           </Link>
 
+          <Link href="/admin/ecg-materials" className={styles.navLink}>
+            ЭКГ материалы
+          </Link>
+
           <Link href="/admin/users" className={styles.navLink}>
             Пользователи
           </Link>

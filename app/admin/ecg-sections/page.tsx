@@ -85,8 +85,11 @@ export default async function AdminEcgSectionsPage({
             Материалы без подраздела: {unassignedCount}
           </Link>
 
-          <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
-            Добавить материал
+          <Link
+            href="/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=100"
+            className={styles.primaryAdminAction}
+          >
+            Добавить материал в ЭКГ базу
           </Link>
         </div>
       </div>

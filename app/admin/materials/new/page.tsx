@@ -13,6 +13,10 @@ export const dynamic = "force-dynamic";
 type NewMaterialPageProps = {
   searchParams: Promise<{
     error?: string;
+    categorySlug?: string;
+    ecgSectionId?: string;
+    type?: string;
+    sortOrder?: string;
   }>;
 };
 
@@ -28,12 +32,18 @@ function getMessage(error?: string) {
   return null;
 }
 
+function parseSortOrder(value?: string) {
+  const sortOrder = Number.parseInt(value ?? "100", 10);
+
+  return Number.isFinite(sortOrder) ? sortOrder : 100;
+}
+
 export default async function NewMaterialPage({
   searchParams,
 }: NewMaterialPageProps) {
-  const { error } = await searchParams;
+  const { error, categorySlug, ecgSectionId, type, sortOrder } = await searchParams;
 
-  const [categories, ecgSections] = await Promise.all([
+  const [categories, ecgSections, preselectedCategory] = await Promise.all([
     prisma.category.findMany({
       orderBy: {
         title: "asc",
@@ -49,9 +59,22 @@ export default async function NewMaterialPage({
         },
       ],
     }),
+    categorySlug
+      ? prisma.category.findUnique({
+          where: {
+            slug: categorySlug,
+          },
+          select: {
+            id: true,
+          },
+        })
+      : null,
   ]);
 
   const message = getMessage(error);
+  const defaultCategoryId = preselectedCategory?.id ?? "";
+  const defaultType = type || "ECG_ARTICLE";
+  const defaultSortOrder = parseSortOrder(sortOrder);
 
   return (
     <div className={styles.adminPage}>
@@ -126,7 +149,12 @@ export default async function NewMaterialPage({
 
                 <label className={styles.formGroup}>
                   <span className={styles.label}>Тип материала</span>
-                  <select className={styles.input} name="type" defaultValue="ECG_ARTICLE" required>
+                  <select
+                    className={styles.input}
+                    name="type"
+                    defaultValue={defaultType}
+                    required
+                  >
                     <option value="ECG_ARTICLE">Статья / ЭКГ материал</option>
                     <option value="VIDEO_LECTURE">Видеолекция</option>
                     <option value="HELPER">Полезный ресурс</option>
@@ -136,7 +164,12 @@ export default async function NewMaterialPage({
 
               <label className={styles.formGroup}>
                 <span className={styles.label}>Категория</span>
-                <select className={styles.input} name="categoryId" required>
+                <select
+                  className={styles.input}
+                  name="categoryId"
+                  defaultValue={defaultCategoryId}
+                  required
+                >
                   <option value="">Выбери категорию</option>
 
                   {categories.map((category) => (
@@ -149,7 +182,11 @@ export default async function NewMaterialPage({
             </div>
           </details>
 
-          <EcgSectionFields sections={ecgSections} />
+          <EcgSectionFields
+            sections={ecgSections}
+            currentSectionId={ecgSectionId ?? ""}
+            currentSortOrder={defaultSortOrder}
+          />
 
           <details className={styles.simpleEditDetails}>
             <summary>Изображение и видео</summary>

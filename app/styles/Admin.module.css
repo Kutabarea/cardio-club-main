@@ -3035,3 +3035,73 @@ a.dashboardItemTitle:hover {
     width: 100%;
   }
 }
+.ecgMaterialsFilters {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto auto;
+  gap: .75rem;
+  align-items: end;
+}
+
+.ecgMaterialsList {
+  display: grid;
+  gap: 1rem;
+}
+
+.ecgMaterialRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .9fr) auto;
+  gap: 1rem;
+  align-items: start;
+  border: 1px solid #dfe7fb;
+  border-radius: 1rem;
+  background-color: #ffffff;
+  padding: 1rem;
+}
+
+.ecgMaterialMain {
+  display: grid;
+  gap: .75rem;
+  min-width: 0;
+}
+
+.ecgMaterialBadges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.ecgMaterialMoveForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem;
+  gap: .75rem;
+  align-items: end;
+}
+
+.ecgMaterialMoveForm button {
+  grid-column: 1 / -1;
+}
+
+.ecgMaterialActions {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1180px) {
+  .ecgMaterialsFilters,
+  .ecgMaterialRow,
+  .ecgMaterialMoveForm {
+    grid-template-columns: 1fr;
+  }
+
+  .ecgMaterialActions {
+    justify-content: flex-start;
+  }
+
+  .ecgMaterialActions a {
+    width: 100%;
+  }
+}
