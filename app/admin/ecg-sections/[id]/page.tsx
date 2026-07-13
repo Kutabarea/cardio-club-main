@@ -89,6 +89,10 @@ export default async function AdminEcgSectionMaterialsPage({
 
   const message = getMessage(error, success);
   const currentPath = `/admin/ecg-sections/${section.id}`;
+  const nextSortOrder =
+    section.materials.length > 0
+      ? Math.max(...section.materials.map((material) => material.sortOrder)) + 10
+      : 10;
 
   return (
     <div className={styles.adminPage}>

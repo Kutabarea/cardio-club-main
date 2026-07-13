@@ -86,7 +86,7 @@ export default async function AdminEcgSectionsPage({
           </Link>
 
           <Link
-            href="/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=100"
+            href="/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=100&returnTo=%2Fadmin%2Fecg-sections"
             className={styles.primaryAdminAction}
           >
             Добавить материал в ЭКГ базу

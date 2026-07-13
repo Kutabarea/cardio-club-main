@@ -70,6 +70,10 @@ export default async function UnassignedEcgMaterialsPage({
   ]);
 
   const currentPath = "/admin/ecg-sections/unassigned";
+  const nextSortOrder =
+    materials.length > 0
+      ? Math.max(...materials.map((material) => material.sortOrder)) + 10
+      : 10;
 
   return (
     <div className={styles.adminPage}>
@@ -87,7 +91,7 @@ export default async function UnassignedEcgMaterialsPage({
         </div>
 
         <Link
-          href="/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=100"
+          href={`/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=${nextSortOrder}&returnTo=${encodeURIComponent(currentPath)}`}
           className={styles.primaryAdminAction}
         >
           Добавить материал в ЭКГ базу

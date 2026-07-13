@@ -181,7 +181,7 @@ export default async function AdminEcgMaterialsPage({
 
         <div className={styles.ecgSectionTopActions}>
           <Link
-            href="/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=100"
+            href={`/admin/materials/new?categorySlug=ecg-base&type=ECG_ARTICLE&sortOrder=100&returnTo=${encodeURIComponent(currentPath)}`}
             className={styles.primaryAdminAction}
           >
             Добавить материал

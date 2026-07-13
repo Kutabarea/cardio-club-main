@@ -17,6 +17,7 @@ type NewMaterialPageProps = {
     ecgSectionId?: string;
     type?: string;
     sortOrder?: string;
+    returnTo?: string;
   }>;
 };
 
@@ -41,7 +42,7 @@ function parseSortOrder(value?: string) {
 export default async function NewMaterialPage({
   searchParams,
 }: NewMaterialPageProps) {
-  const { error, categorySlug, ecgSectionId, type, sortOrder } = await searchParams;
+  const { error, categorySlug, ecgSectionId, type, sortOrder, returnTo } = await searchParams;
 
   const [categories, ecgSections, preselectedCategory] = await Promise.all([
     prisma.category.findMany({
@@ -75,6 +76,7 @@ export default async function NewMaterialPage({
   const defaultCategoryId = preselectedCategory?.id ?? "";
   const defaultType = type || "ECG_ARTICLE";
   const defaultSortOrder = parseSortOrder(sortOrder);
+  const safeReturnTo = returnTo?.startsWith("/admin") ? returnTo : "/admin/materials";
 
   return (
     <div className={styles.adminPage}>
@@ -100,6 +102,7 @@ export default async function NewMaterialPage({
 
       <form action={createMaterialAction} className={styles.simpleEditLayout}>
         <input type="hidden" name="redirectPath" value="/admin/materials/new" />
+        <input type="hidden" name="afterCreatePath" value={safeReturnTo} />
 
         <main className={styles.simpleEditMain}>
           <section className={styles.simpleEditCard}>

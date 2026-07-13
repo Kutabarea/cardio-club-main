@@ -40,14 +40,22 @@ async function requireAdmin() {
   return user;
 }
 
-function getRedirectPath(formData: FormData) {
-  const redirectPath = String(formData.get("redirectPath") ?? "").trim();
+function getSafeAdminPath(value: FormDataEntryValue | null, fallback: string) {
+  const path = String(value ?? "").trim();
 
-  if (redirectPath.startsWith("/admin/materials")) {
-    return redirectPath;
+  if (path.startsWith("/admin")) {
+    return path;
   }
 
-  return "/admin/materials";
+  return fallback;
+}
+
+function getRedirectPath(formData: FormData) {
+  return getSafeAdminPath(formData.get("redirectPath"), "/admin/materials");
+}
+
+function getAfterCreatePath(formData: FormData) {
+  return getSafeAdminPath(formData.get("afterCreatePath"), "/admin/materials");
 }
 
 function redirectWithMessage(
@@ -168,6 +176,7 @@ function revalidateMaterialPages() {
   revalidatePath("/admin");
   revalidatePath("/admin/materials");
   revalidatePath("/admin/ecg-sections");
+  revalidatePath("/admin/ecg-materials");
   revalidatePath("/library");
   revalidatePath("/library/base");
   revalidatePath("/videolecture");
@@ -178,6 +187,7 @@ export async function createMaterialAction(formData: FormData) {
   await requireAdmin();
 
   const errorRedirectPath = getRedirectPath(formData);
+  const afterCreatePath = getAfterCreatePath(formData);
   const raw = getRawMaterialPayload(formData);
 
   validateRawMaterialPayload(raw, errorRedirectPath);
@@ -203,7 +213,7 @@ export async function createMaterialAction(formData: FormData) {
 
   revalidateMaterialPages();
 
-  redirect("/admin/materials?success=created");
+  redirectWithMessage(afterCreatePath, "success", "created");
 }
 
 export async function updateMaterialAction(formData: FormData) {
