@@ -114,6 +114,7 @@ export default function Slider({ materials }: SliderProps) {
 
                         {item.isPremium ? (
                           <span className={styles.materials__item__premium}>
+                            <span className={styles.materials__item__premiumIcon}>★</span>
                             Premium
                           </span>
                         ) : null}
