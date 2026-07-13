@@ -78,9 +78,7 @@ export default function Header() {
                 ЭКГ
               </Link>
 
-              <Link href="/library" className={styles.nav__link} onClick={closeMenu}>
-                Курсы
-              </Link>
+              <Link href="/videocourses" className={styles.nav__link} onClick={closeMenu}>Курсы</Link>
 
               <Link href="/library" className={styles.nav__link} onClick={closeMenu}>
                 Литература

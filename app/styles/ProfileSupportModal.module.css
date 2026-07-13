@@ -1,0 +1,132 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(9, 18, 38, .55);
+  backdrop-filter: blur(.35rem);
+}
+
+.modal {
+  position: relative;
+  width: min(100%, 34rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .65);
+  border-radius: 1.75rem;
+  background:
+    radial-gradient(circle at top left, rgba(68, 128, 234, .16), transparent 18rem),
+    #ffffff;
+  box-shadow: 0 2rem 5rem rgba(9, 18, 38, .28);
+  padding: 2rem;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: #edf3ff;
+  color: #1f2a44;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background: #dfeaff;
+}
+
+.header {
+  display: grid;
+  gap: .75rem;
+  padding-right: 2.5rem;
+}
+
+.kicker {
+  width: fit-content;
+  border-radius: 999px;
+  background: #eaf1ff;
+  color: #4480ea;
+  padding: .35rem .75rem;
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+.header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  line-height: 1.1;
+}
+
+.header p {
+  margin: 0;
+  color: #596579;
+  line-height: 1.6;
+}
+
+.contacts {
+  display: grid;
+  gap: .75rem;
+  margin-top: 1.5rem;
+}
+
+.contactCard {
+  display: grid;
+  gap: .25rem;
+  border: 1px solid #dfe7fb;
+  border-radius: 1rem;
+  background: rgba(248, 250, 255, .9);
+  padding: 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.contactCard:hover {
+  border-color: #4480ea;
+  background: #f4f8ff;
+}
+
+.contactCard span {
+  color: #71809a;
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.contactCard strong {
+  color: #111827;
+  font-size: 1.05rem;
+}
+
+.notice {
+  margin-top: 1.25rem;
+  border-radius: .875rem;
+  background: #f8faff;
+  color: #71809a;
+  padding: .875rem 1rem;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.notice code {
+  color: #4480ea;
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .modal {
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+  }
+
+  .header {
+    padding-right: 2rem;
+  }
+}

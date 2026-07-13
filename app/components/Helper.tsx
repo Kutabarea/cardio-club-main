@@ -69,7 +69,7 @@ export default function Helper() {
 
                 <div className={styles.button__wrapper}>
                   <Button
-                    href="/videolecture"
+                    href="/videocourses"
                     className={styles.button}
                     fontSize="0.9375rem"
                     padding="1rem 10rem"

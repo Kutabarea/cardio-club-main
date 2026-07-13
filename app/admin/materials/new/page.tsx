@@ -160,6 +160,7 @@ export default async function NewMaterialPage({
                   >
                     <option value="ECG_ARTICLE">Статья / ЭКГ материал</option>
                     <option value="VIDEO_LECTURE">Видеолекция</option>
+                    <option value="VIDEO_COURSE">Видеокурс</option>
                     <option value="HELPER">Полезный ресурс</option>
                   </select>
                 </label>
