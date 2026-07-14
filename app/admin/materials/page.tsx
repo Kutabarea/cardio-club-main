@@ -37,91 +37,91 @@ function getMessage(error?: string, success?: string) {
   if (success === "created") {
     return {
       type: "success",
-      text: "РњР°С‚РµСЂРёР°Р» СЃРѕР·РґР°РЅ.",
+      text: "Материал создан.",
     };
   }
 
   if (success === "updated") {
     return {
       type: "success",
-      text: "РњР°С‚РµСЂРёР°Р» РѕР±РЅРѕРІР»С‘РЅ.",
+      text: "Материал обновлён.",
     };
   }
 
   if (success === "deleted") {
     return {
       type: "success",
-      text: "РњР°С‚РµСЂРёР°Р» СѓРґР°Р»С‘РЅ.",
+      text: "Материал удалён.",
     };
   }
 
   if (error === "required-fields") {
     return {
       type: "error",
-      text: "Р—Р°РїРѕР»РЅРё РЅР°Р·РІР°РЅРёРµ, С‚РёРї Рё РєР°С‚РµРіРѕСЂРёСЋ РјР°С‚РµСЂРёР°Р»Р°.",
+      text: "Заполни название, тип и категорию материала.",
     };
   }
 
   if (error === "slug-required") {
     return {
       type: "error",
-      text: "РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ slug. РЈРєР°Р¶Рё slug РІСЂСѓС‡РЅСѓСЋ.",
+      text: "Не удалось создать slug. Укажи slug вручную.",
     };
   }
 
   if (error === "slug-exists") {
     return {
       type: "error",
-      text: "РњР°С‚РµСЂРёР°Р» СЃ С‚Р°РєРёРј slug СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.",
+      text: "Материал с таким slug уже существует.",
     };
   }
 
   if (error === "invalid-image") {
     return {
       type: "error",
-      text: "РњРѕР¶РЅРѕ Р·Р°РіСЂСѓР¶Р°С‚СЊ С‚РѕР»СЊРєРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ.",
+      text: "Можно загружать только изображения.",
     };
   }
 
   if (error === "image-too-large") {
     return {
       type: "error",
-      text: "РљР°СЂС‚РёРЅРєР° СЃР»РёС€РєРѕРј Р±РѕР»СЊС€Р°СЏ. РњР°РєСЃРёРјСѓРј вЂ” 5 РњР‘.",
+      text: "Картинка слишком большая. Максимум — 5 МБ.",
     };
   }
 
   if (error === "invalid-url") {
     return {
       type: "error",
-      text: "РџСЂРѕРІРµСЂСЊ СЃСЃС‹Р»РєСѓ РЅР° РёР·РѕР±СЂР°Р¶РµРЅРёРµ РёР»Рё РІРёРґРµРѕ. Р Р°Р·СЂРµС€РµРЅС‹ С‚РѕР»СЊРєРѕ Р±РµР·РѕРїР°СЃРЅС‹Рµ URL.",
+      text: "Проверь ссылку на изображение или видео. Разрешены только безопасные URL.",
     };
   }
 
   if (error === "content-too-large") {
     return {
       type: "error",
-      text: "РўРµРєСЃС‚ РјР°С‚РµСЂРёР°Р»Р° СЃР»РёС€РєРѕРј Р±РѕР»СЊС€РѕР№. РЎРѕРєСЂР°С‚Рё РјР°С‚РµСЂРёР°Р» РёР»Рё СЂР°Р·РґРµР»Рё РµРіРѕ РЅР° РЅРµСЃРєРѕР»СЊРєРѕ С‡Р°СЃС‚РµР№.",
+      text: "Текст материала слишком большой. Сократи материал или раздели его на несколько частей.",
     };
   }
 
   if (error === "id-required") {
     return {
       type: "error",
-      text: "ID РјР°С‚РµСЂРёР°Р»Р° РЅРµ РЅР°Р№РґРµРЅ.",
+      text: "ID материала не найден.",
     };
   }
 
   if (error === "not-found") {
     return {
       type: "error",
-      text: "РњР°С‚РµСЂРёР°Р» РЅРµ РЅР°Р№РґРµРЅ. Р’РѕР·РјРѕР¶РЅРѕ, РѕРЅ СѓР¶Рµ СѓРґР°Р»С‘РЅ.",
+      text: "Материал не найден. Возможно, он уже удалён.",
     };
   }
 
   if (error === "delete-not-confirmed") {
     return {
       type: "error",
-      text: "РЈРґР°Р»РµРЅРёРµ РјР°С‚РµСЂРёР°Р»Р° РЅРµ РїРѕРґС‚РІРµСЂР¶РґРµРЅРѕ.",
+      text: "Удаление материала не подтверждено.",
     };
   }
 
@@ -129,9 +129,9 @@ function getMessage(error?: string, success?: string) {
 }
 
 function getMaterialTypeLabel(type: string) {
-  if (type === "ECG_ARTICLE") return "РЎС‚Р°С‚СЊСЏ";
-  if (type === "VIDEO_LECTURE") return "Р’РёРґРµРѕР»РµРєС†РёСЏ";
-  if (type === "HELPER") return "Р РµСЃСѓСЂСЃ";
+  if (type === "ECG_ARTICLE") return "Статья";
+  if (type === "VIDEO_LECTURE") return "Видеолекция";
+  if (type === "HELPER") return "Ресурс";
 
   return type;
 }
@@ -315,15 +315,15 @@ export default async function AdminMaterialsPage({
     <div className={styles.adminPage}>
       <div className={styles.adminTopbar}>
         <div>
-          <h1 className={styles.pageTitle}>РњР°С‚РµСЂРёР°Р»С‹</h1>
+          <h1 className={styles.pageTitle}>Материалы</h1>
 
           <p className={styles.pageDescription}>
-            РЈРїСЂР°РІР»РµРЅРёРµ СЃС‚Р°С‚СЊСЏРјРё, РІРёРґРµРѕР»РµРєС†РёСЏРјРё, С‡РµСЂРЅРѕРІРёРєР°РјРё, premium-РґРѕСЃС‚СѓРїРѕРј Рё РїСѓР±Р»РёРєР°С†РёРµР№.
+            Управление статьями, видеолекциями, черновиками, premium-доступом и публикацией.
           </p>
         </div>
 
         <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
-          Р”РѕР±Р°РІРёС‚СЊ РјР°С‚РµСЂРёР°Р»
+          Добавить материал
         </Link>
       </div>
 
@@ -341,17 +341,17 @@ export default async function AdminMaterialsPage({
 
       <section className={styles.materialsStatsGrid}>
         <div className={styles.materialsStatCard}>
-          <span>Р’СЃРµРіРѕ</span>
+          <span>Всего</span>
           <strong>{totalMaterials}</strong>
         </div>
 
         <div className={styles.materialsStatCard}>
-          <span>РћРїСѓР±Р»РёРєРѕРІР°РЅРѕ</span>
+          <span>Опубликовано</span>
           <strong>{publishedMaterials}</strong>
         </div>
 
         <div className={styles.materialsStatCard}>
-          <span>Р§РµСЂРЅРѕРІРёРєРё</span>
+          <span>Черновики</span>
           <strong>{draftMaterials}</strong>
         </div>
 
@@ -361,66 +361,66 @@ export default async function AdminMaterialsPage({
         </div>
 
         <div className={styles.materialsStatCard}>
-          <span>Р’РёРґРµРѕР»РµРєС†РёРё</span>
+          <span>Видеолекции</span>
           <strong>{videoLectures}</strong>
         </div>
 
         <div className={styles.materialsStatCard}>
-          <span>РќР°Р№РґРµРЅРѕ</span>
+          <span>Найдено</span>
           <strong>{filteredMaterials}</strong>
         </div>
       </section>
 
       <section className={styles.materialsControlPanel}>
         <div>
-          <h2>Р¤РёР»СЊС‚СЂС‹ Рё РїРѕРёСЃРє</h2>
+          <h2>Фильтры и поиск</h2>
           <p>
-            Р‘С‹СЃС‚СЂРѕ РЅР°Р№РґРё РјР°С‚РµСЂРёР°Р» РїРѕ РЅР°Р·РІР°РЅРёСЋ, slug, С‚РµРєСЃС‚Сѓ, РєР°С‚РµРіРѕСЂРёРё, СЃС‚Р°С‚СѓСЃСѓ РёР»Рё С‚РёРїСѓ.
+            Быстро найди материал по названию, slug, тексту, категории, статусу или типу.
           </p>
         </div>
 
         <form className={styles.materialsFiltersForm} action="/admin/materials">
           <label className={styles.materialsSearchField}>
-            <span>РџРѕРёСЃРє</span>
+            <span>Поиск</span>
             <input
               name="q"
               defaultValue={q}
-              placeholder="РќР°Р·РІР°РЅРёРµ, slug, С‚РµРєСЃС‚ РёР»Рё РєР°С‚РµРіРѕСЂРёСЏ"
+              placeholder="Название, slug, текст или категория"
             />
           </label>
 
           <label className={styles.materialsFilterField}>
-            <span>РЎС‚Р°С‚СѓСЃ</span>
+            <span>Статус</span>
             <select name="status" defaultValue={status}>
-              <option value="all">Р’СЃРµ СЃС‚Р°С‚СѓСЃС‹</option>
-              <option value="published">РћРїСѓР±Р»РёРєРѕРІР°РЅРЅС‹Рµ</option>
-              <option value="draft">Р§РµСЂРЅРѕРІРёРєРё</option>
+              <option value="all">Все статусы</option>
+              <option value="published">Опубликованные</option>
+              <option value="draft">Черновики</option>
             </select>
           </label>
 
           <label className={styles.materialsFilterField}>
-            <span>Р”РѕСЃС‚СѓРї</span>
+            <span>Доступ</span>
             <select name="access" defaultValue={access}>
-              <option value="all">Р›СЋР±РѕР№ РґРѕСЃС‚СѓРї</option>
+              <option value="all">Любой доступ</option>
               <option value="free">Free</option>
               <option value="premium">Premium</option>
             </select>
           </label>
 
           <label className={styles.materialsFilterField}>
-            <span>РўРёРї</span>
+            <span>Тип</span>
             <select name="type" defaultValue={type}>
-              <option value="all">Р’СЃРµ С‚РёРїС‹</option>
-              <option value="ECG_ARTICLE">РЎС‚Р°С‚СЊРё</option>
-              <option value="VIDEO_LECTURE">Р’РёРґРµРѕР»РµРєС†РёРё</option>
-              <option value="HELPER">Р РµСЃСѓСЂСЃС‹</option>
+              <option value="all">Все типы</option>
+              <option value="ECG_ARTICLE">Статьи</option>
+              <option value="VIDEO_LECTURE">Видеолекции</option>
+              <option value="HELPER">Ресурсы</option>
             </select>
           </label>
 
           <label className={styles.materialsFilterField}>
-            <span>РљР°С‚РµРіРѕСЂРёСЏ</span>
+            <span>Категория</span>
             <select name="categoryId" defaultValue={categoryId}>
-              <option value="all">Р’СЃРµ РєР°С‚РµРіРѕСЂРёРё</option>
+              <option value="all">Все категории</option>
 
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -431,8 +431,8 @@ export default async function AdminMaterialsPage({
           </label>
 
           <div className={styles.materialsFilterActions}>
-            <button type="submit">РџСЂРёРјРµРЅРёС‚СЊ</button>
-            <Link href="/admin/materials">РЎР±СЂРѕСЃРёС‚СЊ</Link>
+            <button type="submit">Применить</button>
+            <Link href="/admin/materials">Сбросить</Link>
           </div>
         </form>
       </section>
@@ -463,7 +463,7 @@ export default async function AdminMaterialsPage({
                           : styles.materialBadgeDraft
                       }
                     >
-                      {material.isPublished ? "РћРїСѓР±Р»РёРєРѕРІР°РЅ" : "Р§РµСЂРЅРѕРІРёРє"}
+                      {material.isPublished ? "Опубликован" : "Черновик"}
                     </span>
 
                     <span
@@ -486,13 +486,13 @@ export default async function AdminMaterialsPage({
                   </h2>
 
                   <p className={styles.materialCardDescription}>
-                    {material.description || "РћРїРёСЃР°РЅРёРµ РїРѕРєР° РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ."}
+                    {material.description || "Описание пока не заполнено."}
                   </p>
 
                   <div className={styles.materialCardMeta}>
                     <div>
-                      <span>РљР°С‚РµРіРѕСЂРёСЏ</span>
-                      <strong>{material.category?.title ?? "Р‘РµР· РєР°С‚РµРіРѕСЂРёРё"}</strong>
+                      <span>Категория</span>
+                      <strong>{material.category?.title ?? "Без категории"}</strong>
                     </div>
 
                     <div>
@@ -507,14 +507,14 @@ export default async function AdminMaterialsPage({
                     href={`/admin/materials/${material.id}/edit`}
                     className={styles.materialActionPrimary}
                   >
-                    Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ
+                    Редактировать
                   </Link>
 
                   <Link
                     href={`/admin/materials/${material.id}/preview`}
                     className={styles.materialActionSecondary}
                   >
-                    РџСЂРµРґРїСЂРѕСЃРјРѕС‚СЂ
+                    Предпросмотр
                   </Link>
 
                   {material.isPublished && publicHref ? (
@@ -524,11 +524,11 @@ export default async function AdminMaterialsPage({
                       target="_blank"
                       rel="noreferrer"
                     >
-                      РќР° СЃР°Р№С‚Рµ
+                      На сайте
                     </Link>
                   ) : (
                     <span className={styles.materialActionDisabled}>
-                      РќРµ РѕРїСѓР±Р»РёРєРѕРІР°РЅ
+                      Не опубликован
                     </span>
                   )}
 
@@ -544,20 +544,20 @@ export default async function AdminMaterialsPage({
         </section>
       ) : (
         <section className={styles.materialsEmptyState}>
-          <h2>РњР°С‚РµСЂРёР°Р»С‹ РЅРµ РЅР°Р№РґРµРЅС‹</h2>
+          <h2>Материалы не найдены</h2>
 
           <p>
-            РџРѕРїСЂРѕР±СѓР№ РёР·РјРµРЅРёС‚СЊ С„РёР»СЊС‚СЂС‹ РёР»Рё СЃРѕР·РґР°С‚СЊ РЅРѕРІС‹Р№ РјР°С‚РµСЂРёР°Р». Р•СЃР»Рё Р±Р°Р·Р° РїСѓСЃС‚Р°СЏ,
-            РјРѕР¶РЅРѕ Р·Р°РїСѓСЃС‚РёС‚СЊ РґРµРјРѕ-РЅР°РїРѕР»РЅРµРЅРёРµ.
+            Попробуй изменить фильтры или создать новый материал. Если база пустая,
+            можно запустить демо-наполнение.
           </p>
 
           <div className={styles.materialsEmptyActions}>
             <Link href="/admin/materials" className={styles.secondaryAdminAction}>
-              РЎР±СЂРѕСЃРёС‚СЊ С„РёР»СЊС‚СЂС‹
+              Сбросить фильтры
             </Link>
 
             <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
-              Р”РѕР±Р°РІРёС‚СЊ РјР°С‚РµСЂРёР°Р»
+              Добавить материал
             </Link>
           </div>
         </section>
