@@ -175,11 +175,13 @@ async function getMaterialPayload(
 function revalidateMaterialPages() {
   revalidatePath("/admin");
   revalidatePath("/admin/materials");
+  revalidatePath("/admin/materials/audit");
   revalidatePath("/admin/ecg-sections");
   revalidatePath("/admin/ecg-materials");
   revalidatePath("/library");
   revalidatePath("/library/base");
   revalidatePath("/videolecture");
+  revalidatePath("/videocourses");
   revalidatePath("/search");
 }
 
@@ -318,4 +320,45 @@ export async function deleteMaterialAction(formData: FormData) {
   revalidateMaterialPages();
 
   redirectWithMessage(redirectPath, "success", "deleted");
+}
+export async function toggleMaterialPublishAction(formData: FormData) {
+  await requireAdmin();
+
+  const id = String(formData.get("id") ?? "").trim();
+  const redirectPath = getRedirectPath(formData);
+  const nextPublishedValue = String(formData.get("isPublished") ?? "").trim() === "true";
+
+  if (!id) {
+    redirectWithMessage(redirectPath, "error", "id-required");
+  }
+
+  const material = await prisma.material.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!material) {
+    redirectWithMessage(redirectPath, "error", "not-found");
+  }
+
+  await prisma.material.update({
+    where: {
+      id,
+    },
+    data: {
+      isPublished: nextPublishedValue,
+    },
+  });
+
+  revalidateMaterialPages();
+
+  redirectWithMessage(
+    redirectPath,
+    "success",
+    nextPublishedValue ? "published" : "unpublished",
+  );
 }
