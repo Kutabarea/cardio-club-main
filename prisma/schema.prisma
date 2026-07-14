@@ -7,11 +7,11 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String @id @default(cuid())
+  email        String @unique
   passwordHash String
   name         String?
-  role         String   @default("USER")
+  role         String @default("USER")
 
   profile       Profile?
   subscriptions Subscription[]
@@ -19,6 +19,8 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([role])
 }
 
 model Profile {
@@ -40,19 +42,22 @@ model Subscription {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  plan      String  @default("FREE")
-  status    String  @default("ACTIVE")
-  startsAt  DateTime @default(now())
-  endsAt    DateTime?
+  plan     String   @default("FREE")
+  status   String   @default("ACTIVE")
+  startsAt DateTime @default(now())
+  endsAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([endsAt])
 }
 
 model Category {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
-  slug        String @unique
+  slug        String  @unique
   description String?
 
   materials Material[]
@@ -60,7 +65,6 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
 
 model EcgSection {
   id          String     @id @default(cuid())
@@ -71,11 +75,14 @@ model EcgSection {
   materials   Material[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+
+  @@index([sortOrder])
 }
+
 model Material {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
-  slug        String @unique
+  slug        String  @unique
   description String?
   content     String?
   type        String
@@ -84,24 +91,32 @@ model Material {
   isPremium   Boolean @default(false)
   isPublished Boolean @default(false)
 
-  categoryId String?
+  categoryId   String?
   ecgSectionId String?
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  ecgSection EcgSection? @relation(fields: [ecgSectionId], references: [id], onDelete: SetNull)
-  sortOrder   Int        @default(0)
+  category     Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  ecgSection   EcgSection? @relation(fields: [ecgSectionId], references: [id], onDelete: SetNull)
+  sortOrder    Int         @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([type, isPublished])
+  @@index([categoryId, isPublished, sortOrder])
+  @@index([ecgSectionId, isPublished, sortOrder])
+  @@index([isPublished, updatedAt])
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   tokenHash String   @unique
   expiresAt DateTime
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([expiresAt])
 }

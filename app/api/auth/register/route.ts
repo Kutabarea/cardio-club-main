@@ -5,15 +5,19 @@ import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const registerSchema = z.object({
-  email: z.string().email("Некорректный email"),
+  email: z
+    .string()
+    .trim()
+    .email("Некорректный email")
+    .transform((email) => email.toLowerCase()),
   password: z.string().min(8, "Пароль должен быть минимум 8 символов"),
   name: z.string().min(2, "Имя должно быть минимум 2 символа").max(64).optional(),
 });
 
 export async function POST(request: Request) {
-  // AUTH_REGISTER_RATE_LIMIT
   const rateLimitResult = rateLimit({
     key: `register:${getClientIp(request)}`,
     limit: 3,
@@ -23,7 +27,7 @@ export async function POST(request: Request) {
   if (!rateLimitResult.allowed) {
     return NextResponse.json(
       {
-        error: "Слишком много попыток регистрации. Попробуйте позже.",
+        message: "Слишком много попыток регистрации. Попробуйте позже.",
       },
       {
         status: 429,
@@ -36,7 +40,6 @@ export async function POST(request: Request) {
     );
   }
 
-
   try {
     const body = await request.json();
     const data = registerSchema.parse(body);
@@ -48,7 +51,7 @@ export async function POST(request: Request) {
     });
 
     if (existingUser) {
-      return Response.json(
+      return NextResponse.json(
         { message: "Пользователь с таким email уже существует" },
         { status: 409 },
       );
@@ -80,10 +83,10 @@ export async function POST(request: Request) {
       },
     });
 
-    return Response.json({ user }, { status: 201 });
+    return NextResponse.json({ user }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return Response.json(
+      return NextResponse.json(
         {
           message: "Ошибка валидации",
           errors: error.flatten().fieldErrors,
@@ -92,7 +95,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return Response.json(
+    return NextResponse.json(
       { message: "Внутренняя ошибка сервера" },
       { status: 500 },
     );

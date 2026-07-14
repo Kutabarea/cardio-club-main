@@ -5,6 +5,17 @@ import { expireEndedSubscriptionsForUser } from "@/lib/subscriptions";
 
 export const SESSION_COOKIE_NAME = "cardio_session";
 
+const currentUserSelect = {
+  id: true,
+  email: true,
+  name: true,
+  role: true,
+  createdAt: true,
+  updatedAt: true,
+  profile: true,
+  subscriptions: true,
+} as const;
+
 export function createSessionToken() {
   return crypto.randomBytes(32).toString("hex");
 }
@@ -53,16 +64,12 @@ export async function getCurrentUser() {
     where: {
       tokenHash,
     },
-    include: {
+    select: {
+      id: true,
+      expiresAt: true,
       user: {
         select: {
           id: true,
-          email: true,
-          name: true,
-          role: true,
-          createdAt: true,
-          profile: true,
-          subscriptions: true,
         },
       },
     },
@@ -73,7 +80,7 @@ export async function getCurrentUser() {
   }
 
   if (session.expiresAt < new Date()) {
-    await prisma.session.delete({
+    await prisma.session.deleteMany({
       where: {
         id: session.id,
       },
@@ -88,10 +95,7 @@ export async function getCurrentUser() {
     where: {
       id: session.user.id,
     },
-    include: {
-      profile: true,
-      subscriptions: true,
-    },
+    select: currentUserSelect,
   });
 }
 

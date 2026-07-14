@@ -1,9 +1,42 @@
-﻿node_modules
+# dependencies
+node_modules
+
+# next
 .next
+out
+
+# production
+build
+dist
+
+# env
 .env
-.env.local
+.env.*
+!.env.example
+
+# prisma / sqlite local db
 dev.db
 dev.db-journal
+dev.db-wal
+dev.db-shm
 prisma/dev.db
 prisma/dev.db-journal
+prisma/dev.db-wal
+prisma/dev.db-shm
+
+# runtime uploads
+public/uploads/*
+!public/uploads/.gitkeep
+!public/uploads/materials/
+public/uploads/materials/*
+!public/uploads/materials/.gitkeep
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# system
 .DS_Store
+Thumbs.db

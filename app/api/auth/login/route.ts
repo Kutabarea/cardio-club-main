@@ -5,16 +5,19 @@ import { prisma } from "@/lib/prisma";
 import { createUserSession } from "@/lib/auth";
 import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
-
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const loginSchema = z.object({
-  email: z.string().email("Некорректный email"),
+  email: z
+    .string()
+    .trim()
+    .email("Некорректный email")
+    .transform((email) => email.toLowerCase()),
   password: z.string().min(1, "Введите пароль"),
 });
 
 export async function POST(request: Request) {
-  // AUTH_LOGIN_RATE_LIMIT
   const rateLimitResult = rateLimit({
     key: `login:${getClientIp(request)}`,
     limit: 5,
@@ -24,7 +27,7 @@ export async function POST(request: Request) {
   if (!rateLimitResult.allowed) {
     return NextResponse.json(
       {
-        error: "Слишком много попыток входа. Попробуйте позже.",
+        message: "Слишком много попыток входа. Попробуйте позже.",
       },
       {
         status: 429,
@@ -37,7 +40,6 @@ export async function POST(request: Request) {
     );
   }
 
-
   try {
     const body = await request.json();
     const data = loginSchema.parse(body);
@@ -49,7 +51,7 @@ export async function POST(request: Request) {
     });
 
     if (!user) {
-      return Response.json(
+      return NextResponse.json(
         { message: "Неверный email или пароль" },
         { status: 401 },
       );
@@ -58,7 +60,7 @@ export async function POST(request: Request) {
     const isPasswordValid = await bcrypt.compare(data.password, user.passwordHash);
 
     if (!isPasswordValid) {
-      return Response.json(
+      return NextResponse.json(
         { message: "Неверный email или пароль" },
         { status: 401 },
       );
@@ -66,7 +68,7 @@ export async function POST(request: Request) {
 
     await createUserSession(user.id);
 
-    return Response.json({
+    return NextResponse.json({
       user: {
         id: user.id,
         email: user.email,
@@ -76,7 +78,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return Response.json(
+      return NextResponse.json(
         {
           message: "Ошибка валидации",
           errors: error.flatten().fieldErrors,
@@ -85,7 +87,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return Response.json(
+    return NextResponse.json(
       { message: "Внутренняя ошибка сервера" },
       { status: 500 },
     );

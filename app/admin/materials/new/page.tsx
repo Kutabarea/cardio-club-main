@@ -22,13 +22,13 @@ type NewMaterialPageProps = {
 };
 
 function getMessage(error?: string) {
-  if (error === "required-fields") return "Заполни название, тип и категорию материала.";
-  if (error === "slug-required") return "Не удалось создать slug. Укажи slug вручную.";
-  if (error === "slug-exists") return "Материал с таким slug уже существует.";
-  if (error === "invalid-image") return "Можно загружать только JPG, PNG, WEBP или GIF.";
-  if (error === "image-too-large") return "Картинка слишком большая. Максимум — 5 МБ.";
-  if (error === "invalid-url") return "Проверь ссылку на изображение или видео. Разрешены только безопасные URL.";
-  if (error === "content-too-large") return "Текст материала слишком большой. Раздели его на несколько частей.";
+  if (error === "required-fields") return "Р—Р°РїРѕР»РЅРё РЅР°Р·РІР°РЅРёРµ, С‚РёРї Рё РєР°С‚РµРіРѕСЂРёСЋ РјР°С‚РµСЂРёР°Р»Р°.";
+  if (error === "slug-required") return "РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ slug. РЈРєР°Р¶Рё slug РІСЂСѓС‡РЅСѓСЋ.";
+  if (error === "slug-exists") return "РњР°С‚РµСЂРёР°Р» СЃ С‚Р°РєРёРј slug СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.";
+  if (error === "invalid-image") return "РњРѕР¶РЅРѕ Р·Р°РіСЂСѓР¶Р°С‚СЊ С‚РѕР»СЊРєРѕ JPG, PNG, WEBP РёР»Рё GIF.";
+  if (error === "image-too-large") return "РљР°СЂС‚РёРЅРєР° СЃР»РёС€РєРѕРј Р±РѕР»СЊС€Р°СЏ. РњР°РєСЃРёРјСѓРј вЂ” 5 РњР‘.";
+  if (error === "invalid-url") return "РџСЂРѕРІРµСЂСЊ СЃСЃС‹Р»РєСѓ РЅР° РёР·РѕР±СЂР°Р¶РµРЅРёРµ РёР»Рё РІРёРґРµРѕ. Р Р°Р·СЂРµС€РµРЅС‹ С‚РѕР»СЊРєРѕ Р±РµР·РѕРїР°СЃРЅС‹Рµ URL.";
+  if (error === "content-too-large") return "РўРµРєСЃС‚ РјР°С‚РµСЂРёР°Р»Р° СЃР»РёС€РєРѕРј Р±РѕР»СЊС€РѕР№. Р Р°Р·РґРµР»Рё РµРіРѕ РЅР° РЅРµСЃРєРѕР»СЊРєРѕ С‡Р°СЃС‚РµР№.";
 
   return null;
 }
@@ -83,13 +83,13 @@ export default async function NewMaterialPage({
       <div className={styles.simpleEditHeader}>
         <div>
           <Link href="/admin/materials" className={styles.backLink}>
-            ← Материалы
+            в†ђ РњР°С‚РµСЂРёР°Р»С‹
           </Link>
 
-          <h1 className={styles.pageTitle}>Новый материал</h1>
+          <h1 className={styles.pageTitle}>РќРѕРІС‹Р№ РјР°С‚РµСЂРёР°Р»</h1>
 
           <p className={styles.pageDescription}>
-            Создание статьи, видеолекции или полезного ресурса.
+            РЎРѕР·РґР°РЅРёРµ СЃС‚Р°С‚СЊРё, РІРёРґРµРѕР»РµРєС†РёРё РёР»Рё РїРѕР»РµР·РЅРѕРіРѕ СЂРµСЃСѓСЂСЃР°.
           </p>
         </div>
       </div>
@@ -100,33 +100,33 @@ export default async function NewMaterialPage({
         </div>
       ) : null}
 
-      <form action={createMaterialAction} className={styles.simpleEditLayout}>
+      <form action={createMaterialAction} className={styles.simpleEditLayout} encType="multipart/form-data">
         <input type="hidden" name="redirectPath" value="/admin/materials/new" />
         <input type="hidden" name="afterCreatePath" value={safeReturnTo} />
 
         <main className={styles.simpleEditMain}>
           <section className={styles.simpleEditCard}>
             <div className={styles.simpleEditCardHeader}>
-              <h2>Основное</h2>
-              <p>Название, описание и содержание материала.</p>
+              <h2>РћСЃРЅРѕРІРЅРѕРµ</h2>
+              <p>РќР°Р·РІР°РЅРёРµ, РѕРїРёСЃР°РЅРёРµ Рё СЃРѕРґРµСЂР¶Р°РЅРёРµ РјР°С‚РµСЂРёР°Р»Р°.</p>
             </div>
 
             <label className={styles.formGroup}>
-              <span className={styles.label}>Название</span>
+              <span className={styles.label}>РќР°Р·РІР°РЅРёРµ</span>
               <input
                 className={styles.input}
                 name="title"
-                placeholder="Например: Зубец T"
+                placeholder="РќР°РїСЂРёРјРµСЂ: Р—СѓР±РµС† T"
                 required
               />
             </label>
 
             <label className={styles.formGroup}>
-              <span className={styles.label}>Короткое описание</span>
+              <span className={styles.label}>РљРѕСЂРѕС‚РєРѕРµ РѕРїРёСЃР°РЅРёРµ</span>
               <textarea
                 className={styles.textareaSmall}
                 name="description"
-                placeholder="1–2 предложения для карточки материала."
+                placeholder="1вЂ“2 РїСЂРµРґР»РѕР¶РµРЅРёСЏ РґР»СЏ РєР°СЂС‚РѕС‡РєРё РјР°С‚РµСЂРёР°Р»Р°."
               />
             </label>
 
@@ -134,7 +134,7 @@ export default async function NewMaterialPage({
           </section>
 
           <details className={styles.simpleEditDetails} open>
-            <summary>Служебные настройки</summary>
+            <summary>РЎР»СѓР¶РµР±РЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё</summary>
 
             <div className={styles.simpleEditDetailsBody}>
               <div className={styles.formGrid}>
@@ -146,35 +146,35 @@ export default async function NewMaterialPage({
                     placeholder="zubec-t"
                   />
                   <span className={styles.formHint}>
-                    Если оставить пустым, slug создастся из названия.
+                    Р•СЃР»Рё РѕСЃС‚Р°РІРёС‚СЊ РїСѓСЃС‚С‹Рј, slug СЃРѕР·РґР°СЃС‚СЃСЏ РёР· РЅР°Р·РІР°РЅРёСЏ.
                   </span>
                 </label>
 
                 <label className={styles.formGroup}>
-                  <span className={styles.label}>Тип материала</span>
+                  <span className={styles.label}>РўРёРї РјР°С‚РµСЂРёР°Р»Р°</span>
                   <select
                     className={styles.input}
                     name="type"
                     defaultValue={defaultType}
                     required
                   >
-                    <option value="ECG_ARTICLE">Статья / ЭКГ материал</option>
-                    <option value="VIDEO_LECTURE">Видеолекция</option>
-                    <option value="VIDEO_COURSE">Видеокурс</option>
-                    <option value="HELPER">Полезный ресурс</option>
+                    <option value="ECG_ARTICLE">РЎС‚Р°С‚СЊСЏ / Р­РљР“ РјР°С‚РµСЂРёР°Р»</option>
+                    <option value="VIDEO_LECTURE">Р’РёРґРµРѕР»РµРєС†РёСЏ</option>
+                    <option value="VIDEO_COURSE">Р’РёРґРµРѕРєСѓСЂСЃ</option>
+                    <option value="HELPER">РџРѕР»РµР·РЅС‹Р№ СЂРµСЃСѓСЂСЃ</option>
                   </select>
                 </label>
               </div>
 
               <label className={styles.formGroup}>
-                <span className={styles.label}>Категория</span>
+                <span className={styles.label}>РљР°С‚РµРіРѕСЂРёСЏ</span>
                 <select
                   className={styles.input}
                   name="categoryId"
                   defaultValue={defaultCategoryId}
                   required
                 >
-                  <option value="">Выбери категорию</option>
+                  <option value="">Р’С‹Р±РµСЂРё РєР°С‚РµРіРѕСЂРёСЋ</option>
 
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
@@ -193,11 +193,11 @@ export default async function NewMaterialPage({
           />
 
           <details className={styles.simpleEditDetails}>
-            <summary>Изображение и видео</summary>
+            <summary>РР·РѕР±СЂР°Р¶РµРЅРёРµ Рё РІРёРґРµРѕ</summary>
 
             <div className={styles.simpleEditDetailsBody}>
               <label className={styles.formGroup}>
-                <span className={styles.label}>Загрузить картинку</span>
+                <span className={styles.label}>Р—Р°РіСЂСѓР·РёС‚СЊ РєР°СЂС‚РёРЅРєСѓ</span>
                 <input
                   className={styles.input}
                   name="imageFile"
@@ -207,7 +207,7 @@ export default async function NewMaterialPage({
               </label>
 
               <label className={styles.formGroup}>
-                <span className={styles.label}>URL изображения</span>
+                <span className={styles.label}>URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ</span>
                 <input
                   className={styles.input}
                   name="imageUrl"
@@ -216,7 +216,7 @@ export default async function NewMaterialPage({
               </label>
 
               <label className={styles.formGroup}>
-                <span className={styles.label}>Видео URL</span>
+                <span className={styles.label}>Р’РёРґРµРѕ URL</span>
                 <input
                   className={styles.input}
                   name="videoUrl"
@@ -232,21 +232,25 @@ export default async function NewMaterialPage({
             <div className={styles.simplePublishControls}>
               <label className={styles.simpleCheckbox}>
                 <input name="isPublished" type="checkbox" />
-                <span>Опубликован</span>
+                <span>РћРїСѓР±Р»РёРєРѕРІР°РЅ</span>
               </label>
+
+              <p className={styles.formHint}>
+                Р§С‚РѕР±С‹ РјР°С‚РµСЂРёР°Р» РїРѕСЏРІРёР»СЃСЏ РЅР° РіР»Р°РІРЅРѕР№, РІРєР»СЋС‡Рё В«РћРїСѓР±Р»РёРєРѕРІР°РЅВ».
+              </p>
 
               <label className={styles.simpleCheckbox}>
                 <input name="isPremium" type="checkbox" />
-                <span>Premium-доступ</span>
+                <span>Premium-РґРѕСЃС‚СѓРї</span>
               </label>
             </div>
 
             <button className={styles.simpleSaveButton} type="submit">
-              Создать материал
+              РЎРѕР·РґР°С‚СЊ РјР°С‚РµСЂРёР°Р»
             </button>
 
             <Link href="/admin/materials" className={styles.simplePreviewButton}>
-              Отмена
+              РћС‚РјРµРЅР°
             </Link>
           </section>
         </aside>
