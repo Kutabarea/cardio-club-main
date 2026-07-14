@@ -2535,7 +2535,7 @@ a.dashboardItemTitle:hover {
 }
 
 .simpleEditDetails[open] summary::after {
-  content: "–";
+  content: "вЂ“";
 }
 
 .simpleEditDetailsBody {
@@ -3131,4 +3131,117 @@ a.dashboardItemTitle:hover {
   width: 100%;
   min-height: 2.5rem;
   cursor: pointer;
+}
+/* Material admin diagnostics */
+.materialDiagnostics {
+  display: grid;
+  gap: .75rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(68, 128, 234, .18);
+  border-radius: .875rem;
+  background-color: #ffffff;
+  padding: .875rem;
+}
+
+.materialDiagnosticsHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+}
+
+.materialDiagnosticsStatusOk,
+.materialDiagnosticsStatusWarning,
+.materialDiagnosticsInlineOk,
+.materialDiagnosticsInlineWarning {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 999px;
+  font-family: var(--font-montserrat);
+  font-size: .75rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.materialDiagnosticsStatusOk,
+.materialDiagnosticsStatusWarning {
+  padding: .35rem .625rem;
+}
+
+.materialDiagnosticsInlineOk,
+.materialDiagnosticsInlineWarning {
+  padding: .16rem .45rem;
+}
+
+.materialDiagnosticsStatusOk,
+.materialDiagnosticsInlineOk {
+  background-color: #e3ffe3;
+  color: #436a00;
+}
+
+.materialDiagnosticsStatusWarning,
+.materialDiagnosticsInlineWarning {
+  background-color: #fff5d8;
+  color: #7a5a00;
+}
+
+.materialDiagnosticsList {
+  display: grid;
+  gap: .5rem;
+  margin: 0;
+}
+
+.materialDiagnosticsList div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: .75rem;
+  align-items: start;
+}
+
+.materialDiagnosticsList dt {
+  color: #808080;
+  font-family: var(--font-montserrat);
+  font-size: .75rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.materialDiagnosticsList dd {
+  min-width: 0;
+  margin: 0;
+  color: #263238;
+  font-family: var(--font-montserrat);
+  font-size: .8125rem;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.materialDiagnosticsList a {
+  color: #4480ea;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.materialDiagnosticsList a:hover {
+  text-decoration: underline;
+}
+
+.materialDiagnosticsIssues {
+  display: grid;
+  gap: .35rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: .8125rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+  .materialDiagnosticsList div {
+    grid-template-columns: 1fr;
+    gap: .2rem;
+  }
 }
