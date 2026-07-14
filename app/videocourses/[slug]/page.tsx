@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import MarkdownContent from "@/app/components/MarkdownContent";
-import { getCurrentUser } from "@/lib/auth";
+import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
+import { getCurrentMaterialAccessState } from "@/lib/materialAccess";
 import { prisma } from "@/lib/prisma";
-import { hasActivePremiumAccess } from "@/lib/subscriptions";
 
 import styles from "@/app/styles/VideoCourses.module.css";
 
@@ -35,13 +35,7 @@ export default async function VideoCourseDetailPage({
     notFound();
   }
 
-  const user = await getCurrentUser();
-  const hasPremium = user ? hasActivePremiumAccess(user.subscriptions) : false;
-  const canRead = !course.isPremium || hasPremium;
-
-  if (course.isPremium && !user) {
-    redirect("/login");
-  }
+  const access = await getCurrentMaterialAccessState(course);
 
   return (
     <main className={styles.coursePage}>
@@ -71,7 +65,9 @@ export default async function VideoCourseDetailPage({
             {course.description ? <p>{course.description}</p> : null}
           </div>
 
-          {canRead ? (
+          <PremiumAccessNotice access={access} />
+
+          {access.canRead ? (
             <div className={styles.courseArticleBody}>
               {course.videoUrl ? (
                 <a
@@ -90,11 +86,12 @@ export default async function VideoCourseDetailPage({
             <div className={styles.coursePremiumBox}>
               <h2>Материал доступен по Premium-подписке</h2>
               <p>
-                У этого аккаунта нет активной Premium-подписки. Оформи подписку в
-                профиле, чтобы открыть курс.
+                Войдите в аккаунт или оформите подписку в профиле, чтобы открыть курс.
               </p>
 
-              <Link href="/profile/subscription">Перейти к подписке</Link>
+              {access.isAuthenticated ? (
+                <Link href="/profile/subscription">Перейти к подписке</Link>
+              ) : null}
             </div>
           )}
         </article>
