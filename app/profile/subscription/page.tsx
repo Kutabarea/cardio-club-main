@@ -13,6 +13,12 @@ import {
 
 export const dynamic = "force-dynamic";
 
+type SubscribePageProps = {
+  searchParams?: Promise<{
+    subscription?: string;
+  }>;
+};
+
 function formatDate(value?: Date | string | null) {
   if (!value) return null;
 
@@ -27,7 +33,7 @@ function formatDate(value?: Date | string | null) {
   }).format(date);
 }
 
-export default async function SubscribePage() {
+export default async function SubscribePage({ searchParams }: SubscribePageProps) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -53,6 +59,7 @@ export default async function SubscribePage() {
     redirect("/login");
   }
 
+  const resolvedSearchParams = searchParams ? await searchParams : {};
   const currentSubscription = getCurrentSubscription(user.subscriptions);
   const hasPremium = hasActivePremiumAccess(user.subscriptions);
   const endsAtText = hasPremium ? formatDate(currentSubscription?.endsAt) : null;
@@ -62,6 +69,11 @@ export default async function SubscribePage() {
       status={hasPremium ? "active" : "inactive"}
       endsAtText={endsAtText}
       planLabel={getPlanLabel(currentSubscription?.plan)}
+      message={
+        resolvedSearchParams.subscription === "activated"
+          ? "Premium-подписка активирована в demo-режиме."
+          : null
+      }
     />
   );
 }

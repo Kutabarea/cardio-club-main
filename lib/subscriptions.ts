@@ -9,7 +9,7 @@ export type SubscriptionLike = {
   createdAt?: Date | string | null;
 };
 
-export const premiumPlans = ["PREMIUM_MONTH", "PREMIUM_YEAR"];
+export const premiumPlans = ["PREMIUM_MONTH", "PREMIUM_3_MONTH", "PREMIUM_YEAR"];
 
 export function isPremiumPlan(plan?: string | null) {
   return Boolean(plan && premiumPlans.includes(plan));
@@ -17,6 +17,7 @@ export function isPremiumPlan(plan?: string | null) {
 
 export function getPlanLabel(plan?: string | null) {
   if (plan === "PREMIUM_MONTH") return "Premium на месяц";
+  if (plan === "PREMIUM_3_MONTH") return "Premium на 3 месяца";
   if (plan === "PREMIUM_YEAR") return "Premium на год";
   if (plan === "FREE") return "Free";
 

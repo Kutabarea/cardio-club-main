@@ -40,6 +40,18 @@
   line-height: 123%;
 }
 
+.profile__success {
+  width: fit-content;
+  margin: 20px 0 0;
+  border-radius: 10px;
+  background-color: #E3FFE3;
+  color: #436A00;
+  padding: .625rem .9375rem;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 700;
+}
+
 .profile__notification__wrapper {
   border-radius: 10px;
 
@@ -151,6 +163,11 @@
   border: .0625rem solid #2964CC;
 }
 
+.rate__item_active {
+  border: .0625rem solid #2964CC !important;
+  background-color: #EAF1FF !important;
+}
+
 .rates__buy__btn {
   background-color: #4CAF50;
   color: white;
@@ -202,7 +219,19 @@
     width: 80%;
   }
 
-  .profile__notification__wrapper {
+  .profile__success {
+  width: fit-content;
+  margin: 20px 0 0;
+  border-radius: 10px;
+  background-color: #E3FFE3;
+  color: #436A00;
+  padding: .625rem .9375rem;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 700;
+}
+
+.profile__notification__wrapper {
     width: 100%;
   }
 }
@@ -242,7 +271,19 @@
     align-items: start;
   }
 
-  .profile__notification__wrapper {
+  .profile__success {
+  width: fit-content;
+  margin: 20px 0 0;
+  border-radius: 10px;
+  background-color: #E3FFE3;
+  color: #436A00;
+  padding: .625rem .9375rem;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 700;
+}
+
+.profile__notification__wrapper {
     display: flex;
     justify-content: center;
   }
