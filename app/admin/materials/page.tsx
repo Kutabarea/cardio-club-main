@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import styles from "@/app/styles/Admin.module.css";
 
 import DeleteMaterialButton from "./DeleteMaterialButton";
+import { toggleMaterialPublishAction } from "./actions";
 import MaterialAdminDiagnostics from "./MaterialAdminDiagnostics";
 
 export const dynamic = "force-dynamic";
@@ -322,9 +323,15 @@ export default async function AdminMaterialsPage({
           </p>
         </div>
 
-        <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
-          Добавить материал
-        </Link>
+        <div className={styles.adminTopbarActions}>
+          <Link href="/admin/materials/audit" className={styles.secondaryAdminAction}>
+            Аудит материалов
+          </Link>
+
+          <Link href="/admin/materials/new" className={styles.primaryAdminAction}>
+            Добавить материал
+          </Link>
+        </div>
       </div>
 
       {message ? (
@@ -531,6 +538,27 @@ export default async function AdminMaterialsPage({
                       Не опубликован
                     </span>
                   )}
+
+                  <form action={toggleMaterialPublishAction} className={styles.materialInlineActionForm}>
+                    <input type="hidden" name="id" value={material.id} />
+                    <input type="hidden" name="redirectPath" value={currentPath} />
+                    <input
+                      type="hidden"
+                      name="isPublished"
+                      value={material.isPublished ? "false" : "true"}
+                    />
+
+                    <button
+                      type="submit"
+                      className={
+                        material.isPublished
+                          ? styles.materialUnpublishButton
+                          : styles.materialPublishButton
+                      }
+                    >
+                      {material.isPublished ? "Снять с публикации" : "Опубликовать"}
+                    </button>
+                  </form>
 
                   <DeleteMaterialButton
                     materialId={material.id}

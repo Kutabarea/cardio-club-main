@@ -3245,3 +3245,62 @@ a.dashboardItemTitle:hover {
     gap: .2rem;
   }
 }
+.adminTopbarActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .adminTopbarActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .adminTopbarActions a {
+    width: 100%;
+  }
+}
+/* Quick material publish actions */
+.materialInlineActionForm {
+  display: contents;
+}
+
+.materialPublishButton,
+.materialUnpublishButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  border: 0;
+  border-radius: .625rem;
+  padding: .625rem .875rem;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition:
+    background-color .2s ease,
+    opacity .2s ease;
+}
+
+.materialPublishButton {
+  background-color: #198754;
+}
+
+.materialPublishButton:hover {
+  background-color: #147046;
+}
+
+.materialUnpublishButton {
+  background-color: #7a5a00;
+}
+
+.materialUnpublishButton:hover {
+  background-color: #624800;
+}
