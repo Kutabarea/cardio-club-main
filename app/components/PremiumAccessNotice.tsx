@@ -40,9 +40,12 @@ export default function PremiumAccessNotice({ access }: PremiumAccessNoticeProps
     if (!isLoginModalOpen) return;
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        closeLoginModal();
+      if (event.key !== "Escape" || isLoginLoading) {
+        return;
       }
+
+      setIsLoginModalOpen(false);
+      setLoginMessage(null);
     }
 
     document.addEventListener("keydown", handleKeyDown);
