@@ -1,0 +1,127 @@
+.authPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 8rem);
+  padding: 3rem 1rem;
+}
+
+.authCard {
+  width: min(100%, 34rem);
+  border-radius: 1.5rem;
+  background-color: #f4f7ff;
+  padding: 2rem;
+  box-shadow: 0 1.25rem 3rem rgba(20, 42, 80, .08);
+}
+
+.authTitle {
+  margin: 0 0 .75rem;
+  color: #000;
+  font-family: var(--font-unbounded);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.authText {
+  margin: 0 0 1.5rem;
+  color: #4d4d4d;
+  font-family: var(--font-montserrat);
+  font-size: .9375rem;
+  line-height: 1.6;
+}
+
+.authForm {
+  display: grid;
+  gap: 1rem;
+}
+
+.authLabel {
+  display: grid;
+  gap: .35rem;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 800;
+}
+
+.authInput {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: .625rem;
+  outline: none;
+  background-color: #fff;
+  padding: 1rem .75rem;
+  color: #000;
+  font-family: var(--font-montserrat);
+  font-size: .9375rem;
+}
+
+.authInput:focus {
+  border-color: #4480ea;
+}
+
+.authButton {
+  display: inline-flex;
+  justify-content: center;
+  width: fit-content;
+  min-height: 3rem;
+  border: 0;
+  border-radius: .625rem;
+  background-color: #4480ea;
+  padding: .875rem 2rem;
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-montserrat);
+  font-size: .9375rem;
+  font-weight: 900;
+}
+
+.authButton:hover:not(:disabled) {
+  background-color: #326bd0;
+}
+
+.authButton:disabled {
+  opacity: .7;
+  cursor: default;
+}
+
+.authMessage {
+  margin: 0;
+  border-radius: .625rem;
+  background-color: #fff;
+  padding: .875rem 1rem;
+  color: #263238;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.authError {
+  margin: 0;
+  color: #8a1a1a;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.authLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: 1.25rem;
+}
+
+.authLinks a {
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: .875rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.authLinks a:hover {
+  text-decoration: underline;
+}

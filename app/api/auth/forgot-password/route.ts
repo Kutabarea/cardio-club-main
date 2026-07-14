@@ -1,34 +1,37 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-import { createUserSession } from "@/lib/auth";
+import { createPasswordResetToken } from "@/lib/accountTokens";
+import { sendPasswordResetLink } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const loginSchema = z.object({
+const forgotPasswordSchema = z.object({
   email: z
     .string()
     .trim()
     .email("Некорректный email")
     .transform((email) => email.toLowerCase()),
-  password: z.string().min(1, "Введите пароль"),
+});
+
+const neutralResponse = NextResponse.json({
+  message: "Если email есть в системе, ссылка восстановления будет отправлена.",
 });
 
 export async function POST(request: Request) {
   const rateLimitResult = rateLimit({
-    key: `login:${getClientIp(request)}`,
+    key: `forgot-password:${getClientIp(request)}`,
     limit: 5,
-    windowMs: 60000,
+    windowMs: 600000,
   });
 
   if (!rateLimitResult.allowed) {
     return NextResponse.json(
       {
-        message: "Слишком много попыток входа. Попробуйте позже.",
+        message: "Слишком много попыток. Попробуйте позже.",
       },
       {
         status: 429,
@@ -43,41 +46,30 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const data = loginSchema.parse(body);
+    const data = forgotPasswordSchema.parse(body);
 
     const user = await prisma.user.findUnique({
       where: {
         email: data.email,
       },
+      select: {
+        id: true,
+        email: true,
+        passwordHash: true,
+      },
     });
 
     if (!user?.passwordHash) {
-      return NextResponse.json(
-        { message: "Неверный email или пароль" },
-        { status: 401 },
-      );
+      return neutralResponse;
     }
 
-    const isPasswordValid = await bcrypt.compare(data.password, user.passwordHash);
-
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { message: "Неверный email или пароль" },
-        { status: 401 },
-      );
-    }
-
-    await createUserSession(user.id);
-
-    return NextResponse.json({
-      user: {
-        id: user.id,
-        email: user.email,
-        emailVerifiedAt: user.emailVerifiedAt,
-        name: user.name,
-        role: user.role,
-      },
+    const resetToken = await createPasswordResetToken(user.id);
+    await sendPasswordResetLink({
+      to: user.email,
+      token: resetToken.token,
     });
+
+    return neutralResponse;
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

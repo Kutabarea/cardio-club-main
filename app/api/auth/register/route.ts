@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+
+import { createUserSession } from "@/lib/auth";
+import { createEmailVerificationToken } from "@/lib/accountTokens";
+import { sendEmailVerificationLink } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
@@ -14,7 +18,13 @@ const registerSchema = z.object({
     .email("Некорректный email")
     .transform((email) => email.toLowerCase()),
   password: z.string().min(8, "Пароль должен быть минимум 8 символов"),
-  name: z.string().min(2, "Имя должно быть минимум 2 символа").max(64).optional(),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Имя должно быть минимум 2 символа")
+    .max(64)
+    .optional()
+    .or(z.literal("")),
 });
 
 export async function POST(request: Request) {
@@ -48,11 +58,14 @@ export async function POST(request: Request) {
       where: {
         email: data.email,
       },
+      select: {
+        id: true,
+      },
     });
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "Пользователь с таким email уже существует" },
+        { message: "Регистрация не выполнена. Проверьте данные и попробуйте снова." },
         { status: 409 },
       );
     }
@@ -63,7 +76,7 @@ export async function POST(request: Request) {
       data: {
         email: data.email,
         passwordHash,
-        name: data.name,
+        name: data.name || null,
         profile: {
           create: {},
         },
@@ -77,13 +90,28 @@ export async function POST(request: Request) {
       select: {
         id: true,
         email: true,
+        emailVerifiedAt: true,
         name: true,
         role: true,
         createdAt: true,
       },
     });
 
-    return NextResponse.json({ user }, { status: 201 });
+    const verificationToken = await createEmailVerificationToken(user.id);
+    await sendEmailVerificationLink({
+      to: user.email,
+      token: verificationToken.token,
+    });
+
+    await createUserSession(user.id);
+
+    return NextResponse.json(
+      {
+        user,
+        message: "Аккаунт создан. Ссылка подтверждения email отправлена.",
+      },
+      { status: 201 },
+    );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

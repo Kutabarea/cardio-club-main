@@ -7,15 +7,18 @@ datasource db {
 }
 
 model User {
-  id           String @id @default(cuid())
-  email        String @unique
-  passwordHash String
-  name         String?
-  role         String @default("USER")
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String?
+  emailVerifiedAt DateTime?
+  name            String?
+  role            String    @default("USER")
 
-  profile       Profile?
-  subscriptions Subscription[]
-  sessions      Session[]
+  profile                 Profile?
+  subscriptions           Subscription[]
+  sessions                Session[]
+  emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -42,9 +45,9 @@ model Subscription {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  plan     String   @default("FREE")
-  status   String   @default("ACTIVE")
-  startsAt DateTime @default(now())
+  plan     String    @default("FREE")
+  status   String    @default("ACTIVE")
+  startsAt DateTime  @default(now())
   endsAt   DateTime?
 
   createdAt DateTime @default(now())
@@ -113,6 +116,38 @@ model Session {
 
   tokenHash String   @unique
   expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model EmailVerificationToken {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
