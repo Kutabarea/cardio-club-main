@@ -10,7 +10,6 @@ import styles from "@/app/styles/Admin.module.css";
 
 import DeleteMaterialButton from "./DeleteMaterialButton";
 import { toggleMaterialPublishAction } from "./actions";
-import MaterialAdminDiagnostics from "./MaterialAdminDiagnostics";
 
 export const dynamic = "force-dynamic";
 

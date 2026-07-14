@@ -8,6 +8,7 @@ export const SESSION_COOKIE_NAME = "cardio_session";
 const currentUserSelect = {
   id: true,
   email: true,
+  emailVerifiedAt: true,
   name: true,
   role: true,
   createdAt: true,
