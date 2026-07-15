@@ -5,12 +5,16 @@ import Community from "./components/Community";
 import Helper from "./components/Helper";
 
 import { getLatestHomeMaterials } from "@/lib/homeMaterials";
+import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function Home() {
-  const latestMaterials = await getLatestHomeMaterials(12);
+  const [latestMaterials, currentUser] = await Promise.all([
+    getLatestHomeMaterials(12),
+    getCurrentUser(),
+  ]);
 
   return (
     <div>
@@ -23,7 +27,7 @@ export default async function Home() {
 
         <Slider materials={latestMaterials} />
 
-        <Community />
+        {!currentUser ? <Community /> : null}
 
         <Helper />
       </div>
