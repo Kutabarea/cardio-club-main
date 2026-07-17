@@ -298,6 +298,7 @@ async function upsertUserFromGoogle(profile: {
       subscriptions: {
         create: {
           plan: "FREE",
+          planId: freePlan.id,
           status: "ACTIVE",
         },
       },

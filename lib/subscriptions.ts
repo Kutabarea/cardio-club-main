@@ -1,4 +1,4 @@
-import { premiumPlanCodes } from "@/lib/planCatalog";
+import { isPremiumPlanCode, premiumPlanCodes } from "@/lib/planCatalog";
 import { prisma } from "@/lib/prisma";
 
 export type SubscriptionLike = {
@@ -25,7 +25,7 @@ export function getSubscriptionPlanCode(
 }
 
 export function isPremiumPlan(plan?: string | null) {
-  return Boolean(plan && premiumPlans.includes(plan));
+  return typeof plan === "string" && isPremiumPlanCode(plan);
 }
 
 export function isPremiumSubscription(subscription: SubscriptionLike) {

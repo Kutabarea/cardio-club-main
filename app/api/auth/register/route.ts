@@ -71,7 +71,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const passwordHash = await bcrypt.hash(data.password, 12);
+    const [passwordHash, freePlan] = await Promise.all([
+      bcrypt.hash(data.password, 12),
+      ensureCorePlan("FREE"),
+    ]);
 
     const user = await prisma.user.create({
       data: {
@@ -84,6 +87,7 @@ export async function POST(request: Request) {
         subscriptions: {
           create: {
             plan: "FREE",
+            planId: freePlan.id,
             status: "ACTIVE",
           },
         },
