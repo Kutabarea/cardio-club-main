@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 
 import MarkdownContent from "@/app/components/MarkdownContent";
 import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
-import { getCurrentMaterialAccessState } from "@/lib/materialAccess";
-import { prisma } from "@/lib/prisma";
+import {
+  getMaterialForCurrentViewer,
+  isSafeRouteSlug,
+} from "@/lib/materialAccess";
 
 import styles from "@/app/styles/VideoCourses.module.css";
 
@@ -23,19 +25,22 @@ export default async function VideoCourseDetailPage({
 }: VideoCourseDetailPageProps) {
   const { slug } = await params;
 
-  const course = await prisma.material.findFirst({
-    where: {
-      slug,
-      type: "VIDEO_COURSE",
-      isPublished: true,
-    },
-  });
-
-  if (!course) {
+  if (!isSafeRouteSlug(slug)) {
     notFound();
   }
 
-  const access = await getCurrentMaterialAccessState(course);
+  const result = await getMaterialForCurrentViewer({
+    where: {
+      slug,
+      type: "VIDEO_COURSE",
+    },
+  });
+
+  if (!result) {
+    notFound();
+  }
+
+  const { material: course, access } = result;
 
   return (
     <main className={styles.coursePage}>

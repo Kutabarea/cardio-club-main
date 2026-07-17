@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 
 import MarkdownContent from "@/app/components/MarkdownContent";
 import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
-import { getCurrentMaterialAccessState } from "@/lib/materialAccess";
-import { prisma } from "@/lib/prisma";
+import {
+  getMaterialForCurrentViewer,
+  isSafeRouteSlug,
+} from "@/lib/materialAccess";
 
 import styles from "@/app/styles/MaterialArticle.module.css";
 
@@ -21,22 +23,22 @@ type VideoLecturePageProps = {
 export default async function VideoLecturePage({ params }: VideoLecturePageProps) {
   const { slug } = await params;
 
-  const material = await prisma.material.findFirst({
-    where: {
-      slug,
-      type: "VIDEO_LECTURE",
-      isPublished: true,
-    },
-    include: {
-      category: true,
-    },
-  });
-
-  if (!material) {
+  if (!isSafeRouteSlug(slug)) {
     notFound();
   }
 
-  const access = await getCurrentMaterialAccessState(material);
+  const result = await getMaterialForCurrentViewer({
+    where: {
+      slug,
+      type: "VIDEO_LECTURE",
+    },
+  });
+
+  if (!result) {
+    notFound();
+  }
+
+  const { material, access } = result;
 
   return (
     <main className={styles.page}>

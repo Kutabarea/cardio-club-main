@@ -1,11 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import MarkdownContent from "@/app/components/MarkdownContent";
 import styles from "@/app/styles/Admin.module.css";
+import { getCurrentUser } from "@/lib/auth";
+import {
+  getMaterialForViewer,
+  getPremiumAccessStateForUser,
+  isSafeDatabaseId,
+} from "@/lib/materialAccess";
 import { getMaterialPublicHref } from "@/lib/materialPublicHref";
-import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -18,21 +23,35 @@ type MaterialPreviewPageProps = {
 export default async function MaterialPreviewPage({
   params,
 }: MaterialPreviewPageProps) {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const { id } = await params;
 
-  const material = await prisma.material.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      category: true,
-    },
-  });
-
-  if (!material) {
+  if (!isSafeDatabaseId(id)) {
     notFound();
   }
 
+  const result = await getMaterialForViewer({
+    where: {
+      id,
+    },
+    viewer: getPremiumAccessStateForUser(user),
+    mode: "ADMIN_PREVIEW",
+  });
+
+  if (!result) {
+    notFound();
+  }
+
+  const { material } = result;
   const publicHref = getMaterialPublicHref(material);
   const isLocalImage = Boolean(material.imageUrl?.startsWith("/"));
 

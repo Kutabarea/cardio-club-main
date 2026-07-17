@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 
 import MarkdownContent from "@/app/components/MarkdownContent";
 import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
-import { getCurrentMaterialAccessState } from "@/lib/materialAccess";
-import { prisma } from "@/lib/prisma";
+import {
+  getMaterialForCurrentViewer,
+  isSafeRouteSlug,
+} from "@/lib/materialAccess";
 
 import styles from "@/app/styles/MaterialArticle.module.css";
 
@@ -21,24 +23,24 @@ type BaseMaterialPageProps = {
 export default async function BaseMaterialPage({ params }: BaseMaterialPageProps) {
   const { slug } = await params;
 
-  const material = await prisma.material.findFirst({
+  if (!isSafeRouteSlug(slug)) {
+    notFound();
+  }
+
+  const result = await getMaterialForCurrentViewer({
     where: {
       slug,
-      isPublished: true,
       category: {
         slug: "ecg-base",
       },
     },
-    include: {
-      category: true,
-    },
   });
 
-  if (!material) {
+  if (!result) {
     notFound();
   }
 
-  const access = await getCurrentMaterialAccessState(material);
+  const { material, access } = result;
 
   return (
     <main className={styles.page}>

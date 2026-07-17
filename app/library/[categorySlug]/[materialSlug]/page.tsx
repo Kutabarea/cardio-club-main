@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 
 import MarkdownContent from "@/app/components/MarkdownContent";
 import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
-import { getCurrentMaterialAccessState } from "@/lib/materialAccess";
-import { prisma } from "@/lib/prisma";
+import {
+  getMaterialForCurrentViewer,
+  isSafeRouteSlug,
+} from "@/lib/materialAccess";
 
 import styles from "@/app/styles/MaterialArticle.module.css";
 
@@ -24,24 +26,24 @@ export default async function CategoryMaterialPage({
 }: CategoryMaterialPageProps) {
   const { categorySlug, materialSlug } = await params;
 
-  const material = await prisma.material.findFirst({
+  if (!isSafeRouteSlug(categorySlug) || !isSafeRouteSlug(materialSlug)) {
+    notFound();
+  }
+
+  const result = await getMaterialForCurrentViewer({
     where: {
       slug: materialSlug,
-      isPublished: true,
       category: {
         slug: categorySlug,
       },
     },
-    include: {
-      category: true,
-    },
   });
 
-  if (!material) {
+  if (!result) {
     notFound();
   }
 
-  const access = await getCurrentMaterialAccessState(material);
+  const { material, access } = result;
   const backHref = `/library/${categorySlug}`;
 
   return (
