@@ -16,13 +16,14 @@ model User {
 
   profile                 Profile?
   subscriptions           Subscription[]
+  payments                Payment[]
   sessions                Session[]
   emailVerificationTokens EmailVerificationToken[]
   passwordResetTokens     PasswordResetToken[]
+  oauthAccounts           OAuthAccount[]
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  oauthAccounts OAuthAccount[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([role])
 }
@@ -41,21 +42,97 @@ model Profile {
   updatedAt DateTime @updatedAt
 }
 
+model Plan {
+  id   String @id @default(cuid())
+  code String @unique
+
+  title       String
+  description String?
+
+  durationDays      Int?
+  priceMinor        Int
+  monthlyPriceMinor Int?
+  currency          String @default("RUB")
+
+  isPremium Boolean @default(true)
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  subscriptions Subscription[]
+  payments      Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@index([isPremium, isActive])
+}
+
 model Subscription {
   id     String @id @default(cuid())
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  plan     String    @default("FREE")
+  // Снимок кода тарифа сохраняется для истории и безопасной миграции.
+  plan String @default("FREE")
+
+  planId     String?
+  planRecord Plan?   @relation(fields: [planId], references: [id], onDelete: SetNull)
+
   status   String    @default("ACTIVE")
   startsAt DateTime  @default(now())
   endsAt   DateTime?
+
+  cancelAtPeriodEnd Boolean   @default(false)
+  canceledAt        DateTime?
+
+  provider               String  @default("INTERNAL")
+  providerSubscriptionId String?
+
+  payments Payment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId, status])
+  @@index([planId, status])
   @@index([endsAt])
+  @@index([provider, providerSubscriptionId])
+}
+
+model Payment {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  provider          String
+  providerPaymentId String?
+  idempotencyKey    String  @unique
+
+  status      String @default("PENDING")
+  amountMinor Int
+  currency    String
+
+  checkoutUrl String?
+  failureCode String?
+
+  paidAt     DateTime?
+  canceledAt DateTime?
+  refundedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status, createdAt])
+  @@index([planId])
+  @@index([subscriptionId])
+  @@index([provider, providerPaymentId])
 }
 
 model Category {
@@ -77,8 +154,9 @@ model EcgSection {
   description String?
   sortOrder   Int        @default(0)
   materials   Material[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([sortOrder])
 }

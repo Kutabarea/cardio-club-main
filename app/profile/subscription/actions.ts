@@ -1,70 +1,100 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
+import {
+  isPremiumPlanCode,
+  premiumPlanCodes,
+} from "@/lib/planCatalog";
 import { prisma } from "@/lib/prisma";
-import { premiumPlans } from "@/lib/subscriptions";
 
-const mockPlanConfig = {
-  PREMIUM_MONTH: {
-    days: 30,
-  },
-  PREMIUM_3_MONTH: {
-    days: 90,
-  },
-  PREMIUM_YEAR: {
-    days: 365,
-  },
-} as const;
+function addDaysUtc(value: Date, days: number) {
+  const result = new Date(value);
+  result.setUTCDate(result.getUTCDate() + days);
 
-type MockPlan = keyof typeof mockPlanConfig;
-
-function isMockPlan(value: string): value is MockPlan {
-  return value in mockPlanConfig;
+  return result;
 }
 
-export async function activateMockPremiumSubscriptionAction(formData: FormData) {
+export async function activateMockPremiumSubscriptionAction(
+  formData: FormData,
+) {
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/");
   }
 
-  const plan = String(formData.get("plan") ?? "").trim();
+  const planCode = String(formData.get("plan") ?? "").trim();
 
-  if (!isMockPlan(plan)) {
+  if (!isPremiumPlanCode(planCode)) {
     redirect("/profile/subscription?subscription=invalid-plan");
   }
 
-  const startsAt = new Date();
-  const endsAt = new Date(startsAt);
-  endsAt.setDate(endsAt.getDate() + mockPlanConfig[plan].days);
+  const selectedPlan = await prisma.plan.findUnique({
+    where: {
+      code: planCode,
+    },
+  });
 
-  await prisma.$transaction([
-    prisma.subscription.updateMany({
+  if (
+    !selectedPlan ||
+    !selectedPlan.isActive ||
+    !selectedPlan.isPremium ||
+    !selectedPlan.durationDays
+  ) {
+    redirect("/profile/subscription?subscription=plan-unavailable");
+  }
+
+  const startsAt = new Date();
+  const endsAt = addDaysUtc(startsAt, selectedPlan.durationDays);
+  const mockPaymentId = randomUUID();
+
+  await prisma.$transaction(async (transaction) => {
+    await transaction.subscription.updateMany({
       where: {
         userId: user.id,
         status: "ACTIVE",
         plan: {
-          in: premiumPlans,
+          in: [...premiumPlanCodes],
         },
       },
       data: {
         status: "CANCELED",
+        canceledAt: startsAt,
       },
-    }),
-    prisma.subscription.create({
+    });
+
+    const subscription = await transaction.subscription.create({
       data: {
         userId: user.id,
-        plan,
+        plan: selectedPlan.code,
+        planId: selectedPlan.id,
         status: "ACTIVE",
         startsAt,
         endsAt,
+        provider: "MOCK",
       },
-    }),
-  ]);
+    });
+
+    await transaction.payment.create({
+      data: {
+        userId: user.id,
+        planId: selectedPlan.id,
+        subscriptionId: subscription.id,
+        provider: "MOCK",
+        providerPaymentId: `mock_${mockPaymentId}`,
+        idempotencyKey: `mock:${user.id}:${mockPaymentId}`,
+        status: "SUCCEEDED",
+        amountMinor: selectedPlan.priceMinor,
+        currency: selectedPlan.currency,
+        paidAt: startsAt,
+      },
+    });
+  });
 
   revalidatePath("/profile/subscription");
   revalidatePath("/");

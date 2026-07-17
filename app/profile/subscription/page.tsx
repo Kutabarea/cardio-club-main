@@ -33,7 +33,9 @@ function formatDate(value?: Date | string | null) {
   }).format(date);
 }
 
-export default async function SubscribePage({ searchParams }: SubscribePageProps) {
+export default async function SubscribePage({
+  searchParams,
+}: SubscribePageProps) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -48,6 +50,15 @@ export default async function SubscribePage({ searchParams }: SubscribePageProps
     },
     include: {
       subscriptions: {
+        include: {
+          planRecord: {
+            select: {
+              code: true,
+              title: true,
+              isPremium: true,
+            },
+          },
+        },
         orderBy: {
           createdAt: "desc",
         },
@@ -62,13 +73,18 @@ export default async function SubscribePage({ searchParams }: SubscribePageProps
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const currentSubscription = getCurrentSubscription(user.subscriptions);
   const hasPremium = hasActivePremiumAccess(user.subscriptions);
-  const endsAtText = hasPremium ? formatDate(currentSubscription?.endsAt) : null;
+  const endsAtText = hasPremium
+    ? formatDate(currentSubscription?.endsAt)
+    : null;
 
   return (
     <ProfileSubscription
       status={hasPremium ? "active" : "inactive"}
       endsAtText={endsAtText}
-      planLabel={getPlanLabel(currentSubscription?.plan)}
+      planLabel={getPlanLabel(
+        currentSubscription?.plan,
+        currentSubscription?.planRecord?.title,
+      )}
       message={
         resolvedSearchParams.subscription === "activated"
           ? "Premium-подписка активирована в demo-режиме."

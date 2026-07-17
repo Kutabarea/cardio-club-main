@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { createUserSession } from "@/lib/auth";
+import { ensureCorePlan } from "@/lib/planCatalog";
 import { prisma } from "@/lib/prisma";
 
 const GOOGLE_OAUTH_STATE_COOKIE = "google_oauth_state";
@@ -280,6 +281,8 @@ async function upsertUserFromGoogle(profile: {
       id: existingUser.id,
     };
   }
+
+  const freePlan = await ensureCorePlan("FREE");
 
   const newUser = await prisma.user.create({
     data: {

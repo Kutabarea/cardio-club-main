@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { upsertCorePlans } from "../lib/planCatalog";
 import { prisma } from "../lib/prisma";
 
 const libraryCategories = [
@@ -110,6 +111,8 @@ const materials = [
 ];
 
 async function main() {
+  await upsertCorePlans();
+
   for (const category of libraryCategories) {
     await prisma.category.upsert({
       where: {

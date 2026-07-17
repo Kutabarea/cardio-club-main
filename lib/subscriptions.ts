@@ -1,30 +1,56 @@
+import { premiumPlanCodes } from "@/lib/planCatalog";
 import { prisma } from "@/lib/prisma";
 
 export type SubscriptionLike = {
   id?: string;
   plan: string;
+  planId?: string | null;
+  planRecord?: {
+    code: string;
+    title?: string | null;
+    isPremium: boolean;
+  } | null;
   status: string;
   startsAt?: Date | string | null;
   endsAt?: Date | string | null;
   createdAt?: Date | string | null;
 };
 
-export const premiumPlans = ["PREMIUM_MONTH", "PREMIUM_3_MONTH", "PREMIUM_YEAR"];
+export const premiumPlans = [...premiumPlanCodes];
+
+export function getSubscriptionPlanCode(
+  subscription?: SubscriptionLike | null,
+) {
+  return subscription?.planRecord?.code || subscription?.plan || null;
+}
 
 export function isPremiumPlan(plan?: string | null) {
   return Boolean(plan && premiumPlans.includes(plan));
 }
 
-export function getPlanLabel(plan?: string | null) {
+export function isPremiumSubscription(subscription: SubscriptionLike) {
+  if (subscription.planRecord) {
+    return subscription.planRecord.isPremium;
+  }
+
+  return isPremiumPlan(getSubscriptionPlanCode(subscription));
+}
+
+export function getPlanLabel(
+  plan?: string | null,
+  storedTitle?: string | null,
+) {
+  if (storedTitle) return storedTitle;
   if (plan === "PREMIUM_MONTH") return "Premium на месяц";
   if (plan === "PREMIUM_3_MONTH") return "Premium на 3 месяца";
   if (plan === "PREMIUM_YEAR") return "Premium на год";
-  if (plan === "FREE") return "Free";
+  if (plan === "FREE") return "Бесплатный";
 
   return plan || "Неизвестный план";
 }
 
 export function getStatusLabel(status?: string | null) {
+  if (status === "PENDING") return "Ожидает оплаты";
   if (status === "ACTIVE") return "Активна";
   if (status === "CANCELED") return "Отменена";
   if (status === "EXPIRED") return "Истекла";
@@ -42,7 +68,10 @@ function toDate(value?: Date | string | null) {
   return date;
 }
 
-export function isSubscriptionExpired(subscription: SubscriptionLike, now = new Date()) {
+export function isSubscriptionExpired(
+  subscription: SubscriptionLike,
+  now = new Date(),
+) {
   const endsAt = toDate(subscription.endsAt);
 
   return Boolean(endsAt && endsAt.getTime() <= now.getTime());
@@ -57,7 +86,7 @@ export function hasActivePremiumAccess(
   return subscriptions.some((subscription) => {
     return (
       subscription.status === "ACTIVE" &&
-      isPremiumPlan(subscription.plan) &&
+      isPremiumSubscription(subscription) &&
       !isSubscriptionExpired(subscription, now)
     );
   });
@@ -73,7 +102,7 @@ export function getCurrentSubscription(
   const activePremium = subscriptions.find((subscription) => {
     return (
       subscription.status === "ACTIVE" &&
-      isPremiumPlan(subscription.plan) &&
+      isPremiumSubscription(subscription) &&
       !isSubscriptionExpired(subscription, now)
     );
   });
@@ -81,7 +110,10 @@ export function getCurrentSubscription(
   if (activePremium) return activePremium;
 
   const activeFree = subscriptions.find((subscription) => {
-    return subscription.status === "ACTIVE" && subscription.plan === "FREE";
+    return (
+      subscription.status === "ACTIVE" &&
+      getSubscriptionPlanCode(subscription) === "FREE"
+    );
   });
 
   if (activeFree) return activeFree;
@@ -89,7 +121,9 @@ export function getCurrentSubscription(
   return subscriptions[0] ?? null;
 }
 
-export function getSubscriptionDaysLeft(subscription: SubscriptionLike | null) {
+export function getSubscriptionDaysLeft(
+  subscription: SubscriptionLike | null,
+) {
   if (!subscription?.endsAt) return null;
 
   const endsAt = toDate(subscription.endsAt);
@@ -108,7 +142,7 @@ export async function expireEndedSubscriptions() {
     where: {
       status: "ACTIVE",
       plan: {
-        not: "FREE",
+        in: premiumPlans,
       },
       endsAt: {
         lt: new Date(),
@@ -126,7 +160,7 @@ export async function expireEndedSubscriptionsForUser(userId: string) {
       userId,
       status: "ACTIVE",
       plan: {
-        not: "FREE",
+        in: premiumPlans,
       },
       endsAt: {
         lt: new Date(),

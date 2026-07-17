@@ -23,7 +23,9 @@
     "premium:check": "tsx scripts/premium-access-check.ts",
     "uploads:audit": "tsx scripts/audit-uploads.ts",
     "db:seed:ecg-sections": "tsx scripts/seed-ecg-sections.ts",
-    "db:seed:ecg-base-catalog": "tsx scripts/seed-ecg-base-catalog.ts"
+    "db:seed:ecg-base-catalog": "tsx scripts/seed-ecg-base-catalog.ts",
+    "db:seed:plans": "tsx scripts/seed-plans.ts",
+    "billing:check": "tsx scripts/billing-models-check.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",

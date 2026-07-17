@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { createUserSession } from "@/lib/auth";
 import { createEmailVerificationCodeForUser } from "@/lib/accountTokens";
+import { ensureCorePlan } from "@/lib/planCatalog";
 import { sendEmailVerificationCode } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rateLimit";
