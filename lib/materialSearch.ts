@@ -230,9 +230,6 @@ function createTermFilter(term: string): Prisma.MaterialWhereInput {
   };
 }
 
-function includesTerm(value: string | null | undefined, term: string) {
-  return normalizeSearchText(value ?? "").includes(term);
-}
 
 function calculateRelevanceScore(
   material: {
