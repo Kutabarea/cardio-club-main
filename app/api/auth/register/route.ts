@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 
 import { createUserSession } from "@/lib/auth";
-import { createEmailVerificationToken } from "@/lib/accountTokens";
-import { sendEmailVerificationLink } from "@/lib/email";
+import { createEmailVerificationCodeForUser } from "@/lib/accountTokens";
+import { sendEmailVerificationCode } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
@@ -97,10 +97,10 @@ export async function POST(request: Request) {
       },
     });
 
-    const verificationToken = await createEmailVerificationToken(user.id);
-    await sendEmailVerificationLink({
+    const verificationToken = await createEmailVerificationCodeForUser(user.id);
+    await sendEmailVerificationCode({
       to: user.email,
-      token: verificationToken.token,
+      code: verificationToken.code,
     });
 
     await createUserSession(user.id);

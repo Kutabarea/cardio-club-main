@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,7 +18,7 @@ export default function LogoutButton() {
         method: "POST",
       });
 
-      router.push("/login");
+      router.push("/");
       router.refresh();
     } finally {
       setIsLoading(false);

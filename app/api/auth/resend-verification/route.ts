@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { createEmailVerificationToken } from "@/lib/accountTokens";
+import { createEmailVerificationCodeForUser } from "@/lib/accountTokens";
 import { getCurrentUser } from "@/lib/auth";
-import { sendEmailVerificationLink } from "@/lib/email";
+import { sendEmailVerificationCode } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rateLimit";
 
@@ -57,10 +57,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Email уже подтверждён." });
   }
 
-  const verificationToken = await createEmailVerificationToken(user.id);
-  await sendEmailVerificationLink({
+  const verificationToken = await createEmailVerificationCodeForUser(user.id);
+  await sendEmailVerificationCode({
     to: user.email,
-    token: verificationToken.token,
+    code: verificationToken.code,
   });
 
   return NextResponse.json({

@@ -37,7 +37,7 @@ export default async function SubscribePage({ searchParams }: SubscribePageProps
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    redirect("/login");
+    redirect("/");
   }
 
   await expireEndedSubscriptionsForUser(currentUser.id);
@@ -56,7 +56,7 @@ export default async function SubscribePage({ searchParams }: SubscribePageProps
   });
 
   if (!user) {
-    redirect("/login");
+    redirect("/");
   }
 
   const resolvedSearchParams = searchParams ? await searchParams : {};

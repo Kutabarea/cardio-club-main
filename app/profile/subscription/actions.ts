@@ -29,7 +29,7 @@ export async function activateMockPremiumSubscriptionAction(formData: FormData) 
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/");
   }
 
   const plan = String(formData.get("plan") ?? "").trim();

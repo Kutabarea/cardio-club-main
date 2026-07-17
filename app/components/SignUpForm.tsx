@@ -91,10 +91,10 @@ export default function SignUpForm() {
         return;
       }
 
-      setMessage("Вы успешно зарегистрированы");
+      setMessage("Аккаунт создан. Введите код подтверждения email.");
       form.reset();
 
-      router.push("/profile/settings");
+      router.push("/verify-email");
       router.refresh();
     } catch {
       setMessage("Не удалось подключиться к серверу");
@@ -161,6 +161,10 @@ export default function SignUpForm() {
     }
   }
 
+  function handleGoogleLogin() {
+    window.location.href = "/api/auth/google/start?returnTo=/profile/settings";
+  }
+
   function openLoginModal() {
     setLoginMessage(null);
     setIsLoginModalOpen(true);
@@ -188,7 +192,7 @@ export default function SignUpForm() {
             по почте
           </Button>
 
-          <button type="button" className={styles.switcher__google}>
+          <button type="button" className={styles.switcher__google} onClick={handleGoogleLogin}>
             <Image src={googleLogo} alt="" className={styles.google__logo} />
             <span>через Google</span>
           </button>

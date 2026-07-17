@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 
 import { prisma } from "@/lib/prisma";
 
-const EMAIL_VERIFICATION_TOKEN_TTL_HOURS = 24;
+const EMAIL_VERIFICATION_CODE_TTL_MINUTES = 15;
 const PASSWORD_RESET_TOKEN_TTL_MINUTES = 30;
 
 export function createAccountToken() {
@@ -13,10 +13,21 @@ export function hashAccountToken(token: string) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-function addHours(date: Date, hours: number) {
-  const nextDate = new Date(date);
-  nextDate.setHours(nextDate.getHours() + hours);
-  return nextDate;
+export function createEmailVerificationCode() {
+  return crypto.randomInt(100000, 1000000).toString();
+}
+
+export function normalizeEmailVerificationCode(code: string) {
+  return code.replace(/\D/g, "").slice(0, 6);
+}
+
+export function hashEmailVerificationCode(userId: string, code: string) {
+  const normalizedCode = normalizeEmailVerificationCode(code);
+
+  return crypto
+    .createHash("sha256")
+    .update(`${userId}:${normalizedCode}`)
+    .digest("hex");
 }
 
 function addMinutes(date: Date, minutes: number) {
@@ -25,18 +36,14 @@ function addMinutes(date: Date, minutes: number) {
   return nextDate;
 }
 
-export async function createEmailVerificationToken(userId: string) {
-  const token = createAccountToken();
-  const tokenHash = hashAccountToken(token);
-  const expiresAt = addHours(new Date(), EMAIL_VERIFICATION_TOKEN_TTL_HOURS);
+export async function createEmailVerificationCodeForUser(userId: string) {
+  const code = createEmailVerificationCode();
+  const tokenHash = hashEmailVerificationCode(userId, code);
+  const expiresAt = addMinutes(new Date(), EMAIL_VERIFICATION_CODE_TTL_MINUTES);
 
-  await prisma.emailVerificationToken.updateMany({
+  await prisma.emailVerificationToken.deleteMany({
     where: {
       userId,
-      usedAt: null,
-    },
-    data: {
-      usedAt: new Date(),
     },
   });
 
@@ -49,8 +56,20 @@ export async function createEmailVerificationToken(userId: string) {
   });
 
   return {
-    token,
+    code,
     expiresAt,
+  };
+}
+
+/**
+ * Backward-compatible export. New code should use createEmailVerificationCodeForUser.
+ */
+export async function createEmailVerificationToken(userId: string) {
+  const result = await createEmailVerificationCodeForUser(userId);
+
+  return {
+    token: result.code,
+    expiresAt: result.expiresAt,
   };
 }
 

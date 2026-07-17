@@ -217,6 +217,7 @@ async function upsertUserFromGoogle(profile: {
         userId: existingAccount.userId,
       },
       create: {
+        userId: existingAccount.userId,
         avatarUrl: profile.avatarUrl,
       },
       update: {
@@ -266,6 +267,7 @@ async function upsertUserFromGoogle(profile: {
           userId: existingUser.id,
         },
         create: {
+          userId: existingUser.id,
           avatarUrl: profile.avatarUrl,
         },
         update: {
@@ -330,24 +332,30 @@ export async function createGoogleOAuthCallbackResponse(request: Request) {
   cookieStore.delete(GOOGLE_OAUTH_RETURN_TO_COOKIE);
 
   if (error) {
-    return NextResponse.redirect(new URL(`/login?error=google-${encodeURIComponent(error)}`, request.url));
+    return NextResponse.redirect(new URL(`/login?error=google-${encodeURIComponent(error)}`, getAppUrl()));
   }
 
   if (!code || !state || !expectedState || state !== expectedState) {
-    return NextResponse.redirect(new URL("/login?error=google-state", request.url));
+    return NextResponse.redirect(new URL("/login?error=google-state", getAppUrl()));
   }
 
   try {
     const tokens = await exchangeGoogleCodeForTokens(code);
-    const googleProfile = await fetchGoogleUserInfo(tokens.access_token);
+    const accessToken = tokens.access_token;
+
+    if (!accessToken) {
+      throw new Error("Google access token is missing.");
+    }
+
+    const googleProfile = await fetchGoogleUserInfo(accessToken);
     const user = await upsertUserFromGoogle(googleProfile);
 
     await createUserSession(user.id);
 
-    return NextResponse.redirect(new URL(returnTo, request.url));
+    return NextResponse.redirect(new URL(returnTo, getAppUrl()));
   } catch (error) {
     console.error("Google OAuth callback failed:", error);
 
-    return NextResponse.redirect(new URL("/login?error=google-auth", request.url));
+    return NextResponse.redirect(new URL("/login?error=google-auth", getAppUrl()));
   }
 }

@@ -7,5 +7,6 @@ export async function POST() {
 
   return Response.json({
     message: "Вы вышли из аккаунта",
+    redirectTo: "/",
   });
 }

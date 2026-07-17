@@ -1,4 +1,6 @@
 "use client";
+import googleLogo from "../../public/images/google__logo.png";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
@@ -15,6 +17,10 @@ export default function LoginForm() {
 
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  function handleGoogleLogin() {
+    window.location.href = "/api/auth/google/start?returnTo=/profile/settings";
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,6 +81,11 @@ export default function LoginForm() {
   return (
     <div className={styles.card}>
       <h1 className={styles.title}>Вход</h1>
+
+      <button type="button" className={styles.switcher__google} onClick={handleGoogleLogin}>
+        <Image src={googleLogo} alt="" className={styles.google__logo} />
+        <span>Войти через Google</span>
+      </button>
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div>
