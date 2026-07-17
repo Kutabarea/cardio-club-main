@@ -21,6 +21,7 @@
     "demo:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-demo.ps1",
     "subscriptions:expire": "tsx scripts/expire-subscriptions.ts",
     "premium:check": "tsx scripts/premium-access-check.ts",
+    "search:check": "tsx scripts/search-check.ts",
     "uploads:audit": "tsx scripts/audit-uploads.ts",
     "db:seed:ecg-sections": "tsx scripts/seed-ecg-sections.ts",
     "db:seed:ecg-base-catalog": "tsx scripts/seed-ecg-base-catalog.ts",
