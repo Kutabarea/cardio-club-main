@@ -176,7 +176,7 @@
         height: 100vh;
         background: #fff;
         z-index: 100;
-        transition: right 0.4s ease;
+        transition: left 0.4s ease;
         box-shadow: -5px 0 15px rgba(0,0,0,0.1);
         padding-top: 80px;
     }
@@ -223,5 +223,37 @@
 @media (max-width: 480px) {
   .nav__link {
     display: none;
+  }
+}
+/* Dynamic public navigation final */
+
+.nav__link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nav__link:focus-visible {
+  color: #4480ea;
+  outline: 2px solid #4480ea;
+  outline-offset: 4px;
+}
+
+.burger {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .nav__inner {
+    padding-bottom: 2rem;
   }
 }

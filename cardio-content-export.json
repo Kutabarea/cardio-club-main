@@ -1,0 +1,1291 @@
+{
+  "generatedAt": "2026-07-17T20:24:42.297Z",
+  "categories": [
+    {
+      "id": "cmrermo8y00007kesmcqiriq7",
+      "title": "Видеолекции",
+      "slug": "video-lectures",
+      "description": "Образовательные видеолекции по кардиологии."
+    },
+    {
+      "id": "cmreqwk1x0002f8esc2tfuicx",
+      "title": "Патология от А до Я",
+      "slug": "pathology-a-z",
+      "description": "Кардиологические патологии, синдромы и клинические разборы."
+    },
+    {
+      "id": "cmreqwk1z0003f8esar9azhb2",
+      "title": "Полезные ресурсы",
+      "slug": "useful-resources",
+      "description": "Справочные материалы, алгоритмы, ссылки и памятки."
+    },
+    {
+      "id": "cmreqwk1j0000f8esen2r1tpt",
+      "title": "ЭКГ база",
+      "slug": "ecg-base",
+      "description": "Вся база ЭКГ, которую надо знать врачу. Зубцы, сегменты, интервалы, патологии, реальные примеры и клиническая интерпретация."
+    },
+    {
+      "id": "cmreqwk1u0001f8es3e9n7ksu",
+      "title": "ЭКГ тренажёр",
+      "slug": "ecg-trainer",
+      "description": "Практические задания и клинические сценарии для тренировки ЭКГ."
+    }
+  ],
+  "ecgSections": [
+    {
+      "id": "cmrhogxu100017gesrqv42lc3",
+      "title": "База",
+      "slug": "baza",
+      "description": "Базовые материалы по ЭКГ.",
+      "sortOrder": 10
+    },
+    {
+      "id": "cmrhogxu400027gesnorpkvzx",
+      "title": "Зубцы",
+      "slug": "zubcy",
+      "description": "Зубцы, волны и отдельные элементы ЭКГ.",
+      "sortOrder": 20
+    },
+    {
+      "id": "cmrhogxu700037ges0r4xfuei",
+      "title": "Сегменты и интервалы",
+      "slug": "segmenty-i-intervaly",
+      "description": "Интервалы, сегменты и комплексы ЭКГ.",
+      "sortOrder": 30
+    },
+    {
+      "id": "cmrhogxua00047ges3biuu5qy",
+      "title": "Анатомия ЭКГ",
+      "slug": "anatomiya-ekg",
+      "description": "ЭКГ-признаки увеличения и гипертрофии камер сердца.",
+      "sortOrder": 40
+    },
+    {
+      "id": "cmrhogxud00057gesxp53l0v7",
+      "title": "Клиническая интерпретация",
+      "slug": "klinicheskaya-interpretaciya",
+      "description": "Клинические материалы и переходы к патологиям.",
+      "sortOrder": 50
+    }
+  ],
+  "videoLectureSections": [
+    {
+      "id": "cmrpdpdc40000nkes36drl31b",
+      "title": "Фармакология",
+      "slug": "pharmacology",
+      "description": "Лекарственная терапия и клиническая фармакология.",
+      "sortOrder": 10
+    },
+    {
+      "id": "cmrpdpdc90001nkesnbzlu3t5",
+      "title": "Пульмонология и ТЭЛА",
+      "slug": "pulmonology-and-pe",
+      "description": "Пульмонология и тромбоэмболия лёгочной артерии.",
+      "sortOrder": 20
+    },
+    {
+      "id": "cmrpdpdcc0002nkesais58cnf",
+      "title": "ЭКГ и аритмии",
+      "slug": "ecg-and-arrhythmias",
+      "description": "ЭКГ, нарушения ритма и проводимости.",
+      "sortOrder": 30
+    },
+    {
+      "id": "cmrpdpdcf0003nkes076b16f5",
+      "title": "Нефрология",
+      "slug": "nephrology",
+      "description": "Заболевания почек в практике кардиолога.",
+      "sortOrder": 40
+    },
+    {
+      "id": "cmrpdpdch0004nkesuyrzexdm",
+      "title": "ОКС и инфаркт миокарда",
+      "slug": "acs-and-myocardial-infarction",
+      "description": "Острый коронарный синдром и инфаркт миокарда.",
+      "sortOrder": 50
+    },
+    {
+      "id": "cmrpdpdck0005nkesh065ltkd",
+      "title": "Гематология",
+      "slug": "hematology",
+      "description": "Гематологические состояния в кардиологии.",
+      "sortOrder": 60
+    },
+    {
+      "id": "cmrpdpdcn0006nkesmzx37ntv",
+      "title": "Сердечная недостаточность и РААС",
+      "slug": "heart-failure-and-raas",
+      "description": "Сердечная недостаточность и система РААС.",
+      "sortOrder": 70
+    },
+    {
+      "id": "cmrpdpdcp0007nkesjp317g21",
+      "title": "Эндокринные причины артериальной гипертензии",
+      "slug": "endocrine-hypertension",
+      "description": "Эндокринные причины повышения артериального давления.",
+      "sortOrder": 80
+    },
+    {
+      "id": "cmrpdpdcs0008nkes8klx5be3",
+      "title": "Липиды и атеросклероз",
+      "slug": "lipids-and-atherosclerosis",
+      "description": "Дислипидемии, атеросклероз и профилактика.",
+      "sortOrder": 90
+    },
+    {
+      "id": "cmrpdpdcu0009nkesbyfoqvsr",
+      "title": "Физиология и пропедевтика",
+      "slug": "physiology-and-propaedeutics",
+      "description": "Физиология и основы клинического обследования.",
+      "sortOrder": 100
+    },
+    {
+      "id": "cmrpdpdcx000ankesnlyrp25j",
+      "title": "Воспалительные болезни сердца и ревматология",
+      "slug": "inflammatory-heart-diseases-and-rheumatology",
+      "description": "Миокардиты, перикардиты и ревматология.",
+      "sortOrder": 110
+    },
+    {
+      "id": "cmrpdpdcz000bnkesnzlgsfir",
+      "title": "Доказательная медицина, обучение и карьера",
+      "slug": "evidence-medicine-education-career",
+      "description": "Доказательная медицина и профессиональное развитие.",
+      "sortOrder": 120
+    }
+  ],
+  "materials": [
+    {
+      "id": "cmreqwk290005f8esbnzbx5a6",
+      "title": "Интервалы на ЭКГ",
+      "slug": "ecg-intervals",
+      "description": "PR, QRS, QT и другие интервалы: что оценивать и зачем.",
+      "type": "ECG_ARTICLE",
+      "imageUrl": "/images/materials__img__2.png",
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrggqt9l00064oes2r5cezef",
+      "title": "Комплекс QRS",
+      "slug": "complex-qrs",
+      "description": "Что показывает комплекс QRS, как оценивать его ширину и форму.",
+      "type": "ECG_ARTICLE",
+      "imageUrl": "/images/materials__img__2.png",
+      "videoUrl": null,
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrggqt9r00084oese4kvo5kj",
+      "title": "Острый коронарный синдром",
+      "slug": "acute-coronary-syndrome-demo",
+      "description": "Демо-материал по ЭКГ-признакам острого коронарного синдрома.",
+      "type": "ECG_ARTICLE",
+      "imageUrl": "/images/materials__img__4.png",
+      "videoUrl": null,
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmreqwk1x0002f8esc2tfuicx",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Патология от А до Я",
+        "slug": "pathology-a-z"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb92000r34eswram9jvy",
+      "title": "Патология от А до Я",
+      "slug": "patologiya-ot-a-do-ya",
+      "description": "Краткий материал по теме «Патология от А до Я».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxud00057gesxp53l0v7",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Клиническая интерпретация",
+        "slug": "klinicheskaya-interpretaciya"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrggqt9o00074oesqd0zbxrm",
+      "title": "Фибрилляция предсердий",
+      "slug": "atrial-fibrillation",
+      "description": "Основные ЭКГ-признаки фибрилляции предсердий и клиническое значение.",
+      "type": "ECG_ARTICLE",
+      "imageUrl": "/images/materials__img__3.png",
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmreqwk1x0002f8esc2tfuicx",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Патология от А до Я",
+        "slug": "pathology-a-z"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7v000b34esvgbd9qas",
+      "title": "Зубец Т",
+      "slug": "zubec-t",
+      "description": "Краткий материал по теме «Зубец T».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 10,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8e000i34eska9bhmux",
+      "title": "Интервал PR",
+      "slug": "interval-pr",
+      "description": "Краткий материал по теме «Интервал PR».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 10,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrhogxx500077gesgq8qpgk3",
+      "title": "Паталогия от А до Я",
+      "slug": "patalogiya-ot-a-do-ya",
+      "description": "Материал раздела «Клиническая интерпретация».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 10,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxud00057gesxp53l0v7",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Клиническая интерпретация",
+        "slug": "klinicheskaya-interpretaciya"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8u000o34esq01k4df2",
+      "title": "Увеличение левого предсердия",
+      "slug": "uvelichenie-levogo-predserdiya",
+      "description": "Краткий материал по теме «Увеличение левого предсердия».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 10,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxua00047ges3biuu5qy",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Анатомия ЭКГ",
+        "slug": "anatomiya-ekg"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmreqwk260004f8est6mmy6h2",
+      "title": "Частота ЭКГ",
+      "slug": "ecg-frequency",
+      "description": "Краткий разбор способов расчёта частоты сердечных сокращений по ЭКГ.",
+      "type": "ECG_ARTICLE",
+      "imageUrl": "/images/materials__img__1.png",
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 10,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb74000134esgwhnbqyu",
+      "title": "Частота ЭКГ",
+      "slug": "chastota-ekg",
+      "description": "Краткий материал по теме «Частота ЭКГ».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 10,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb90000q34es212wv9qh",
+      "title": "Гипертрофия обоих предсердий",
+      "slug": "gipertrofiya-oboih-predserdiy",
+      "description": "Краткий материал по теме «Гипертрофия обоих предсердий».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 20,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxua00047ges3biuu5qy",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Анатомия ЭКГ",
+        "slug": "anatomiya-ekg"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb86000f34esit3abhpb",
+      "title": "Дельта волна",
+      "slug": "delta-volna",
+      "description": "Краткий материал по теме «Дельта волна».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 20,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7n000834eso2mn34pf",
+      "title": "Интерпретация ЭКГ",
+      "slug": "interpretaciya-ekg",
+      "description": "Краткий материал по теме «Интерпретация ЭКГ».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 20,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7i000634es8jjphqno",
+      "title": "Основы детской ЭКГ",
+      "slug": "osnovy-detskoy-ekg",
+      "description": "Краткий материал по теме «Основы детской ЭКГ».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 20,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8m000l34esssu45f1w",
+      "title": "Сегмент ST",
+      "slug": "segment-st",
+      "description": "Краткий материал по теме «Сегмент ST».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 20,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7y000c34esv9v5snd8",
+      "title": "Зубец R",
+      "slug": "zubec-r",
+      "description": "Краткий материал по теме «Зубец R».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 30,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8h000j34esinewiisp",
+      "title": "Сегмент PR",
+      "slug": "segment-pr",
+      "description": "Краткий материал по теме «Сегмент PR».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 30,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8x000p34esuqqeczio",
+      "title": "Увеличение правого предсердия",
+      "slug": "uvelichenie-pravogo-predserdiya",
+      "description": "Краткий материал по теме «Увеличение правого предсердия».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 30,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxua00047ges3biuu5qy",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Анатомия ЭКГ",
+        "slug": "anatomiya-ekg"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmreqwk2c0006f8esbwe73efn",
+      "title": "ЭКГ при неотложной помощи",
+      "slug": "ecg-emergency",
+      "description": "ЭКГ-признаки, которые нельзя пропустить в экстренной ситуации.",
+      "type": "ECG_ARTICLE",
+      "imageUrl": "/images/materials__img__3.png",
+      "videoUrl": null,
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 30,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb77000234esvgcq8gqj",
+      "title": "ЭКГ ритм",
+      "slug": "ekg-ritm",
+      "description": "Краткий материал по теме «ЭКГ ритм».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 30,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb88000g34ess2tp7if8",
+      "title": "Волна эпсилон",
+      "slug": "volna-epsilon",
+      "description": "Краткий материал по теме «Волна эпсилон».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 40,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8p000m34estuituml6",
+      "title": "Точка J",
+      "slug": "tochka-j",
+      "description": "Краткий материал по теме «Точка J».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 40,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7k000734es3yk15kxu",
+      "title": "ЭКГ при неотложной помощи",
+      "slug": "ekg-pri-neotlozhnoy-pomoschi",
+      "description": "Краткий материал по теме «ЭКГ при неотложной помощи».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 40,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb80000d34es8jh7ig1r",
+      "title": "Зубец Q",
+      "slug": "zubec-q",
+      "description": "Краткий материал по теме «Зубец Q».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 50,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8k000k34esl9423nvo",
+      "title": "Интервал QT",
+      "slug": "interval-qt",
+      "description": "Краткий материал по теме «Интервал QT».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 50,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7a000334esjlpex6ka",
+      "title": "Интервалы на ЭКГ",
+      "slug": "intervaly-na-ekg",
+      "description": "Краткий материал по теме «Интервалы на ЭКГ».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 50,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8b000h34esws1qsg0v",
+      "title": "Зубец Осборна",
+      "slug": "zubec-osborna",
+      "description": "Краткий материал по теме «Зубец Осборна».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 60,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrhogxvl00067gessmgioefc",
+      "title": "Интрерпретация ЭКГ",
+      "slug": "intrerpretaciya-ekg",
+      "description": "Материал раздела «База».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 60,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb8r000n34es9fjxxa65",
+      "title": "Комплекс QRS",
+      "slug": "kompleks-qrs",
+      "description": "Краткий материал по теме «Комплекс QRS».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 60,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu700037ges0r4xfuei",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Сегменты и интервалы",
+        "slug": "segmenty-i-intervaly"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb83000e34eshqwmkyvp",
+      "title": "Зубец U",
+      "slug": "zubec-u",
+      "description": "Краткий материал по теме «Зубец U».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 70,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7c000434eswp1kf2c3",
+      "title": "Электрическая ось сердца",
+      "slug": "elektricheskaya-os-serdca",
+      "description": "Краткий материал по теме «Электрическая ось сердца».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 70,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7q000934es5mveudu0",
+      "title": "Расположение электродов",
+      "slug": "raspolozhenie-elektrodov",
+      "description": "Краткий материал по теме «Расположение электродов».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 80,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7f000534esqd6dx3dp",
+      "title": "V1 и V2",
+      "slug": "v1-i-v2",
+      "description": "Краткий материал по теме «V1 и V2».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 90,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrkjqp5q0000boesw2qby0iz",
+      "title": "111",
+      "slug": "111",
+      "description": "1111",
+      "type": "ECG_ARTICLE",
+      "imageUrl": "/uploads/materials/2026/07/c216a03a-0b12-4f78-8dae-7f2cb39a4ba6.jpg",
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 100,
+      "categoryId": "cmreqwk1z0003f8esar9azhb2",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Полезные ресурсы",
+        "slug": "useful-resources"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrj5gdlx0000coesxtmtcwym",
+      "title": "123",
+      "slug": "123",
+      "description": "123",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 100,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu400027gesnorpkvzx",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "Зубцы",
+        "slug": "zubcy"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrjh1jie0001xoes0crpt8ox",
+      "title": "123123123123213",
+      "slug": "123123123123213",
+      "description": "12312321321312312",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 100,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrergb7t000a34es2htrghcb",
+      "title": "Зубцы на ЭКГ",
+      "slug": "zubcy-na-ekg",
+      "description": "Краткий материал по теме «Зубцы на ЭКГ».",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 100,
+      "categoryId": "cmreqwk1j0000f8esen2r1tpt",
+      "ecgSectionId": "cmrhogxu100017gesrqv42lc3",
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "ЭКГ база",
+        "slug": "ecg-base"
+      },
+      "ecgSection": {
+        "title": "База",
+        "slug": "baza"
+      },
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrji2azk00004ses3a86ahb3",
+      "title": "вфывывф",
+      "slug": "вфывывф",
+      "description": "фывфывывф",
+      "type": "ECG_ARTICLE",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 100,
+      "categoryId": "cmreqwk1x0002f8esc2tfuicx",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Патология от А до Я",
+        "slug": "pathology-a-z"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrggqta6000c4oesrrjsn4x8",
+      "title": "Полезные ссылки для кардиолога",
+      "slug": "useful-links-cardiology",
+      "description": "Подборка справочных ресурсов и быстрых ссылок для ежедневной практики.",
+      "type": "HELPER",
+      "imageUrl": null,
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmreqwk1z0003f8esar9azhb2",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Полезные ресурсы",
+        "slug": "useful-resources"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrermo9j00057kesl5u5dvqt",
+      "title": "Артериальная гипертензия",
+      "slug": "arterial-hypertension",
+      "description": "Разбор диагностики, стратификации риска и лечения гипертонической болезни.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__5.png",
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrggqta2000b4oesio0jnab8",
+      "title": "Видеолекция: Артериальная гипертензия",
+      "slug": "demo-video-hypertension",
+      "description": "Демо-видеолекция по диагностике и ведению артериальной гипертензии.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__2.png",
+      "videoUrl": "https://www.youtube.com/watch?v=Iq93-6I7mjI",
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrggqt9y000a4oesbdv7i3vh",
+      "title": "Видеолекция: ЭКГ и аритмии",
+      "slug": "demo-video-ecg-arrhythmias",
+      "description": "Демо-видеолекция по базовому разбору аритмий на ЭКГ.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__1.png",
+      "videoUrl": "https://example.com/video/ecg-arrhythmias",
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrermo9m00067kesel75koyy",
+      "title": "Острый коронарный синдром",
+      "slug": "acute-coronary-syndrome",
+      "description": "Клиника, ЭКГ-признаки, маршрутизация и базовая тактика при ОКС.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__6.png",
+      "videoUrl": null,
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmreqwk2i0008f8es3x24nz5o",
+      "title": "Пульмонология и ТЭЛА",
+      "slug": "pulmonology-and-pe",
+      "description": "ТЭЛА, ХОБЛ, бронхиальная астма, пневмония: диагностика и лечение.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__2.png",
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrermo9g00047kesb1o9qex8",
+      "title": "Сердечная недостаточность",
+      "slug": "heart-failure",
+      "description": "Диагностика, классификация и базовая терапия сердечной недостаточности.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__4.png",
+      "videoUrl": null,
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmreqwk2g0007f8esj7q6zeme",
+      "title": "Фармакология",
+      "slug": "pharmacology",
+      "description": "База кардиофармакологии: механизмы действия препаратов, алгоритмы и дозы.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__1.png",
+      "videoUrl": null,
+      "isPremium": false,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmreqwk2m0009f8eszphimgzv",
+      "title": "ЭКГ и аритмии",
+      "slug": "ecg-and-arrhythmias",
+      "description": "Лекции по ЭКГ и аритмиям от базы до сложных патологий простым языком.",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/images/videolecture__img__3.png",
+      "videoUrl": null,
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 0,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    },
+    {
+      "id": "cmrpd2gul0000r0es0mzupdf5",
+      "title": "Видеолекция тест",
+      "slug": "test-videlacture",
+      "description": "ФЫВФВФЫВ",
+      "type": "VIDEO_LECTURE",
+      "imageUrl": "/uploads/materials/2026/07/23dd165a-696d-4f49-880b-8391cee464a2.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=ru4tkeU8eAE&list=RDru4tkeU8eAE&start_radio=1",
+      "isPremium": true,
+      "isPublished": true,
+      "sortOrder": 100,
+      "categoryId": "cmrermo8y00007kesmcqiriq7",
+      "ecgSectionId": null,
+      "videoLectureSectionId": null,
+      "category": {
+        "title": "Видеолекции",
+        "slug": "video-lectures"
+      },
+      "ecgSection": null,
+      "videoLectureSection": null
+    }
+  ]
+}

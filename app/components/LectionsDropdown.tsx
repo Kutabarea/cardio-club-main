@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import styles from "../styles/LectionsDropdown.module.css";
@@ -9,70 +9,75 @@ interface LectionsDropdownProps {
   className?: string;
 }
 
-export default function LectionsDropdown({ className }: LectionsDropdownProps) {
+const sections = [
+  ["Фармакология", "pharmacology"],
+  ["Пульмонология и ТЭЛА", "pulmonology-and-pe"],
+  ["ЭКГ и аритмии", "ecg-and-arrhythmias"],
+  ["Нефрология", "nephrology"],
+  ["ОКС и инфаркт миокарда", "acs-and-myocardial-infarction"],
+  ["Гематология", "hematology"],
+  ["Сердечная недостаточность и РААС", "heart-failure-and-raas"],
+  ["Эндокринные причины артериальной гипертензии", "endocrine-hypertension"],
+  ["Липиды и атеросклероз", "lipids-and-atherosclerosis"],
+  ["Физиология и пропедевтика", "physiology-and-propaedeutics"],
+  [
+    "Воспалительные болезни сердца и ревматология",
+    "inflammatory-heart-diseases-and-rheumatology",
+  ],
+  [
+    "Доказательная медицина, обучение и карьера",
+    "evidence-medicine-education-career",
+  ],
+] as const;
+
+export default function LectionsDropdown({
+  className,
+}: LectionsDropdownProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+    const closeOutside = (event: MouseEvent) => {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target as Node)
+      ) {
         setOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", closeOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", closeOutside);
+    };
   }, []);
 
   return (
     <div ref={ref} className={styles.dropdown}>
       <button
-        onClick={() => setOpen((prev) => !prev)}
-        className={className ? className : styles.nav__link}
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className={className || styles.nav__link}
+        aria-expanded={open}
       >
         Видеолекции
       </button>
 
-      {open && (
+      {open ? (
         <div className={styles.dropdown__inner}>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Фармакология
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Пульмонология и ТЭЛА
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            ЭКГ и аритмии
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Нефрология
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            ОКС и инфаркт миокарда{" "}
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Гематология
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Сердечная недостаточность и РААС
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Эндокринные причины артериальной гипертензии
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Липиды и атеросклероз
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Физиология и пропедевтика
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Воспалительные болезни сердца и ревматология
-          </Link>
-          <Link href="/videolecture" className={styles.nav__link__item}>
-            Доказательная медицина, обучение и карьера
-          </Link>
+          {sections.map(([title, slug]) => (
+            <Link
+              key={slug}
+              href={`/videolecture#video-section-${slug}`}
+              className={styles.nav__link__item}
+              onClick={() => setOpen(false)}
+            >
+              {title}
+            </Link>
+          ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

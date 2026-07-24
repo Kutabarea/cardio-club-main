@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import "./styles/globals.css";
-import Header from "./components/Header";
+
 import Footer from "./components/Footer";
+import Header from "./components/Header";
+
+import "./styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Cardio Club",
@@ -17,7 +19,11 @@ export default function RootLayout({
     <html lang="ru">
       <body>
         <Header />
-        {children}
+
+        <div className="site-page-content">
+          {children}
+        </div>
+
         <Footer />
       </body>
     </html>

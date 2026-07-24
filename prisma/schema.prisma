@@ -135,30 +135,82 @@ model Payment {
   @@index([provider, providerPaymentId])
 }
 
+model ContentArea {
+  id           String  @id @default(cuid())
+  title        String
+  slug         String  @unique
+  description  String?
+  materialType String
+  sortOrder    Int     @default(0)
+  isActive     Boolean @default(true)
+
+  categories Category[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
 model Category {
   id          String  @id @default(cuid())
   title       String
   slug        String  @unique
   description String?
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  subsectionKind String @default("NONE")
+
+  contentAreaId String?
+  contentArea   ContentArea? @relation(fields: [contentAreaId], references: [id], onDelete: SetNull)
+
+  materials            Material[]
+  ecgSections          EcgSection[]
+  videoLectureSections VideoLectureSection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contentAreaId, isActive, sortOrder])
+}
+
+model EcgSection {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String?
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   materials Material[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([categoryId, isActive, sortOrder])
 }
 
-model EcgSection {
-  id          String     @id @default(cuid())
+model VideoLectureSection {
+  id          String  @id @default(cuid())
   title       String
-  slug        String     @unique
+  slug        String  @unique
   description String?
-  sortOrder   Int        @default(0)
-  materials   Material[]
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  materials Material[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([sortOrder])
+  @@index([categoryId, isActive, sortOrder])
 }
 
 model Material {
@@ -173,11 +225,13 @@ model Material {
   isPremium   Boolean @default(false)
   isPublished Boolean @default(false)
 
-  categoryId   String?
-  ecgSectionId String?
-  category     Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  ecgSection   EcgSection? @relation(fields: [ecgSectionId], references: [id], onDelete: SetNull)
-  sortOrder    Int         @default(0)
+  categoryId            String?
+  ecgSectionId          String?
+  videoLectureSectionId String?
+  category              Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  ecgSection            EcgSection?          @relation(fields: [ecgSectionId], references: [id], onDelete: SetNull)
+  videoLectureSection   VideoLectureSection? @relation(fields: [videoLectureSectionId], references: [id], onDelete: SetNull)
+  sortOrder             Int                  @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -185,6 +239,7 @@ model Material {
   @@index([type, isPublished])
   @@index([categoryId, isPublished, sortOrder])
   @@index([ecgSectionId, isPublished, sortOrder])
+  @@index([videoLectureSectionId, isPublished, sortOrder])
   @@index([isPublished, updatedAt])
 }
 
