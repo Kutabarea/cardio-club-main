@@ -20,13 +20,26 @@
 }
 
 html {
-    font-size: 1rem;
+  min-height: 100%;
+  font-size: 1rem;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background: #fff;
   color: #000;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+.site-page-content {
+  flex: 1 0 auto;
+  min-width: 0;
+}
+
+body > footer {
+  flex-shrink: 0;
 }
 
 *,
@@ -124,5 +137,35 @@ button {
     max-width: 360px;
   }
 }
+/* Sticky footer v2 */
 
+html {
+  min-height: 100%;
+}
 
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100%;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+
+body > header {
+  flex: 0 0 auto;
+}
+
+body > .site-page-content {
+  display: block;
+  flex: 1 0 auto !important;
+  width: 100%;
+  min-width: 0;
+}
+
+body > footer {
+  flex: 0 0 auto !important;
+  width: 100%;
+  margin-top: auto !important;
+}
+
+/* End sticky footer v2 */

@@ -80,3 +80,11 @@
 
 
 }
+
+/* Home footer spacing */
+
+.helper {
+    padding-bottom: clamp(2.5rem, 4vw, 4.5rem);
+}
+
+/* End home footer spacing */

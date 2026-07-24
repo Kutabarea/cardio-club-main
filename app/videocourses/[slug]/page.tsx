@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import MarkdownContent from "@/app/components/MarkdownContent";
+import MaterialVideoPlayer from "@/app/components/MaterialVideoPlayer";
 import PremiumAccessNotice from "@/app/components/PremiumAccessNotice";
 import {
   getMaterialForCurrentViewer,
@@ -75,14 +76,11 @@ export default async function VideoCourseDetailPage({
           {access.canRead ? (
             <div className={styles.courseArticleBody}>
               {course.videoUrl ? (
-                <a
-                  href={course.videoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={styles.courseVideoLink}
-                >
-                  Открыть видео курса
-                </a>
+                <MaterialVideoPlayer
+                  url={course.videoUrl}
+                  title={course.title}
+                  poster={course.imageUrl}
+                />
               ) : null}
 
               <MarkdownContent content={course.content || "Материал курса пока заполняется."} />

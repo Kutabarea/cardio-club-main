@@ -110,3 +110,127 @@
     height: 11.25rem;
   }
 }
+
+/* Video lecture sections final */
+
+.sectionNavigation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 3.5rem;
+}
+
+.sectionNavigationLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  border: 1px solid #dfe7fb;
+  border-radius: 0.875rem;
+  background-color: #f4f7ff;
+  padding: 0.8rem 1rem;
+  color: #202020;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sectionNavigationLink:hover {
+  border-color: #4480ea;
+  background-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.sectionNavigationTitle {
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.sectionNavigationCount {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.sections {
+  display: grid;
+  gap: 4rem;
+}
+
+.section {
+  scroll-margin-top: 7rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e4eafa;
+  padding-bottom: 1rem;
+}
+
+.sectionTitle {
+  margin-bottom: 0.5rem;
+}
+
+.sectionDescription {
+  max-width: 48rem;
+  color: #596579;
+}
+
+.sectionCount {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background-color: #eef3ff;
+  color: #4480ea;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.sectionEmpty {
+  border: 1px dashed #c7d4ed;
+  border-radius: 1rem;
+  background-color: #fafbff;
+  padding: 1.5rem;
+  color: #6b7484;
+}
+
+@media (max-width: 992px) {
+  .sectionNavigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .sectionNavigation {
+    grid-template-columns: 1fr;
+  }
+
+  .sections {
+    gap: 3rem;
+  }
+}
+
+/* End video lecture sections final */

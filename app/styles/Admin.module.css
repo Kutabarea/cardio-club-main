@@ -3304,3 +3304,628 @@ a.dashboardItemTitle:hover {
 .materialUnpublishButton:hover {
   background-color: #624800;
 }
+/* Admin shell v2 */
+
+:global(body:has(.admin-route-root) header:not(.adminMobileHeader)),
+:global(body:has(.admin-route-root) footer) {
+  display: none !important;
+}
+
+:global(body:has(.admin-route-root)) {
+  overflow-x: hidden;
+  background-color: #f3f6fc;
+}
+
+.adminShell {
+  display: grid;
+  grid-template-columns: 18rem minmax(0, 1fr);
+  min-height: 100vh;
+  background-color: #f3f6fc;
+}
+
+.adminShellSidebar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid #e1e7f2;
+  background-color: #ffffff;
+  padding: 1.25rem;
+}
+
+.adminShellBrandRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.adminShellBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  color: #1d2736;
+  text-decoration: none;
+}
+
+.adminShellBrandMark {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  background-color: #4480ea;
+  color: #ffffff;
+  font-family: var(--font-unbounded);
+  font-size: 0.875rem;
+  font-weight: 800;
+  box-shadow: 0 0.75rem 1.5rem rgba(68, 128, 234, 0.2);
+}
+
+.adminShellBrand strong,
+.adminShellBrand small {
+  display: block;
+}
+
+.adminShellBrand strong {
+  color: #1d2736;
+  font-family: var(--font-unbounded);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.adminShellBrand small {
+  margin-top: 0.2rem;
+  color: #748094;
+  font-family: var(--font-montserrat);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.adminMenuClose {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background-color: #f3f6fc;
+  color: #1d2736;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.adminShellIdentity {
+  overflow: hidden;
+  border: 1px solid #e3e9f4;
+  border-radius: 0.875rem;
+  margin-bottom: 1.5rem;
+  background-color: #f8faff;
+  padding: 0.875rem;
+}
+
+.adminShellIdentity span,
+.adminShellIdentity strong {
+  display: block;
+}
+
+.adminShellIdentity span {
+  margin-bottom: 0.3rem;
+  color: #7a8699;
+  font-family: var(--font-montserrat);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.adminShellIdentity strong {
+  overflow: hidden;
+  color: #273244;
+  font-family: var(--font-montserrat);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminShellNavigation {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.adminShellNavigationGroup {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.adminShellNavigationTitle {
+  margin: 0;
+  padding: 0 0.5rem;
+  color: #8a95a7;
+  font-family: var(--font-montserrat);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.adminShellNavigationList {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.adminShellNavigationLink {
+  display: block;
+  border-radius: 0.8rem;
+  padding: 0.7rem 0.75rem;
+  color: #2a3547;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.adminShellNavigationLink:hover {
+  background-color: #eef3ff;
+  color: #326bd0;
+  transform: translateX(0.125rem);
+}
+
+.adminShellNavigationLink strong,
+.adminShellNavigationLink span {
+  display: block;
+}
+
+.adminShellNavigationLink strong {
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.adminShellNavigationLink span {
+  margin-top: 0.2rem;
+  color: #7a8699;
+  font-family: var(--font-montserrat);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.adminShellNavigationLinkActive {
+  background-color: #4480ea;
+  color: #ffffff;
+  box-shadow: 0 0.75rem 1.5rem rgba(68, 128, 234, 0.2);
+}
+
+.adminShellNavigationLinkActive:hover {
+  background-color: #326bd0;
+  color: #ffffff;
+  transform: none;
+}
+
+.adminShellNavigationLinkActive span {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.adminShellActions {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.adminShellPrimaryAction,
+.adminShellSecondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  border-radius: 0.8rem;
+  padding: 0.7rem 0.85rem;
+  font-family: var(--font-montserrat);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.adminShellPrimaryAction {
+  background-color: #4480ea;
+  color: #ffffff;
+}
+
+.adminShellPrimaryAction:hover {
+  background-color: #326bd0;
+}
+
+.adminShellSecondaryAction {
+  border: 1px solid #dfe6f2;
+  background-color: #ffffff;
+  color: #2a3547;
+}
+
+.adminShellSecondaryAction:hover {
+  background-color: #f3f6fc;
+  color: #326bd0;
+}
+
+.adminShellMain {
+  min-width: 0;
+  padding: 2rem;
+}
+
+.adminShellMainInner {
+  width: 100%;
+  max-width: 96rem;
+  margin: 0 auto;
+}
+
+.adminMobileHeader {
+  display: none;
+}
+
+.adminSidebarOverlay {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .adminShell {
+    display: block;
+  }
+
+  .adminMobileHeader {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4rem;
+    border-bottom: 1px solid #e1e7f2;
+    background-color: rgba(255, 255, 255, 0.96);
+    padding: 0.75rem 1rem;
+    backdrop-filter: blur(0.75rem);
+  }
+
+  .adminMobileBrand {
+    color: #1d2736;
+    font-family: var(--font-unbounded);
+    font-size: 1rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .adminMenuButton {
+    min-height: 2.5rem;
+    border-radius: 0.75rem;
+    background-color: #4480ea;
+    padding: 0.6rem 0.9rem;
+    color: #ffffff;
+    font-family: var(--font-montserrat);
+    font-size: 0.8125rem;
+    font-weight: 800;
+  }
+
+  .adminShellSidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 80;
+    width: min(20rem, calc(100vw - 3rem));
+    height: 100dvh;
+    border-right: 0;
+    box-shadow: 1.5rem 0 4rem rgba(18, 30, 50, 0.18);
+    transform: translateX(-110%);
+    transition: transform 0.22s ease;
+  }
+
+  .adminShellSidebarOpen {
+    transform: translateX(0);
+  }
+
+  .adminMenuClose {
+    display: inline-flex;
+  }
+
+  .adminSidebarOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    background-color: rgba(18, 30, 50, 0.45);
+  }
+
+  .adminShellMain {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .adminShellMain {
+    padding: 1rem;
+  }
+
+  .adminShellSidebar {
+    width: min(19rem, calc(100vw - 1.5rem));
+    padding: 1rem;
+  }
+}
+
+/* Admin typography v1 */
+
+:global(.admin-route-root) {
+  --admin-ui-font:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI Variable Text",
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  --admin-heading-font:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI Variable Display",
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  --font-montserrat: var(--admin-ui-font);
+  --font-unbounded: var(--admin-heading-font);
+
+  font-family: var(--admin-ui-font);
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:global(.admin-route-root) button,
+:global(.admin-route-root) input,
+:global(.admin-route-root) textarea,
+:global(.admin-route-root) select,
+:global(.admin-route-root) option {
+  font-family: var(--admin-ui-font);
+}
+
+:global(.admin-route-root) h1,
+:global(.admin-route-root) h2,
+:global(.admin-route-root) h3,
+:global(.admin-route-root) h4,
+:global(.admin-route-root) h5,
+:global(.admin-route-root) h6 {
+  font-family: var(--admin-heading-font);
+  letter-spacing: -0.025em;
+}
+
+:global(.admin-route-root) button,
+:global(.admin-route-root) a,
+:global(.admin-route-root) label,
+:global(.admin-route-root) input,
+:global(.admin-route-root) textarea,
+:global(.admin-route-root) select {
+  letter-spacing: normal;
+}
+
+:global(.admin-route-root) code,
+:global(.admin-route-root) pre {
+  font-family:
+    "Cascadia Code",
+    "Cascadia Mono",
+    Consolas,
+    monospace;
+}
+
+/* End admin typography v1 */
+
+/* Dynamic content structure */
+
+.structureStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.structureStats > div {
+  border: 1px solid #dfe7fb;
+  border-radius: 1rem;
+  background-color: #ffffff;
+  padding: 1rem;
+  box-shadow: 0 0.75rem 2rem rgba(20, 42, 80, 0.05);
+}
+
+.structureStats span {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #6c7a92;
+  font-family: var(--font-montserrat);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.structureStats strong {
+  color: #000000;
+  font-family: var(--font-unbounded);
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.structureTree {
+  display: grid;
+  gap: 1rem;
+}
+
+.structureArea,
+.structureCategory {
+  overflow: hidden;
+  border: 1px solid #dfe7fb;
+  border-radius: 1.25rem;
+  background-color: #ffffff;
+  box-shadow: 0 0.75rem 2rem rgba(20, 42, 80, 0.05);
+}
+
+.structureAreaSummary,
+.structureCategorySummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.structureAreaSummary {
+  padding: 1.25rem;
+  background-color: #f8faff;
+}
+
+.structureCategorySummary {
+  padding: 1rem;
+  background-color: #ffffff;
+}
+
+.structureAreaSummary::-webkit-details-marker,
+.structureCategorySummary::-webkit-details-marker {
+  display: none;
+}
+
+.structureAreaSummary > div,
+.structureCategorySummary > div {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.structureAreaSummary strong,
+.structureCategorySummary strong,
+.structureSubsectionHeader strong {
+  color: #000000;
+  font-family: var(--font-unbounded);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.structureAreaSummary span,
+.structureCategorySummary span,
+.structureSubsectionHeader span {
+  color: #6c7a92;
+  font-family: var(--font-montserrat);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.structureAreaBody,
+.structureCategoryBody {
+  display: grid;
+  gap: 1rem;
+  border-top: 1px solid #edf1fb;
+  padding: 1.25rem;
+}
+
+.structureForm {
+  display: grid;
+  gap: 1rem;
+}
+
+.structureCheckbox {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.6rem;
+  color: #263238;
+  font-family: var(--font-montserrat);
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.structureCheckbox input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #4480ea;
+}
+
+.structureCreateBox {
+  border: 1px dashed #b9c8e8;
+  border-radius: 1rem;
+  background-color: #f8faff;
+  padding: 1rem;
+}
+
+.structureCreateBox h3 {
+  margin: 0 0 1rem;
+  color: #000000;
+  font-family: var(--font-unbounded);
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+.structureCategories,
+.structureSubsections {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.structureCategory {
+  box-shadow: none;
+}
+
+.structureSubsection {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid #dfe7fb;
+  border-radius: 1rem;
+  background-color: #fbfcff;
+  padding: 1rem;
+}
+
+.structureSubsectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.structureSubsectionHeader > div {
+  display: grid;
+  gap: 0.3rem;
+}
+
+@media (max-width: 768px) {
+  .structureStats {
+    grid-template-columns: 1fr;
+  }
+
+  .structureAreaSummary,
+  .structureCategorySummary,
+  .structureSubsectionHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .structureAreaBody,
+  .structureCategoryBody {
+    padding: 1rem;
+  }
+}
+
+/* End dynamic content structure */

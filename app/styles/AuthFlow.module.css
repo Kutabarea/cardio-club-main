@@ -125,3 +125,35 @@
 .authLinks a:hover {
   text-decoration: underline;
 }
+.authCodeInput {
+  max-width: 12rem;
+  letter-spacing: .35rem;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.authButtonSecondary {
+  display: inline-flex;
+  justify-content: center;
+  width: fit-content;
+  min-height: 3rem;
+  border: 1px solid rgba(68, 128, 234, .35);
+  border-radius: .625rem;
+  background-color: #fff;
+  padding: .875rem 2rem;
+  color: #4480ea;
+  cursor: pointer;
+  font-family: var(--font-montserrat);
+  font-size: .9375rem;
+  font-weight: 900;
+}
+
+.authButtonSecondary:hover:not(:disabled) {
+  background-color: #e9eefc;
+}
+
+.authButtonSecondary:disabled {
+  opacity: .7;
+  cursor: default;
+}

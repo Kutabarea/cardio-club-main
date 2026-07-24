@@ -6,6 +6,13 @@ export const dynamic = "force-dynamic";
 
 export default async function BasePage() {
   const sections = await prisma.ecgSection.findMany({
+    where: {
+      isActive: true,
+      category: {
+        slug: "ecg-base",
+        isActive: true,
+      },
+    },
     orderBy: [
       {
         sortOrder: "asc",
